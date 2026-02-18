@@ -1,0 +1,9 @@
+# Claude Code local settings — not for version control
+.claude/settings.local.json
+.claude/
+
+# macOS
+.DS_Store
+
+# Node
+node_modules/
