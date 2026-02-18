@@ -1,0 +1,136 @@
+{
+  "name": "list_projects",
+  "description": "Lists all Stitch projects accessible to the user. By default, it lists projects owned by the user.\n\n**Input Requirements:**\n\n1.  **`filter` (string - OPTIONAL):** Filter for projects to list. Defaults to \"view=owned\" if not provided. The enum values are:\n    *   `\"view=owned\"`: To list only projects owned by the user.\n    *   `\"view=shared\"`: To list only projects shared with the user.\n",
+  "arguments": {
+    "type": "object",
+    "properties": {
+      "filter": {
+        "description": "Optional. AIP-160 filter. Supported: `view=owned` (default) or `view=shared`.",
+        "type": "string"
+      }
+    },
+    "description": "Request message for ListProjects."
+  },
+  "outputSchema": {
+    "type": "object",
+    "properties": {
+      "projects": {
+        "description": "Projects sorted by update time (most recent first).",
+        "items": { "$ref": "#/$defs/Project" },
+        "type": "array"
+      }
+    },
+    "$defs": {
+      "DesignTheme": {
+        "description": "The theme of the design.",
+        "properties": {
+          "backgroundDark": { "type": "string" },
+          "backgroundLight": { "type": "string" },
+          "colorMode": {
+            "enum": ["COLOR_MODE_UNSPECIFIED", "LIGHT", "DARK"],
+            "type": "string"
+          },
+          "customColor": { "type": "string" },
+          "description": { "type": "string" },
+          "font": {
+            "enum": [
+              "FONT_UNSPECIFIED",
+              "BE_VIETNAM_PRO", "EPILOGUE", "INTER", "LEXEND", "MANROPE",
+              "NEWSREADER", "NOTO_SERIF", "PLUS_JAKARTA_SANS", "PUBLIC_SANS",
+              "SPACE_GROTESK", "SPLINE_SANS", "WORK_SANS", "DOMINE",
+              "LIBRE_CASLON_TEXT", "EB_GARAMOND", "LITERATA", "SOURCE_SERIF_FOUR",
+              "MONTSERRAT", "METROPOLIS", "SOURCE_SANS_THREE", "NUNITO_SANS",
+              "ARIMO", "HANKEN_GROTESK", "RUBIK", "GEIST", "DM_SANS",
+              "IBM_PLEX_SANS", "SORA"
+            ],
+            "type": "string"
+          },
+          "preset": { "type": "string" },
+          "roundness": {
+            "description": "ROUND_TWO is deprecated/unused.",
+            "enum": ["ROUNDNESS_UNSPECIFIED", "ROUND_TWO", "ROUND_FOUR", "ROUND_EIGHT", "ROUND_TWELVE", "ROUND_FULL"],
+            "type": "string"
+          },
+          "saturation": { "description": "1–4", "format": "int32", "type": "integer" }
+        },
+        "type": "object"
+      },
+      "File": {
+        "properties": {
+          "downloadUrl": { "type": "string" },
+          "name": { "type": "string" }
+        },
+        "type": "object"
+      },
+      "Project": {
+        "description": "A project is a single app.",
+        "properties": {
+          "backgroundTheme": { "type": "string" },
+          "createTime": { "format": "date-time", "readOnly": true, "type": "string" },
+          "designTheme": { "$ref": "#/$defs/DesignTheme", "readOnly": true },
+          "deviceType": {
+            "enum": ["DEVICE_TYPE_UNSPECIFIED", "MOBILE", "DESKTOP", "TABLET", "AGNOSTIC"],
+            "readOnly": true,
+            "type": "string"
+          },
+          "metadata": { "$ref": "#/$defs/ProjectMetadata" },
+          "name": {
+            "description": "Identifier. Format: projects/{project}",
+            "type": "string",
+            "x-google-identifier": true
+          },
+          "origin": {
+            "enum": ["ORIGIN_UNSPECIFIED", "STITCH", "IMPORTED_FROM_GALILEO"],
+            "readOnly": true,
+            "type": "string"
+          },
+          "projectType": {
+            "enum": [
+              "PROJECT_TYPE_UNSPECIFIED", "TEXT_TO_UI", "TEXT_TO_UI_PRO",
+              "TEXT_TO_UI_PRO_IMAGE_SPACE", "IMAGE_TO_UI", "IMAGE_TO_UI_PRO", "PROJECT_DESIGN"
+            ],
+            "type": "string"
+          },
+          "readTime": { "format": "date-time", "readOnly": true, "type": "string" },
+          "screenInstances": {
+            "items": { "$ref": "#/$defs/ScreenInstance" },
+            "readOnly": true,
+            "type": "array"
+          },
+          "thumbnailScreenshot": { "$ref": "#/$defs/File" },
+          "title": { "type": "string" },
+          "updateTime": { "format": "date-time", "readOnly": true, "type": "string" },
+          "visibility": {
+            "enum": ["VISIBILITY_UNSPECIFIED", "PUBLIC", "PRIVATE"],
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "ProjectMetadata": {
+        "properties": {
+          "isRemixed": { "type": "boolean" },
+          "userRole": { "enum": ["ROLE_UNSPECIFIED", "OWNER", "READER"], "type": "string" }
+        },
+        "type": "object"
+      },
+      "ScreenInstance": {
+        "properties": {
+          "groupId": { "type": "string" },
+          "groupName": { "type": "string" },
+          "height": { "format": "int32", "type": "integer" },
+          "hidden": { "type": "boolean" },
+          "id": { "type": "string" },
+          "label": { "type": "string" },
+          "sourceScreen": { "description": "Format: projects/{project}/screens/{screen}", "type": "string" },
+          "variantScreenInstance": { "$ref": "#/$defs/ScreenInstance" },
+          "width": { "format": "int32", "type": "integer" },
+          "x": { "format": "int32", "type": "integer" },
+          "y": { "format": "int32", "type": "integer" }
+        },
+        "type": "object"
+      }
+    },
+    "description": "Response message for ListProjects."
+  }
+}

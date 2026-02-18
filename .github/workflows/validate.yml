@@ -1,0 +1,37 @@
+# validate.yml — stitch-kit CI
+#
+# Runs on every push to main and every PR targeting main.
+# Validates that all skills follow the stitch-kit spec:
+#   - SKILL.md exists in every skills/* directory
+#   - Frontmatter has required 'name' and 'description' fields
+#   - Frontmatter 'name' matches the directory name
+#   - Skill directories follow stitch-* naming convention
+#   - All skill paths in marketplace.json exist on disk
+#
+# See spec/stitch-kit-spec.md for the full specification.
+# Run locally: python3 .github/scripts/validate_skills.py
+
+name: Validate Skills
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  validate:
+    name: Skill structure and marketplace integrity
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Run validator
+        run: python3 .github/scripts/validate_skills.py

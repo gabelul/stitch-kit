@@ -1,0 +1,242 @@
+{
+  "name": "generate_screen_from_text",
+  "description": "Generates a new screen within a project from a text prompt.\n\n**Input Requirements (CRITICAL):**\n\n1.  **`project_id` (string - MANDATORY):** Numeric ID only — no `projects/` prefix. Example: `3780309359108792857`.\n2.  **`prompt` (string - MANDATORY):** The prompt describing the desired screen.\n3.  **`device_type` (enum - OPTIONAL):** Defaults to MOBILE if not provided.\n4.  **`model_id` (enum - OPTIONAL):** Defaults to GEMINI_3_FLASH. Use GEMINI_3_PRO for higher quality (Thinking model).\n\n**Instructions for Tool Call:**\n*  This action can take a few minutes to complete. Please be patient. DO NOT RETRY.\n*  If the tool call fails due to connection error, the generation process may still succeed. Try get_screen later.\n\n**Output:**\n*  **`output_components`**: If `output_components` contains text, return it to the user. If it contains suggestions, present them. If accepted, call generate_screen_from_text again with `prompt` set to the accepted suggestion.\n",
+  "arguments": {
+    "type": "object",
+    "properties": {
+      "deviceType": {
+        "description": "The device type for the generated screen.",
+        "enum": [
+          "DEVICE_TYPE_UNSPECIFIED",
+          "MOBILE",
+          "DESKTOP",
+          "TABLET",
+          "AGNOSTIC"
+        ],
+        "type": "string"
+      },
+      "modelId": {
+        "description": "Optional. GEMINI_3_PRO = Thinking model (higher quality, slower). GEMINI_3_FLASH = default (faster).",
+        "enum": [
+          "MODEL_ID_UNSPECIFIED",
+          "GEMINI_3_PRO",
+          "GEMINI_3_FLASH"
+        ],
+        "type": "string"
+      },
+      "projectId": {
+        "description": "Required. Numeric project ID only — do NOT include 'projects/' prefix.",
+        "type": "string"
+      },
+      "prompt": {
+        "description": "Required. The text prompt describing the screen to generate.",
+        "type": "string"
+      }
+    },
+    "required": ["projectId", "prompt"],
+    "description": "Request message for GenerateScreenFromText."
+  },
+  "outputSchema": {
+    "type": "object",
+    "properties": {
+      "outputComponents": {
+        "description": "Array of output components. May contain text responses, design objects, or suggestions to present to the user.",
+        "items": { "$ref": "#/$defs/SessionOutputComponent" },
+        "type": "array"
+      },
+      "projectId": { "description": "Same as the input project ID.", "type": "string" },
+      "sessionId": { "description": "Session ID for this generation.", "type": "string" }
+    },
+    "$defs": {
+      "SessionOutputComponent": {
+        "description": "A partial output of the session. Check all three fields — only one will be populated.",
+        "properties": {
+          "design": {
+            "$ref": "#/$defs/Design",
+            "description": "A generated design to display. Only for TEXT_TO_UI and IMAGE_TO_UI projects."
+          },
+          "suggestion": {
+            "description": "A suggested follow-up prompt. Present to the user; if accepted, use as the next prompt.",
+            "type": "string"
+          },
+          "text": {
+            "description": "A text response from the agent.",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "Design": {
+        "description": "A generated design — collection of screens with theme metadata.",
+        "properties": {
+          "deviceType": {
+            "enum": ["DEVICE_TYPE_UNSPECIFIED", "MOBILE", "DESKTOP", "TABLET", "AGNOSTIC"],
+            "type": "string"
+          },
+          "screens": {
+            "items": { "$ref": "#/$defs/Screen" },
+            "type": "array"
+          },
+          "theme": { "$ref": "#/$defs/DesignTheme" },
+          "title": { "type": "string" }
+        },
+        "type": "object"
+      },
+      "Screen": {
+        "description": "A generated screen.",
+        "properties": {
+          "deviceType": {
+            "enum": ["DEVICE_TYPE_UNSPECIFIED", "MOBILE", "DESKTOP", "TABLET", "AGNOSTIC"],
+            "type": "string"
+          },
+          "figmaExport": { "$ref": "#/$defs/File" },
+          "generatedBy": { "type": "string" },
+          "groupId": { "description": "Groups related screens (e.g. variants of a design).", "type": "string" },
+          "groupName": { "description": "Human-readable group name (e.g. 'Warm Minimalism').", "type": "string" },
+          "height": { "type": "string" },
+          "htmlCode": { "$ref": "#/$defs/File" },
+          "isCreatedByClient": { "type": "boolean" },
+          "name": {
+            "description": "Format: projects/{project}/screens/{screen}",
+            "type": "string",
+            "x-google-identifier": true
+          },
+          "prompt": { "type": "string" },
+          "screenMetadata": { "$ref": "#/$defs/ScreenMetadata" },
+          "screenType": {
+            "enum": ["SCREEN_TYPE_UNSPECIFIED", "DESIGN", "IMAGE", "PROTOTYPE", "DOCUMENT"],
+            "type": "string"
+          },
+          "screenshot": { "$ref": "#/$defs/File" },
+          "theme": { "$ref": "#/$defs/DesignTheme" },
+          "title": { "type": "string" },
+          "width": { "type": "string" }
+        },
+        "type": "object"
+      },
+      "ScreenMetadata": {
+        "description": "Metadata about how a screen was generated.",
+        "properties": {
+          "agentType": {
+            "description": "Which Stitch agent produced this screen.",
+            "enum": [
+              "DESIGN_AGENT_TYPE_UNSPECIFIED",
+              "TURBO_AGENT",
+              "PRO_AGENT",
+              "IMAGE_AGENT",
+              "GENIE_AGENT",
+              "IMAGE_PRO_AGENT",
+              "HATTER_AGENT",
+              "GEMINI_3_AGENT"
+            ],
+            "type": "string",
+            "x-google-enum-descriptions": [
+              "Unspecified.",
+              "Faster agent with Figma export support.",
+              "Uses Gemini 3.0 Flash. Legacy 'PRO' name from when it used Gemini 2.5 Pro.",
+              "Produces image-based screens.",
+              "Genie prototype agent.",
+              "Image pro agent.",
+              "Hatter general assistant agent.",
+              "Powered by Gemini 3.0 Thinking model. The new 'Pro' agent after Gemini 3 launch."
+            ]
+          },
+          "componentRegions": {
+            "description": "Bounding boxes for detected UI components in the screenshot.",
+            "items": { "$ref": "#/$defs/ComponentRegion" },
+            "type": "array"
+          },
+          "displayMode": {
+            "description": "Whether frontend should display HTML or screenshot.",
+            "enum": ["DISPLAY_MODE_UNSPECIFIED", "SCREENSHOT", "HTML"],
+            "type": "string"
+          },
+          "isRemixed": { "type": "boolean" },
+          "status": {
+            "enum": ["SCREEN_STATUS_UNSPECIFIED", "IN_PROGRESS", "COMPLETE", "FAILED"],
+            "type": "string"
+          },
+          "statusMessage": { "description": "Human-readable status from the agent.", "type": "string" }
+        },
+        "type": "object"
+      },
+      "ComponentRegion": {
+        "description": "A detected UI component with its bounding box and XPath reference.",
+        "properties": {
+          "boundingBox": { "$ref": "#/$defs/BoundingBox" },
+          "description": { "type": "string" },
+          "type": {
+            "enum": [
+              "COMPONENT_TYPE_UNSPECIFIED",
+              "COMPONENT_TYPE_IMAGE",
+              "COMPONENT_TYPE_TEXT",
+              "COMPONENT_TYPE_BUTTON",
+              "COMPONENT_TYPE_INPUT",
+              "COMPONENT_TYPE_CONTAINER"
+            ],
+            "type": "string"
+          },
+          "xpath": { "description": "XPath to locate this component in the HTML.", "type": "string" }
+        },
+        "type": "object"
+      },
+      "BoundingBox": {
+        "description": "Pixel coordinates relative to the screen dimensions.",
+        "properties": {
+          "height": { "format": "int32", "type": "integer" },
+          "width": { "format": "int32", "type": "integer" },
+          "x": { "format": "int32", "type": "integer" },
+          "y": { "format": "int32", "type": "integer" }
+        },
+        "type": "object"
+      },
+      "DesignTheme": {
+        "description": "Theme configuration returned with the generated design.",
+        "properties": {
+          "backgroundDark": { "description": "Hex background for dark mode.", "type": "string" },
+          "backgroundLight": { "description": "Hex background for light mode.", "type": "string" },
+          "colorMode": {
+            "enum": ["COLOR_MODE_UNSPECIFIED", "LIGHT", "DARK"],
+            "type": "string"
+          },
+          "customColor": { "description": "Custom primary color (hex).", "type": "string" },
+          "description": { "description": "Brief aesthetic description.", "type": "string" },
+          "font": {
+            "description": "28 fonts available. Use enum values in prompts for precise control.",
+            "enum": [
+              "FONT_UNSPECIFIED",
+              "BE_VIETNAM_PRO", "EPILOGUE", "INTER", "LEXEND", "MANROPE",
+              "NEWSREADER", "NOTO_SERIF", "PLUS_JAKARTA_SANS", "PUBLIC_SANS",
+              "SPACE_GROTESK", "SPLINE_SANS", "WORK_SANS", "DOMINE",
+              "LIBRE_CASLON_TEXT", "EB_GARAMOND", "LITERATA", "SOURCE_SERIF_FOUR",
+              "MONTSERRAT", "METROPOLIS", "SOURCE_SANS_THREE", "NUNITO_SANS",
+              "ARIMO", "HANKEN_GROTESK", "RUBIK", "GEIST", "DM_SANS",
+              "IBM_PLEX_SANS", "SORA"
+            ],
+            "type": "string"
+          },
+          "preset": { "type": "string" },
+          "roundness": {
+            "description": "ROUND_TWO is deprecated/unused. Safe values: ROUND_FOUR, ROUND_EIGHT, ROUND_TWELVE, ROUND_FULL.",
+            "enum": ["ROUNDNESS_UNSPECIFIED", "ROUND_TWO", "ROUND_FOUR", "ROUND_EIGHT", "ROUND_TWELVE", "ROUND_FULL"],
+            "type": "string"
+          },
+          "saturation": {
+            "description": "Color saturation 1–4. Higher = more vivid.",
+            "format": "int32",
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
+      "File": {
+        "properties": {
+          "downloadUrl": { "description": "FIFE base URL for images, direct URL for HTML.", "type": "string" },
+          "name": { "type": "string" }
+        },
+        "type": "object"
+      }
+    },
+    "description": "Response message for GenerateScreenFromText."
+  }
+}

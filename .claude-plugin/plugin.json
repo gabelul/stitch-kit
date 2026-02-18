@@ -1,0 +1,10 @@
+{
+  "name": "stitch-kit",
+  "description": "AI UI design to production code — Stitch MCP skills for Claude Code. Generates screens, extracts design tokens, and converts to Next.js, Svelte, React, React Native, SwiftUI, or HTML.",
+  "version": "1.3.0",
+  "author": {
+    "name": "gabelul"
+  },
+  "repository": "https://github.com/gabelul/stitch-kit",
+  "license": "Apache-2.0"
+}

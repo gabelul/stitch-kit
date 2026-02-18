@@ -1,0 +1,290 @@
+{
+  "name": "create_project",
+  "description": "Creates a new Stitch project. A project is a container for UI designs and frontend code.\n",
+  "arguments": {
+    "type": "object",
+    "properties": {
+      "title": {
+        "description": "Optional. The title of the project.",
+        "type": "string"
+      }
+    },
+    "description": "Request message for CreateProject."
+  },
+  "outputSchema": {
+    "type": "object",
+    "properties": {
+      "backgroundTheme": {
+        "description": "Optional. The background theme of the project.",
+        "type": "string"
+      },
+      "createTime": {
+        "description": "Output only. The time when the project was created.",
+        "format": "date-time",
+        "readOnly": true,
+        "type": "string"
+      },
+      "designTheme": {
+        "$ref": "#/$defs/DesignTheme",
+        "description": "Output only. The theme used to generate the first design in the project.",
+        "readOnly": true
+      },
+      "deviceType": {
+        "description": "Output only. The device type of the project.",
+        "enum": [
+          "DEVICE_TYPE_UNSPECIFIED",
+          "MOBILE",
+          "DESKTOP",
+          "TABLET",
+          "AGNOSTIC"
+        ],
+        "readOnly": true,
+        "type": "string",
+        "x-google-enum-descriptions": [
+          "Unspecified device type.",
+          "A design for a mobile device.",
+          "A design for a desktop device.",
+          "A design for a tablet device.",
+          "A design that is not tied to a specific device."
+        ]
+      },
+      "metadata": {
+        "$ref": "#/$defs/ProjectMetadata",
+        "description": "Metadata of the project."
+      },
+      "name": {
+        "description": "Identifier. The resource name of the project. Format: projects/{project}",
+        "type": "string",
+        "x-google-identifier": true
+      },
+      "origin": {
+        "description": "Output only. The origin of the project.",
+        "enum": [
+          "ORIGIN_UNSPECIFIED",
+          "STITCH",
+          "IMPORTED_FROM_GALILEO"
+        ],
+        "readOnly": true,
+        "type": "string",
+        "x-google-enum-descriptions": [
+          "Unspecified origin. By default, the project is created from Stitch.",
+          "The project is created from Stitch.",
+          "The project is imported from Galileo."
+        ]
+      },
+      "projectType": {
+        "description": "Optional. The type of the project. If not specified, the project is a text to UI project.",
+        "enum": [
+          "PROJECT_TYPE_UNSPECIFIED",
+          "TEXT_TO_UI",
+          "TEXT_TO_UI_PRO",
+          "TEXT_TO_UI_PRO_IMAGE_SPACE",
+          "IMAGE_TO_UI",
+          "IMAGE_TO_UI_PRO",
+          "PROJECT_DESIGN"
+        ],
+        "type": "string",
+        "x-google-enum-descriptions": [
+          "Unspecified project type. By default, the project is a text to UI project.",
+          "A text to UI project.",
+          "Pro version of text to UI project.",
+          "Deprecated. Pro version of text to UI project using image space for edits.",
+          "An image to UI project.",
+          "Deprecated.",
+          "A new design project."
+        ]
+      },
+      "readTime": {
+        "description": "Output only. The time the project was last read. Populated only when listing recently viewed projects.",
+        "format": "date-time",
+        "readOnly": true,
+        "type": "string"
+      },
+      "screenInstances": {
+        "description": "Output only. The screen instances on this project.",
+        "items": {
+          "$ref": "#/$defs/ScreenInstance"
+        },
+        "readOnly": true,
+        "type": "array"
+      },
+      "thumbnailScreenshot": {
+        "$ref": "#/$defs/File",
+        "description": "Optional. The screenshot to be used as the thumbnail for the project."
+      },
+      "title": {
+        "description": "Optional. The title of the project.",
+        "type": "string"
+      },
+      "updateTime": {
+        "description": "Output only. The time when the project was last updated.",
+        "format": "date-time",
+        "readOnly": true,
+        "type": "string"
+      },
+      "visibility": {
+        "description": "Optional. The visibility setting of the project.",
+        "enum": [
+          "VISIBILITY_UNSPECIFIED",
+          "PUBLIC",
+          "PRIVATE"
+        ],
+        "type": "string",
+        "x-google-enum-descriptions": [
+          "Unspecified visibility. By default, the project is private.",
+          "The project is visible to all users, and may be featured in the feed.",
+          "The project is visible to only the creator."
+        ]
+      }
+    },
+    "$defs": {
+      "DesignTheme": {
+        "description": "The theme of the design.",
+        "properties": {
+          "backgroundDark": {
+            "description": "Optional. The background color for dark mode (hex format, e.g., \"#1a1a1a\").",
+            "type": "string"
+          },
+          "backgroundLight": {
+            "description": "Optional. The background color for light mode (hex format, e.g., \"#f8f8f8\").",
+            "type": "string"
+          },
+          "colorMode": {
+            "description": "Optional. The mode of appearance of the design.",
+            "enum": [
+              "COLOR_MODE_UNSPECIFIED",
+              "LIGHT",
+              "DARK"
+            ],
+            "type": "string"
+          },
+          "customColor": {
+            "description": "Optional. A custom theme primary color (hex).",
+            "type": "string"
+          },
+          "description": {
+            "description": "Optional. A brief description of the theme aesthetic.",
+            "type": "string"
+          },
+          "font": {
+            "description": "Optional. The font of the design.",
+            "enum": [
+              "FONT_UNSPECIFIED",
+              "BE_VIETNAM_PRO",
+              "EPILOGUE",
+              "INTER",
+              "LEXEND",
+              "MANROPE",
+              "NEWSREADER",
+              "NOTO_SERIF",
+              "PLUS_JAKARTA_SANS",
+              "PUBLIC_SANS",
+              "SPACE_GROTESK",
+              "SPLINE_SANS",
+              "WORK_SANS",
+              "DOMINE",
+              "LIBRE_CASLON_TEXT",
+              "EB_GARAMOND",
+              "LITERATA",
+              "SOURCE_SERIF_FOUR",
+              "MONTSERRAT",
+              "METROPOLIS",
+              "SOURCE_SANS_THREE",
+              "NUNITO_SANS",
+              "ARIMO",
+              "HANKEN_GROTESK",
+              "RUBIK",
+              "GEIST",
+              "DM_SANS",
+              "IBM_PLEX_SANS",
+              "SORA"
+            ],
+            "type": "string"
+          },
+          "preset": {
+            "description": "Optional. The preset color of the design.",
+            "type": "string"
+          },
+          "roundness": {
+            "description": "Optional. The roundness of the design. ROUND_TWO is deprecated/unused.",
+            "enum": [
+              "ROUNDNESS_UNSPECIFIED",
+              "ROUND_TWO",
+              "ROUND_FOUR",
+              "ROUND_EIGHT",
+              "ROUND_TWELVE",
+              "ROUND_FULL"
+            ],
+            "type": "string"
+          },
+          "saturation": {
+            "description": "Optional. The saturation of the design between 1 and 4.",
+            "format": "int32",
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
+      "File": {
+        "description": "A File resource.",
+        "properties": {
+          "downloadUrl": {
+            "description": "Optional. The URL of the file for download. For image files, this would be FIFE base URLs.",
+            "type": "string"
+          },
+          "name": {
+            "description": "Identifier. The resource name of the file. Format: projects/{project}/files/{file}",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "ProjectMetadata": {
+        "description": "Metadata relating to the project.",
+        "properties": {
+          "isRemixed": {
+            "description": "Whether this project was remixed or not.",
+            "type": "boolean"
+          },
+          "userRole": {
+            "description": "The Role of the user accessing the project.",
+            "enum": [
+              "ROLE_UNSPECIFIED",
+              "OWNER",
+              "READER"
+            ],
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "ScreenInstance": {
+        "description": "An instance of a screen on the project canvas.",
+        "properties": {
+          "groupId": {
+            "description": "Optional. Group identifier for Genie Agent output grouping.",
+            "type": "string"
+          },
+          "groupName": {
+            "description": "Optional. Human-readable name for the group (e.g., \"Warm Minimalism\").",
+            "type": "string"
+          },
+          "height": { "format": "int32", "type": "integer" },
+          "hidden": { "description": "User hid this screen from canvas.", "type": "boolean" },
+          "id": { "type": "string" },
+          "label": { "type": "string" },
+          "sourceScreen": {
+            "description": "Format: projects/{project}/screens/{screen}",
+            "type": "string"
+          },
+          "variantScreenInstance": { "$ref": "#/$defs/ScreenInstance" },
+          "width": { "format": "int32", "type": "integer" },
+          "x": { "format": "int32", "type": "integer" },
+          "y": { "format": "int32", "type": "integer" }
+        },
+        "type": "object"
+      }
+    },
+    "description": "A project is a single app."
+  }
+}

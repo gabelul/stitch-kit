@@ -1,0 +1,128 @@
+{
+  "name": "stitch-kit",
+  "owner": {
+    "name": "gabelul"
+  },
+  "metadata": {
+    "description": "The Claude Code plugin that turns Stitch into a full development workflow — prompt engineering, MCP wrappers, design tokens, and production-ready components for Next.js, Svelte, React, React Native, SwiftUI, and HTML.",
+    "version": "1.3.0"
+  },
+  "plugins": [
+    {
+      "name": "full",
+      "description": "Everything — all 26 skills in one install.",
+      "source": "./",
+      "strict": false,
+      "skills": [
+        "./skills/stitch-orchestrator",
+        "./skills/stitch-ui-design-spec-generator",
+        "./skills/stitch-ui-prompt-architect",
+        "./skills/stitch-ui-design-variants",
+        "./skills/stitch-ued-guide",
+        "./skills/stitch-mcp-create-project",
+        "./skills/stitch-mcp-list-projects",
+        "./skills/stitch-mcp-get-project",
+        "./skills/stitch-mcp-generate-screen-from-text",
+        "./skills/stitch-mcp-list-screens",
+        "./skills/stitch-mcp-get-screen",
+        "./skills/stitch-nextjs-components",
+        "./skills/stitch-svelte-components",
+        "./skills/stitch-react-components",
+        "./skills/stitch-html-components",
+        "./skills/stitch-shadcn-ui",
+        "./skills/stitch-loop",
+        "./skills/stitch-remotion",
+        "./skills/stitch-react-native-components",
+        "./skills/stitch-swiftui-components",
+        "./skills/stitch-design-md",
+        "./skills/stitch-design-system",
+        "./skills/stitch-animate",
+        "./skills/stitch-a11y",
+        "./skills/stitch-setup",
+        "./skills/stitch-skill-creator"
+      ]
+    },
+    {
+      "name": "stitch-orchestration",
+      "description": "Entry point only — the orchestrator that coordinates the full workflow.",
+      "source": "./",
+      "strict": false,
+      "skills": [
+        "./skills/stitch-orchestrator"
+      ]
+    },
+    {
+      "name": "stitch-brain",
+      "description": "Design intelligence — spec generation, prompt engineering, variants, visual vocabulary.",
+      "source": "./",
+      "strict": false,
+      "skills": [
+        "./skills/stitch-ui-design-spec-generator",
+        "./skills/stitch-ui-prompt-architect",
+        "./skills/stitch-ui-design-variants",
+        "./skills/stitch-ued-guide"
+      ]
+    },
+    {
+      "name": "stitch-mcp",
+      "description": "Stitch MCP tool wrappers — one skill per API call, with correct ID handling.",
+      "source": "./",
+      "strict": false,
+      "skills": [
+        "./skills/stitch-mcp-create-project",
+        "./skills/stitch-mcp-list-projects",
+        "./skills/stitch-mcp-get-project",
+        "./skills/stitch-mcp-generate-screen-from-text",
+        "./skills/stitch-mcp-list-screens",
+        "./skills/stitch-mcp-get-screen"
+      ]
+    },
+    {
+      "name": "stitch-frameworks",
+      "description": "Web framework conversion — Next.js, Svelte, React, HTML5, shadcn/ui, loop, video.",
+      "source": "./",
+      "strict": false,
+      "skills": [
+        "./skills/stitch-nextjs-components",
+        "./skills/stitch-svelte-components",
+        "./skills/stitch-react-components",
+        "./skills/stitch-html-components",
+        "./skills/stitch-shadcn-ui",
+        "./skills/stitch-loop",
+        "./skills/stitch-remotion"
+      ]
+    },
+    {
+      "name": "stitch-mobile",
+      "description": "Native mobile conversion — React Native / Expo and SwiftUI.",
+      "source": "./",
+      "strict": false,
+      "skills": [
+        "./skills/stitch-react-native-components",
+        "./skills/stitch-swiftui-components"
+      ]
+    },
+    {
+      "name": "stitch-quality",
+      "description": "Production readiness — design tokens, CSS output, animations, WCAG accessibility.",
+      "source": "./",
+      "strict": false,
+      "skills": [
+        "./skills/stitch-design-md",
+        "./skills/stitch-design-system",
+        "./skills/stitch-animate",
+        "./skills/stitch-a11y"
+      ]
+    },
+    {
+      "name": "stitch-setup",
+      "description": "Setup and skill factory — installer and tools for extending stitch-kit.",
+      "source": "./",
+      "strict": false,
+      "skills": [
+        "./skills/stitch-setup",
+        "./skills/stitch-skill-creator"
+      ]
+    }
+  ]
+}
