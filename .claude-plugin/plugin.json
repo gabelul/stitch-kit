@@ -6,6 +6,5 @@
     "name": "gabelul"
   },
   "repository": "https://github.com/gabelul/stitch-kit",
-  "license": "Apache-2.0",
-  "agents": "./agents"
+  "license": "Apache-2.0"
 }
