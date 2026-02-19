@@ -25,6 +25,14 @@ Sign in at [stitch.withgoogle.com](https://stitch.withgoogle.com) to do the Goog
 /plugin install full@stitch-kit
 ```
 
+Then install the agent (plugins don't auto-install agents yet — one extra step):
+
+```bash
+find ~/.claude/plugins/cache/stitch-kit -name "stitch-kit.md" -path "*/agents/*" | head -1 | xargs -I{} cp {} ~/.claude/agents/stitch-kit.md
+```
+
+Restart Claude Code. The `stitch-kit` agent shows up in `/agents` and routes Stitch tasks automatically.
+
 ### Codex CLI
 
 Clone and run the installer — symlinks everything into `~/.agents/` so Codex picks it up automatically:

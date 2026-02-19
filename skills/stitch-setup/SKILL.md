@@ -119,6 +119,18 @@ All 26 skills in one command.
 
 ---
 
+## Step 4b: Install the stitch-kit agent (Claude Code)
+
+The plugin installs skills automatically, but the agent definition needs one extra step. Run this in your terminal to copy the agent to where Claude Code reads it from:
+
+```bash
+find ~/.claude/plugins/cache/stitch-kit -name "stitch-kit.md" -path "*/agents/*" | head -1 | xargs -I{} cp {} ~/.claude/agents/stitch-kit.md
+```
+
+Then restart Claude Code. The `stitch-kit` agent will appear in `/agents` and Claude will route Stitch tasks to it automatically.
+
+---
+
 ## Step 5: Verify the full setup
 
 Run the orchestrator to confirm everything works:
