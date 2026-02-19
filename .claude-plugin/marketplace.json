@@ -9,7 +9,7 @@
   },
   "plugins": [
     {
-      "name": "full",
+      "name": "stitch-kit",
       "description": "Everything — all 26 skills in one install.",
       "source": "./",
       "strict": false,
