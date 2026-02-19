@@ -13,7 +13,6 @@
       "description": "Everything — all 26 skills in one install.",
       "source": "./",
       "strict": false,
-      "agents": "./agents",
       "skills": [
         "./skills/stitch-orchestrator",
         "./skills/stitch-ui-design-spec-generator",
