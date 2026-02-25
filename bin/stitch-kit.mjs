@@ -129,9 +129,13 @@ function checkAndInstallStitchMcp(platform, apiKey) {
       } catch { /* ignore */ }
     }
 
-    // Not configured — write directly to settings.json (user scope)
-    // We write directly because `claude mcp add` defaults to local scope
-    // and can behave unexpectedly when run outside a project directory.
+    // Not configured — need an API key to set up the remote MCP server.
+    // Stitch MCP is a remote HTTP server at stitch.googleapis.com, not a local npm package.
+    if (!apiKey) {
+      return 'failed';
+    }
+
+    // Write directly to settings.json (user scope)
     try {
       let settings = {};
       if (existsSync(settingsFile)) {
@@ -139,17 +143,14 @@ function checkAndInstallStitchMcp(platform, apiKey) {
       }
       if (!settings.mcpServers) settings.mcpServers = {};
 
-      const mcpConfig = {
-        command: 'npx',
-        args: ['-y', '@google/stitch-mcp'],
+      settings.mcpServers.stitch = {
+        type: 'http',
+        url: 'https://stitch.googleapis.com/mcp',
+        headers: {
+          'X-Goog-Api-Key': apiKey,
+        },
       };
 
-      // Add API key as environment variable if provided
-      if (apiKey) {
-        mcpConfig.env = { STITCH_API_KEY: apiKey };
-      }
-
-      settings.mcpServers.stitch = mcpConfig;
       writeFileSync(settingsFile, JSON.stringify(settings, null, 2) + '\n');
       return 'installed';
     } catch {
@@ -169,14 +170,14 @@ function checkAndInstallStitchMcp(platform, apiKey) {
       } catch { /* ignore */ }
     }
 
-    // Not configured — append the stitch MCP block to config.toml
-    try {
-      let stitchBlock = `\n[mcp_servers.stitch]\ncommand = "npx"\nargs = ["-y", "@google/stitch-mcp"]\n`;
+    // Not configured — need an API key for the remote MCP server
+    if (!apiKey) {
+      return 'failed';
+    }
 
-      // Add API key as environment variable if provided
-      if (apiKey) {
-        stitchBlock += `\n[mcp_servers.stitch.env]\nSTITCH_API_KEY = "${apiKey}"\n`;
-      }
+    // Append the stitch MCP block to config.toml
+    try {
+      let stitchBlock = `\n[mcp_servers.stitch]\nurl = "https://stitch.googleapis.com/mcp"\n\n[mcp_servers.stitch.headers]\nX-Goog-Api-Key = "${apiKey}"\n`;
 
       if (existsSync(configFile)) {
         const content = readFileSync(configFile, 'utf8');
@@ -296,19 +297,15 @@ function installClaudeCode(apiKey) {
   const mcpStatus = checkAndInstallStitchMcp('claude', apiKey);
 
   if (mcpStatus === 'installed') {
-    logOk('Stitch MCP configured automatically');
-    if (!apiKey) {
-      log('');
-      log('  Sign in at https://stitch.withgoogle.com to complete Google auth.');
-      log('  (Or re-run with an API key: npx @booplex/stitch-kit install)');
-    }
+    logOk('Stitch MCP configured with API key');
   } else if (mcpStatus === 'already') {
     logOk('Stitch MCP already configured');
   } else {
-    logWarn('Could not auto-configure Stitch MCP');
+    logWarn('Stitch MCP not configured (no API key provided)');
     log('');
     log('  Add it manually:');
-    log('    claude mcp add stitch -- npx -y @google/stitch-mcp');
+    log('    claude mcp add stitch --transport http https://stitch.googleapis.com/mcp \\');
+    log('      --header "X-Goog-Api-Key: YOUR-API-KEY" -s user');
     log('');
   }
 
@@ -381,21 +378,19 @@ function installCodex(apiKey) {
   const mcpStatus = checkAndInstallStitchMcp('codex', apiKey);
 
   if (mcpStatus === 'installed') {
-    logOk('Stitch MCP configured automatically in config.toml');
-    if (!apiKey) {
-      log('');
-      log('  Sign in at https://stitch.withgoogle.com to complete Google auth.');
-    }
+    logOk('Stitch MCP configured with API key in config.toml');
   } else if (mcpStatus === 'already') {
     logOk('Stitch MCP already in config.toml');
   } else {
-    logWarn('Could not auto-configure Stitch MCP');
+    logWarn('Stitch MCP not configured (no API key provided)');
     log('');
     log('  Add it manually to ~/.codex/config.toml:');
     log('');
     log('    [mcp_servers.stitch]');
-    log('    command = "npx"');
-    log('    args = ["-y", "@google/stitch-mcp"]');
+    log('    url = "https://stitch.googleapis.com/mcp"');
+    log('');
+    log('    [mcp_servers.stitch.headers]');
+    log('    X-Goog-Api-Key = "YOUR-API-KEY"');
   }
 
   log('');
@@ -431,18 +426,24 @@ async function install() {
   }
 
   // Prompt for Stitch API key if MCP needs configuring
+  // Stitch MCP is a remote server — it requires an API key or OAuth.
+  // API key is the simplest path for most users.
   let apiKey = '';
   if (needsStitchMcp()) {
     log('');
     log('Stitch MCP needs to be configured.');
-    log('You can authenticate with a Stitch API key, or skip to use Google OAuth instead.');
-    log('(Get your key at https://stitch.withgoogle.com → Settings → API Keys)');
+    log('Stitch is a remote MCP server — it needs an API key to authenticate.');
+    log('');
+    log('  1. Go to https://stitch.withgoogle.com/settings');
+    log('  2. Scroll to "API Keys" and click "Create API Key"');
+    log('  3. Copy and paste it below');
     log('');
     apiKey = await prompt('  Stitch API key (press Enter to skip): ');
     if (apiKey) {
       logOk('API key provided — will configure for all platforms');
     } else {
-      logSkip('No API key — will use Google OAuth (sign in at stitch.withgoogle.com after install)');
+      logSkip('Skipped — you can configure Stitch MCP manually later');
+      log('  See: https://stitch.withgoogle.com/docs/mcp/setup');
     }
   }
 

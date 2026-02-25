@@ -36,10 +36,11 @@ To check what's installed: `npx @booplex/stitch-kit status`.
 
 ## Installing (Claude Code)
 
-Stitch MCP first:
+Stitch MCP first (remote HTTP server — needs an API key from [stitch.withgoogle.com/settings](https://stitch.withgoogle.com/settings)):
 
 ```bash
-claude mcp add stitch -- npx -y @google/stitch-mcp
+claude mcp add stitch --transport http https://stitch.googleapis.com/mcp \
+  --header "X-Goog-Api-Key: YOUR-API-KEY" -s user
 ```
 
 Then the plugin:
@@ -66,8 +67,10 @@ Then wire up Stitch MCP in `~/.codex/config.toml`:
 
 ```toml
 [mcp_servers.stitch]
-command = "npx"
-args = ["-y", "@google/stitch-mcp"]
+url = "https://stitch.googleapis.com/mcp"
+
+[mcp_servers.stitch.headers]
+X-Goog-Api-Key = "YOUR-API-KEY"
 ```
 
 Use `$stitch-kit` to invoke the agent or `$stitch-orchestrator` to run a skill directly.
@@ -93,7 +96,7 @@ For Stitch-based UI generation, load **`stitch-orchestrator`** or invoke the **`
 
 Skills marked `allowed-tools: ["stitch*:*"]` require the **Stitch MCP Server** configured in your client. Without it, the generation steps won't work.
 
-Setup guide: https://stitch.withgoogle.com/docs/mcp/guide/
+Setup guide: https://stitch.withgoogle.com/docs/mcp/setup
 
 All 14 tools wrapped: `create_project`, `get_project`, `delete_project`, `list_projects`, `generate_screen_from_text`, `upload_screens_from_images`, `edit_screens`, `generate_variants`, `list_screens`, `get_screen`, `create_design_system`, `update_design_system`, `list_design_systems`, `apply_design_system`
 

@@ -10,7 +10,7 @@ allowed-tools:
 # stitch-kit Setup Guide
 
 Walks users through two setup tasks:
-1. **Stitch MCP Server** — connect Claude to Google Stitch's generation tools
+1. **Stitch MCP Server** — connect your AI client to Google Stitch's remote generation API
 2. **stitch-kit Plugin** — install the skills that orchestrate the Stitch workflow
 
 ---
@@ -35,76 +35,105 @@ Run `list_tools` (or check the tool list). Look for any of:
 
 ---
 
-## Step 2: Install Stitch MCP Server
+## Step 2: Get a Stitch API Key
+
+Stitch MCP is a **remote HTTP server** — it lives in the cloud at `stitch.googleapis.com`, not on your machine. It requires an API key to authenticate.
+
+1. Go to [stitch.withgoogle.com/settings](https://stitch.withgoogle.com/settings)
+2. Scroll to the **API Keys** section
+3. Click **"Create API Key"**
+4. Copy the key — you'll need it in the next step
+
+> **Never commit your API key to a public repository.** Store it securely.
+
+---
+
+## Step 3: Configure Stitch MCP
 
 ### Claude Code
 
-Add to `~/.claude/config.json` (or via `/mcp add` command):
+Using the CLI (recommended):
+
+```bash
+claude mcp add stitch --transport http https://stitch.googleapis.com/mcp \
+  --header "X-Goog-Api-Key: YOUR-API-KEY" -s user
+```
+
+Or add to `~/.claude/settings.json` manually:
 
 ```json
 {
   "mcpServers": {
     "stitch": {
-      "command": "npx",
-      "args": ["-y", "@google/stitch-mcp"],
-      "env": {}
+      "type": "http",
+      "url": "https://stitch.googleapis.com/mcp",
+      "headers": {
+        "X-Goog-Api-Key": "YOUR-API-KEY"
+      }
     }
   }
 }
 ```
 
-Or using the Claude Code CLI:
+### Codex CLI
 
-```bash
-claude mcp add stitch npx @google/stitch-mcp
+Add to `~/.codex/config.toml`:
+
+```toml
+[mcp_servers.stitch]
+url = "https://stitch.googleapis.com/mcp"
+
+[mcp_servers.stitch.headers]
+X-Goog-Api-Key = "YOUR-API-KEY"
 ```
 
-### Codex CLI (OpenAI)
+### Cursor
 
-Add to your Codex configuration file:
+Create or edit `.cursor/mcp.json`:
 
 ```json
 {
-  "tools": [
-    {
-      "type": "mcp",
-      "server": {
-        "command": "npx",
-        "args": ["-y", "@google/stitch-mcp"]
+  "mcpServers": {
+    "stitch": {
+      "url": "https://stitch.googleapis.com/mcp",
+      "headers": {
+        "X-Goog-Api-Key": "YOUR-API-KEY"
       }
     }
-  ]
+  }
 }
 ```
 
-### VS Code / Cursor / Windsurf
+### VS Code
 
-Check your AI extension's settings for "MCP Servers" and add:
-- **Command:** `npx`
-- **Args:** `["-y", "@google/stitch-mcp"]`
+Open Command Palette → "MCP: Add Server" → HTTP → `https://stitch.googleapis.com/mcp` → name: "stitch". Then edit the generated mcp.json to add the header:
+
+```json
+{
+  "servers": {
+    "stitch": {
+      "url": "https://stitch.googleapis.com/mcp",
+      "type": "http",
+      "headers": {
+        "Accept": "application/json",
+        "X-Goog-Api-Key": "YOUR-API-KEY"
+      }
+    }
+  }
+}
+```
+
+### Quick install (all platforms)
+
+Or use the NPX installer — it prompts for the API key and configures everything:
+
+```bash
+npx @booplex/stitch-kit
+```
 
 ### Manual verification
 
-After adding, restart the client and run `list_tools`. You should see tools prefixed with `stitch:` or similar.
-
----
-
-## Step 3: Authenticate with Google
-
-Stitch MCP requires a Google account with access to Stitch. On first run:
-
-1. The MCP server will open a browser for Google OAuth
-2. Sign in with a Google account
-3. Authorize Stitch access
-4. Return to the terminal — authentication is saved
-
-If you see "authentication required" errors, run:
-
-```bash
-npx @google/stitch-mcp auth
-```
-
-Or visit: https://stitch.withgoogle.com and sign in to pre-authorize.
+After adding, restart the client and run `list_tools`. You should see tools like `create_project`, `generate_screen_from_text`, `get_screen`, etc.
 
 ---
 
@@ -115,7 +144,7 @@ Or visit: https://stitch.withgoogle.com and sign in to pre-authorize.
 /plugin install stitch-kit@stitch-kit
 ```
 
-All 26 skills in one command. The `stitch-kit` agent is included — it shows up automatically in `/agents` under "Plugin agents" after restart.
+All 34 skills in one command. The `stitch-kit` agent is included — it shows up automatically after restart.
 
 ---
 
@@ -144,8 +173,8 @@ If this completes, you're fully set up.
 
 | Symptom | Likely cause | Fix |
 |---------|-------------|-----|
-| `list_tools` doesn't show Stitch tools | MCP not installed or not started | Redo Step 2; restart your client |
-| "Authentication failed" | OAuth not completed | Run `npx @google/stitch-mcp auth` |
+| `list_tools` doesn't show Stitch tools | MCP not configured or client not restarted | Redo Step 3; restart your client |
+| "Unauthenticated" or 401 error | API key invalid or expired | Generate a new key at stitch.withgoogle.com/settings |
 | `create_project` fails with 403 | Account doesn't have Stitch access | Visit stitch.withgoogle.com and request access |
 | `generate_screen_from_text` returns empty | Bad prompt or project ID format | Use `stitch-mcp-generate-screen-from-text` skill — it includes ID format rules |
 | `get_screen` returns 404 | Wrong ID format | **projectId and screenId must be numeric only** — no `projects/` prefix |
@@ -157,9 +186,9 @@ If this completes, you're fully set up.
 ## Network requirements
 
 Stitch MCP makes outbound requests to:
-- `stitch.withgoogle.com` — API
+- `stitch.googleapis.com` — remote MCP server
 - `storage.googleapis.com` — file downloads (HTML, screenshots)
-- `accounts.google.com` — OAuth
+- `accounts.google.com` — OAuth (if using OAuth instead of API key)
 
 If you're behind a corporate proxy or VPN, ensure these domains are allowed.
 
@@ -167,7 +196,7 @@ If you're behind a corporate proxy or VPN, ensure these domains are allowed.
 
 ## Offline / no-MCP mode
 
-If you cannot install Stitch MCP, the orchestrator still works in **prompt-only mode**:
+If you cannot configure Stitch MCP, the orchestrator still works in **prompt-only mode**:
 - Steps 1–3 run normally (spec generation, prompt assembly)
 - Instead of generating the screen, it outputs a ready-to-copy Stitch prompt
 - You paste that prompt at stitch.withgoogle.com manually
@@ -175,9 +204,28 @@ If you cannot install Stitch MCP, the orchestrator still works in **prompt-only 
 
 ---
 
+## Authentication alternatives
+
+### OAuth (for restricted environments)
+
+If you can't store API keys on disk, Stitch supports OAuth via Google Cloud:
+
+```bash
+gcloud auth login
+gcloud auth application-default login
+gcloud config set project YOUR-PROJECT-ID
+gcloud beta services mcp enable stitch.googleapis.com --project=YOUR-PROJECT-ID
+```
+
+Then use Bearer token auth instead of API key. See [full OAuth guide](https://stitch.withgoogle.com/docs/mcp/setup).
+
+> Note: OAuth tokens expire hourly and need manual refresh. API keys are simpler for most users.
+
+---
+
 ## References
 
-- Official Stitch MCP guide: https://stitch.withgoogle.com/docs/mcp/guide/
+- Official Stitch MCP setup: https://stitch.withgoogle.com/docs/mcp/setup
 - Plugin repo: https://github.com/gabelul/stitch-kit
 - Skills index: `docs/skills-index.md`
 - MCP tool reference: `docs/mcp-naming-convention.md`

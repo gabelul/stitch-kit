@@ -44,8 +44,9 @@ The agent works standalone with MCP tools, but skills add structured workflows f
 <summary>Claude Code — manual steps</summary>
 
 ```bash
-# 1. Add Stitch MCP
-claude mcp add stitch -- npx -y @google/stitch-mcp
+# 1. Add Stitch MCP (remote HTTP server — needs API key from stitch.withgoogle.com/settings)
+claude mcp add stitch --transport http https://stitch.googleapis.com/mcp \
+  --header "X-Goog-Api-Key: YOUR-API-KEY" -s user
 
 # 2. Install the plugin (inside Claude Code)
 /plugin marketplace add https://github.com/gabelul/stitch-kit.git
@@ -65,9 +66,13 @@ Then add Stitch MCP to `~/.codex/config.toml`:
 
 ```toml
 [mcp_servers.stitch]
-command = "npx"
-args = ["-y", "@google/stitch-mcp"]
+url = "https://stitch.googleapis.com/mcp"
+
+[mcp_servers.stitch.headers]
+X-Goog-Api-Key = "YOUR-API-KEY"
 ```
+
+Get your API key at [stitch.withgoogle.com/settings](https://stitch.withgoogle.com/settings).
 
 Use `$stitch-kit` to activate the agent or `$stitch-orchestrator` for the full pipeline.
 </details>
@@ -169,7 +174,7 @@ MCP API schemas (JSON Schema for all 14 Stitch tools) → [docs/mcp-schemas/](do
 
 ## Prerequisites
 
-- Stitch MCP — [setup guide](https://stitch.withgoogle.com/docs/mcp/guide/) (Google account required)
+- Stitch MCP — [setup guide](https://stitch.withgoogle.com/docs/mcp/setup) (Google account + API key required)
 - Node.js for web framework conversions
 - Xcode 15+ for SwiftUI, Expo CLI for React Native
 
