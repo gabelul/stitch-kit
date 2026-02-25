@@ -69,8 +69,12 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           registry-url: https://registry.npmjs.org
 
-      # Trusted publishing handles auth via OIDC — provenance is automatic
+      # OIDC trusted publishing requires npm 11.5.1+ for automatic auth exchange
+      - name: Update npm for OIDC support
+        run: npm install -g npm@latest
+
+      # Trusted publishing: OIDC handles auth, --provenance is automatic
       - run: npm publish --provenance --access public
