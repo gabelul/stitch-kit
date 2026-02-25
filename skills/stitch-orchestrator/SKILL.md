@@ -67,13 +67,22 @@ Output: Structured prompt with `[Context] [Layout] [Components]` format
 
 Check: Does the project have a `DESIGN.md` file? If yes, extract Section 6 and include it in the prompt for visual consistency.
 
+**Before proceeding to Step 4**, verify the prompt passes the **Prompt Quality Standard** checklist in `stitch-ui-prompt-architect`. Specifically confirm:
+- Hex colors present (not just "blue" — needs `#3B82F6`)
+- Font sizes specified in px with weight
+- Component names are concrete (not "a form" — needs "email input with inline validation")
+- Layout sections have specific dimensions where relevant
+
+If any of these are missing — re-invoke the prompt architect. Don't send vague prompts to generation.
+
 ### Step 4: Create or reuse project
 
-**If new design:**
-Call `stitch-mcp-create-project` → get `projectId` (both numeric and full-path forms)
+1. Call `stitch-mcp-list-projects` to check for existing projects
+2. **If no projects exist:** create one immediately via `stitch-mcp-create-project` — no need to ask
+3. **If projects exist:** show the user the list and ask: "Use an existing project or create new?"
+4. Only create a new project when the user explicitly confirms
 
-**If continuing existing project:**
-Call `stitch-mcp-list-projects` → let user select → extract `projectId`
+If creating new: Call `stitch-mcp-create-project` → get `projectId` (both numeric and full-path forms)
 
 ### Step 5: Generate the screen
 
@@ -82,6 +91,16 @@ Call `stitch-mcp-generate-screen-from-text` with:
 - `prompt`: assembled prompt from Step 3
 - `deviceType`: from Design Spec
 - `modelId`: `GEMINI_3_PRO` (default) or `GEMINI_3_FLASH` (if user wants fast iteration)
+
+> ⏱ **Generation timing:** Stitch typically takes 60–180 seconds to generate a screen. This is normal — do NOT retry or assume failure during this window.
+>
+> If it fails after the timeout:
+> 1. Check the error message
+> 2. If rate-limited: wait 60 seconds, retry once
+> 3. If prompt error: simplify the prompt and retry
+> 4. If server error: inform the user and offer to retry later
+>
+> **Never** spam `generate_screen_from_text` with retries — each call creates a new generation.
 
 ### Step 6: Retrieve the screen
 
@@ -212,6 +231,8 @@ When tools are unavailable, produce a ready-to-use prompt instead.
 - **Never confuse a Stitch project with a code repository.** Stitch project = design workspace.
 - **Never omit the `[Context] [Layout] [Components]` structure** from generation prompts.
 - **Never use `projects/ID`** for `generate_screen_from_text` or `get_screen` — they need numeric IDs.
+- **Never create a new project when projects already exist without asking.** Check existing projects first with `stitch-mcp-list-projects`.
+- **Never retry `generate_screen_from_text` immediately on failure.** Wait 60 seconds, retry once max. Each call creates a new generation — retries mean duplicate screens.
 
 ---
 

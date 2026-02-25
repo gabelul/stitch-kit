@@ -88,6 +88,14 @@ Before calling this tool, verify the prompt:
 - [ ] Uses realistic content (not Lorem Ipsum)
 - [ ] Specifies light or dark mode explicitly
 
+## Timing
+
+Stitch generation takes 60–180 seconds. This is normal behavior, not a timeout.
+- Do NOT retry during this window
+- Do NOT assume failure if it takes > 60 seconds
+- If it fails: wait 60 seconds, retry ONCE max
+- Each call creates a new generation — retries mean duplicate screens
+
 ## References
 
 - `examples/desktop.md` — Desktop dashboard prompts (SaaS analytics, admin panel)

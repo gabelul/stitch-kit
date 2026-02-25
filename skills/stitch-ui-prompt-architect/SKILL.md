@@ -163,6 +163,34 @@ KPI cards: indigo number, grey label, subtle upward trend arrow in green. Line c
 - **Include interaction states** — "hover state on cards", "active nav item highlighted"
 - **Match content to device** — large touch targets on mobile, dense info on desktop
 
+---
+
+## Prompt Quality Standard (Checklist)
+
+Before sending any prompt to `generate_screen_from_text`, verify every item passes. If anything fails — re-run prompt assembly. Don't ship vague prompts.
+
+### Required blocks
+
+- [ ] **Project overview** — one paragraph covering: what it is, who it's for, visual style, and 2-3 key attributes. Not a sentence — a paragraph.
+- [ ] **Design system block** — must include all of these:
+  - Platform (Web / Mobile / Tablet)
+  - Theme (Light / Dark)
+  - Color scheme with `#hex` values (primary, secondary, background minimum)
+  - Typography with px sizes, font family, and weight (`Inter 16px/400 body, 24px/700 heading`)
+  - Component style: border radius, shadow depth, interaction style (filled, outlined, ghost)
+- [ ] **Per-section detail** — each area of the screen needs:
+  - Core function in one line ("user authentication with social login")
+  - Area breakdown: nav, hero, function area, actions, footer — with concrete elements and specific copy
+- [ ] **No vague placeholders** — every element must be concrete:
+  - ❌ "a button" → ✅ "primary CTA 'Sign In' `#6366F1` filled `rounded-lg`"
+  - ❌ "some navigation" → ✅ "top nav: logo left, [Features, Pricing, About] center, 'Get Started' button right"
+  - ❌ "a card section" → ✅ "3-column grid: 280px cards with 16px radius, thumbnail, title (18px/600), 2-line description, category tag"
+- [ ] **Layout + Components sections populated** — both must have named, specific entries. Empty sections = failed check.
+
+### Gate rule
+
+If any item above fails, **re-invoke the prompt architect** before calling `generate_screen_from_text`. Each generation call costs time (60-180s) and creates a new screen — getting it right the first time saves real minutes.
+
 ## References
 
 - `references/KEYWORDS.md` — Component terms, adjective palettes, color role vocabulary

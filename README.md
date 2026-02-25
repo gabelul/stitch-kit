@@ -25,7 +25,7 @@ Sign in at [stitch.withgoogle.com](https://stitch.withgoogle.com) to do the Goog
 /plugin install stitch-kit@stitch-kit
 ```
 
-Restart Claude Code. The `stitch-kit` agent shows up in `/agents` under "Plugin agents" and routes Stitch tasks automatically.
+Restart Claude Code. The `stitch-kit` agent activates automatically when you describe Stitch tasks — it may not appear in the Plugin agents list depending on your Claude Code version, but it works when invoked.
 
 ### Codex CLI
 
