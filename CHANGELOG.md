@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.6.0](https://github.com/gabelul/stitch-kit/compare/v1.5.0...v1.6.0) (2026-02-25)
+
+
+### Features
+
+* refactor installer to registry pattern with 7 CLI clients ([#3](https://github.com/gabelul/stitch-kit/issues/3)) ([a350fe7](https://github.com/gabelul/stitch-kit/commit/a350fe722155e602da3c5573a486b465ece72be8))
+
 ## 1.0.0 (2026-02-25)
 
 
