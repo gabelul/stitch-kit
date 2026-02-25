@@ -94,7 +94,7 @@ For consistent, professional palettes in prompts:
 | **MOBILE** | ~375px wide | Bottom navigation, thumb-friendly tap targets (44px min), single-column layouts, larger type |
 | **DESKTOP** | ~1440px wide | Multi-column layouts, sidebar navigation, dense data tables, hover interactions |
 | **TABLET** | ~768-1024px | Hybrid: 2-column grids, collapsible sidebar, touch-friendly but more space |
-| **SMART_WATCH** | ~44mm | Minimal content, single action per screen, large buttons relative to screen |
+| **AGNOSTIC** | Fluid | Responsive/fluid layout — not tied to a specific device, adapts to viewport |
 
 ## Accessibility in prompts
 

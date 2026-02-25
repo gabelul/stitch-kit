@@ -1,0 +1,36 @@
+{
+  "name": "apply_design_system",
+  "description": "Applies a Stitch Design System to one or more existing screens, updating their visual theme.\n\n**Input Requirements (CRITICAL):**\n1. **`projectId` (string - MANDATORY):** Numeric ID only.\n2. **`selectedScreenIds` (array - MANDATORY):** Numeric screen IDs.\n3. **`assetId` (string - MANDATORY):** Design system asset identifier.\n",
+  "arguments": {
+    "type": "object",
+    "properties": {
+      "projectId": {
+        "description": "Required. Numeric project ID only — do NOT include 'projects/' prefix.",
+        "type": "string"
+      },
+      "selectedScreenIds": {
+        "description": "Required. Array of numeric screen IDs to apply the design system to.",
+        "type": "array",
+        "items": { "type": "string" }
+      },
+      "assetId": {
+        "description": "Required. The design system asset identifier from list or create operations.",
+        "type": "string"
+      }
+    },
+    "required": ["projectId", "selectedScreenIds", "assetId"],
+    "description": "Request message for ApplyDesignSystem."
+  },
+  "outputSchema": {
+    "type": "object",
+    "properties": {
+      "outputComponents": {
+        "description": "Array of output components with updated screen data.",
+        "type": "array"
+      },
+      "projectId": { "type": "string" },
+      "sessionId": { "type": "string" }
+    },
+    "description": "Response message for ApplyDesignSystem."
+  }
+}

@@ -4,13 +4,13 @@
     "name": "gabelul"
   },
   "metadata": {
-    "description": "The Claude Code plugin that turns Stitch into a full development workflow — prompt engineering, MCP wrappers, design tokens, and production-ready components for Next.js, Svelte, React, React Native, SwiftUI, and HTML.",
-    "version": "1.4.0"
+    "description": "The Claude Code plugin that turns Stitch into a full development workflow — prompt engineering, all 14 MCP wrappers, design tokens, design systems, and production-ready components for Next.js, Svelte, React, React Native, SwiftUI, and HTML.",
+    "version": "1.5.0"
   },
   "plugins": [
     {
       "name": "stitch-kit",
-      "description": "Everything — all 26 skills in one install.",
+      "description": "Everything — all 34 skills in one install.",
       "source": "./",
       "strict": false,
       "skills": [
@@ -25,6 +25,14 @@
         "./skills/stitch-mcp-generate-screen-from-text",
         "./skills/stitch-mcp-list-screens",
         "./skills/stitch-mcp-get-screen",
+        "./skills/stitch-mcp-delete-project",
+        "./skills/stitch-mcp-upload-screens-from-images",
+        "./skills/stitch-mcp-edit-screens",
+        "./skills/stitch-mcp-generate-variants",
+        "./skills/stitch-mcp-create-design-system",
+        "./skills/stitch-mcp-update-design-system",
+        "./skills/stitch-mcp-list-design-systems",
+        "./skills/stitch-mcp-apply-design-system",
         "./skills/stitch-nextjs-components",
         "./skills/stitch-svelte-components",
         "./skills/stitch-react-components",

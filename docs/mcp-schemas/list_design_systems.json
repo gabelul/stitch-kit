@@ -1,0 +1,32 @@
+{
+  "name": "list_design_systems",
+  "description": "Lists all available Stitch Design Systems, optionally filtered by project.\n",
+  "arguments": {
+    "type": "object",
+    "properties": {
+      "projectId": {
+        "description": "Optional. Numeric project ID to filter by. No 'projects/' prefix.",
+        "type": "string"
+      }
+    },
+    "description": "Request message for ListDesignSystems."
+  },
+  "outputSchema": {
+    "type": "object",
+    "properties": {
+      "assets": {
+        "description": "Array of Asset objects containing design systems.",
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "name": { "description": "Asset identifier.", "type": "string" },
+            "displayName": { "type": "string" },
+            "designSystem": { "type": "object" }
+          }
+        }
+      }
+    },
+    "description": "Response message for ListDesignSystems."
+  }
+}

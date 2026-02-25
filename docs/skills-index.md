@@ -1,6 +1,6 @@
 # stitch-kit Skills Index
 
-Quick reference — all 26 skills organized by layer and stage.
+Quick reference — all 34 skills organized by layer and stage.
 
 **Layers:**
 - **Orchestrator** — entry point that coordinates other skills
@@ -16,17 +16,25 @@ Quick reference — all 26 skills organized by layer and stage.
 
 | Skill | Description | Layer | Stage |
 |-------|-------------|-------|-------|
-| `stitch-orchestrator` | End-to-end workflow: request → spec → prompt → generate → retrieve → convert → quality | Orchestrator | All |
+| `stitch-orchestrator` | End-to-end workflow: request → spec → prompt → generate → iterate → retrieve → convert → quality | Orchestrator | All |
 | `stitch-ui-design-spec-generator` | User request / PRD → structured Design Spec JSON (theme, color, font, device, density) | Brain | Design input |
 | `stitch-ui-prompt-architect` | Two paths: Path A (vague → enhanced) or Path B (spec + request → `[Context][Layout][Components]`) | Brain | Design input |
-| `stitch-ui-design-variants` | Generate 3 alternative prompt variants for A/B design exploration | Brain | Variants |
+| `stitch-ui-design-variants` | Generate 3 alternative prompt variants for A/B design exploration. Native API detection for `generate_variants` when available. | Brain | Variants |
 | `stitch-ued-guide` | Visual vocabulary, layout patterns, aesthetic styles, device constraints, color structure | Brain | Reference |
 | `stitch-mcp-create-project` | Create a new Stitch project → extract numeric project ID | Execution | Setup |
 | `stitch-mcp-list-projects` | List Stitch projects (owned or shared) | Execution | Discovery |
 | `stitch-mcp-get-project` | Get project metadata (uses `projects/ID` format) | Execution | Discovery |
+| `stitch-mcp-delete-project` | Permanently delete a Stitch project (uses `projects/ID` format, requires confirmation) | Execution | Cleanup |
 | `stitch-mcp-generate-screen-from-text` | Text → UI screen (core Stitch generation — numeric ID only) | Execution | Generate |
+| `stitch-mcp-upload-screens-from-images` | Import screenshots/mockups as new screens (numeric ID, base64 images) | Execution | Generate |
+| `stitch-mcp-edit-screens` | Edit existing screens with text prompts — the iteration tool (numeric IDs) | Execution | Iterate |
+| `stitch-mcp-generate-variants` | Generate design variants with creativity/aspect controls (numeric IDs) | Execution | Iterate |
 | `stitch-mcp-list-screens` | List all screens in a project (uses `projects/ID` format) | Execution | Retrieve |
 | `stitch-mcp-get-screen` | Get screen HTML + screenshot + dimensions (numeric IDs for both) | Execution | Retrieve |
+| `stitch-mcp-create-design-system` | Create a reusable Stitch Design System from theme tokens | Execution | Design Systems |
+| `stitch-mcp-update-design-system` | Update an existing design system (requires asset `name`) | Execution | Design Systems |
+| `stitch-mcp-list-design-systems` | List available design systems (optional project filter) | Execution | Design Systems |
+| `stitch-mcp-apply-design-system` | Apply a design system to screens (numeric IDs + assetId) | Execution | Design Systems |
 | `stitch-nextjs-components` | Stitch HTML → Next.js 15 App Router components (TypeScript, dark mode, ARIA) | Conversion | Web |
 | `stitch-svelte-components` | Stitch HTML → Svelte 5 / SvelteKit (runes, scoped CSS, transitions) | Conversion | Web |
 | `stitch-html-components` | Stitch HTML → platform-agnostic HTML5 + CSS (PWA, WebView, Capacitor) | Conversion | Web |
@@ -65,14 +73,27 @@ React Native (iOS + Android), SwiftUI (iOS only)
 
 This is the most common source of bugs when calling Stitch MCP tools directly:
 
-| Tool | projectId format | screenId format |
-|------|-----------------|----------------|
-| `create_project` | Returns `projects/NUMERIC_ID` | — |
-| `list_projects` | — | — |
-| `get_project` | `projects/NUMERIC_ID` | — |
-| `generate_screen_from_text` | **Numeric only** | — |
-| `list_screens` | `projects/NUMERIC_ID` | — |
-| `get_screen` | **Numeric only** | **Numeric only** |
+| Tool | projectId format | screenId format | Other IDs |
+|------|-----------------|----------------|-----------|
+| `create_project` | Returns `projects/NUMERIC_ID` | — | — |
+| `list_projects` | — | — | — |
+| `get_project` | `projects/NUMERIC_ID` | — | — |
+| `delete_project` | `projects/NUMERIC_ID` | — | — |
+| `generate_screen_from_text` | **Numeric only** | — | — |
+| `upload_screens_from_images` | **Numeric only** | — | — |
+| `edit_screens` | **Numeric only** | **Numeric array** | — |
+| `generate_variants` | **Numeric only** | **Numeric array** | — |
+| `list_screens` | `projects/NUMERIC_ID` | — | — |
+| `get_screen` | **Numeric only** | **Numeric only** | — |
+| `create_design_system` | **Numeric only** (optional) | — | Returns Asset `name` |
+| `update_design_system` | — | — | Asset `name` required |
+| `list_design_systems` | **Numeric only** (optional) | — | Returns Asset names |
+| `apply_design_system` | **Numeric only** | **Numeric array** | `assetId` required |
+
+**Rules of thumb:**
+- **Read operations** (`get_project`, `list_screens`, `delete_project`) → `projects/ID` full path
+- **Generation/mutation** (`generate_screen_from_text`, `edit_screens`, `generate_variants`, `upload_screens_from_images`, `apply_design_system`) → numeric only
+- **Design system operations** → numeric `projectId` (optional), asset `name` for identity
 
 See `mcp-naming-convention.md` for full details.
 
@@ -81,7 +102,7 @@ See `mcp-naming-convention.md` for full details.
 ## References
 
 - `mcp-naming-convention.md` — ID format rules
-- `mcp-schemas/` — Formal JSON Schema definitions for all 6 Stitch MCP tools (fonts, roundness, componentRegions, outputComponents)
+- `mcp-schemas/` — Formal JSON Schema definitions for all 14 Stitch MCP tools (fonts, roundness, componentRegions, outputComponents, variantOptions, designSystems)
 - `color-prompt-guide.md` — 8 ready-to-use color palettes for Stitch prompts
 - `tailwind-reference.md` — Tailwind utility class reference for conversions
 - `prd-to-stitch-workflow.md` — PRD-driven design workflow

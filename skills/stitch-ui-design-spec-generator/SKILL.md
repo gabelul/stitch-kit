@@ -45,7 +45,7 @@ You can also use it directly when a user asks: "What design spec would work for 
 | "dashboard", "admin", "web app", "landing page", "desktop" | DESKTOP |
 | "mobile app", "iOS", "Android", "phone", "app" | MOBILE |
 | "tablet", "iPad" | TABLET |
-| "watch", "wearable" | SMART_WATCH |
+| "responsive", "fluid", "any device" | AGNOSTIC |
 | No clear signal → default | MOBILE |
 
 ### 3. Determine design mode
@@ -84,7 +84,7 @@ Always output **exactly this JSON structure** — no extra fields, no explanatio
   "density": "COMPACT" | "COMFORTABLE" | "SPACIOUS",
   "designMode": "WIREFRAME" | "HIGH_FIDELITY",
   "styleKeywords": ["Keyword1", "Keyword2", "Keyword3"],
-  "deviceType": "MOBILE" | "TABLET" | "DESKTOP" | "SMART_WATCH"
+  "deviceType": "MOBILE" | "TABLET" | "DESKTOP" | "AGNOSTIC"
 }
 ```
 

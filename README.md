@@ -4,7 +4,7 @@ The Claude Code plugin for AI UI design — generate screens with Stitch MCP and
 
 I built this because Stitch MCP generates beautiful screens, and then... you're on your own. The raw output is HTML. Getting it into Next.js with dark mode, proper TypeScript, design tokens, and accessibility? That's the part nobody talks about. So I built the pipeline that handles it.
 
-26 skills. One entry point. Covers the full trip from "describe a UI" to production-ready components in Next.js, Svelte, React, React Native, SwiftUI, or plain HTML. Works in Claude Code and Codex CLI.
+34 skills. One entry point. Covers the full trip from "describe a UI" to production-ready components in Next.js, Svelte, React, React Native, SwiftUI, or plain HTML. Works in Claude Code and Codex CLI.
 
 ---
 
@@ -65,7 +65,7 @@ Four layers. Each one exists for a reason.
 | Layer | What it is | What it does |
 |-------|------------|-------------|
 | **Brain** (`stitch-ui-*`) | Design intelligence | Spec generation, prompt engineering, design variants. No API calls, no cost. |
-| **Hands** (`stitch-mcp-*`) | MCP wrappers | One skill per Stitch API tool. Handles the ID format mess so the orchestrator doesn't have to. |
+| **Hands** (`stitch-mcp-*`) | MCP wrappers | One skill per Stitch API tool (all 14). Handles the ID format mess so the orchestrator doesn't have to. |
 | **Quality** | Post-gen polish | Design tokens → CSS vars, WCAG 2.1 AA audit, animations with reduced-motion. |
 | **Loop** | Multi-page builds | `DESIGN.md` carries visual state between screens so your 5th screen looks like your 1st. |
 
@@ -91,7 +91,7 @@ Every skill tells the agent what it does and when to reach for it. The examples 
 
 ## vs. the official Google Stitch Skills
 
-The [official repo](https://github.com/google-labs-code/stitch-skills) has 6 skills. stitch-kit has 26. Every official skill has a local equivalent that's stronger:
+The [official repo](https://github.com/google-labs-code/stitch-skills) has 6 skills. stitch-kit has 34. Every official skill has a local equivalent that's stronger:
 
 | Official | stitch-kit | What's different |
 |----------|-----------|-----------------|
@@ -103,8 +103,13 @@ The [official repo](https://github.com/google-labs-code/stitch-skills) has 6 ski
 | `shadcn-ui` | `stitch-shadcn-ui` | Init styles support, custom registries, validation checklist |
 
 **What's entirely new in stitch-kit:**
-- `stitch-mcp-*` wrappers (the ID format fix)
-- `stitch-orchestrator` (end-to-end coordinator — the official repo has no equivalent)
+- `stitch-mcp-*` wrappers — all 14 Stitch API tools wrapped with ID format safety
+- `stitch-mcp-edit-screens` — iterate on designs with text prompts without regenerating
+- `stitch-mcp-generate-variants` — native variant generation with creativity controls
+- `stitch-mcp-upload-screens-from-images` — import screenshots for redesign workflows
+- `stitch-mcp-create/update/list/apply-design-system` — full Stitch Design System lifecycle
+- `stitch-mcp-delete-project` — project cleanup with confirmation gate
+- `stitch-orchestrator` (end-to-end coordinator with post-generation iteration loop)
 - `stitch-ui-design-spec-generator` (structured spec first, then prompt — better output than pure prompt enhancement)
 - Mobile: `stitch-react-native-components` + `stitch-swiftui-components`
 - `stitch-design-system` (token extraction → CSS custom properties)
@@ -130,9 +135,9 @@ The [official repo](https://github.com/google-labs-code/stitch-skills) has 6 ski
 
 ## Full skill reference
 
-All 26 skills with descriptions, layers, and the ID format table → [docs/skills-index.md](docs/skills-index.md)
+All 34 skills with descriptions, layers, and the ID format table → [docs/skills-index.md](docs/skills-index.md)
 
-MCP API schemas (JSON Schema for all 6 Stitch tools) → [docs/mcp-schemas/](docs/mcp-schemas/)
+MCP API schemas (JSON Schema for all 14 Stitch tools) → [docs/mcp-schemas/](docs/mcp-schemas/)
 
 ---
 

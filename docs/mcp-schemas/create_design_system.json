@@ -1,0 +1,78 @@
+{
+  "name": "create_design_system",
+  "description": "Creates a new Stitch Design System — a reusable theme configuration (colors, fonts, roundness, saturation) that can be applied to screens.\n",
+  "arguments": {
+    "type": "object",
+    "properties": {
+      "designSystem": {
+        "$ref": "#/$defs/DesignSystemInput",
+        "description": "Required. The design system to create."
+      },
+      "projectId": {
+        "description": "Optional. Numeric project ID to associate with. No 'projects/' prefix.",
+        "type": "string"
+      }
+    },
+    "required": ["designSystem"],
+    "description": "Request message for CreateDesignSystem.",
+    "$defs": {
+      "DesignSystemInput": {
+        "description": "A design system definition.",
+        "properties": {
+          "displayName": {
+            "description": "Required. Human-readable name.",
+            "type": "string"
+          },
+          "theme": {
+            "$ref": "#/$defs/DesignTheme",
+            "description": "Required. Visual theme configuration."
+          },
+          "designTokens": {
+            "description": "Optional. CSS custom properties or token definitions.",
+            "type": "string"
+          },
+          "styleGuidelines": {
+            "description": "Optional. Natural-language design rules.",
+            "type": "string"
+          }
+        },
+        "required": ["displayName", "theme"],
+        "type": "object"
+      },
+      "DesignTheme": {
+        "description": "Visual theme configuration.",
+        "properties": {
+          "colorMode": { "enum": ["COLOR_MODE_UNSPECIFIED", "LIGHT", "DARK"], "type": "string" },
+          "font": {
+            "enum": [
+              "FONT_UNSPECIFIED", "BE_VIETNAM_PRO", "EPILOGUE", "INTER", "LEXEND", "MANROPE",
+              "NEWSREADER", "NOTO_SERIF", "PLUS_JAKARTA_SANS", "PUBLIC_SANS", "SPACE_GROTESK",
+              "SPLINE_SANS", "WORK_SANS", "DOMINE", "LIBRE_CASLON_TEXT", "EB_GARAMOND",
+              "LITERATA", "SOURCE_SERIF_FOUR", "MONTSERRAT", "METROPOLIS", "SOURCE_SANS_THREE",
+              "NUNITO_SANS", "ARIMO", "HANKEN_GROTESK", "RUBIK", "GEIST", "DM_SANS",
+              "IBM_PLEX_SANS", "SORA"
+            ],
+            "type": "string"
+          },
+          "roundness": { "enum": ["ROUNDNESS_UNSPECIFIED", "ROUND_FOUR", "ROUND_EIGHT", "ROUND_TWELVE", "ROUND_FULL"], "type": "string" },
+          "saturation": { "type": "integer", "minimum": 1, "maximum": 4 },
+          "customColor": { "description": "Primary color (hex).", "type": "string" },
+          "backgroundLight": { "description": "Light mode background (hex).", "type": "string" },
+          "backgroundDark": { "description": "Dark mode background (hex).", "type": "string" },
+          "preset": { "type": "string" },
+          "description": { "type": "string" }
+        },
+        "type": "object"
+      }
+    }
+  },
+  "outputSchema": {
+    "type": "object",
+    "properties": {
+      "name": { "description": "Asset identifier. Format: assets/{asset_id}", "type": "string" },
+      "displayName": { "type": "string" },
+      "designSystem": { "description": "The created design system object.", "type": "object" }
+    },
+    "description": "Asset response for CreateDesignSystem."
+  }
+}

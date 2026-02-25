@@ -1,0 +1,32 @@
+{
+  "name": "update_design_system",
+  "description": "Updates an existing Stitch Design System's theme, tokens, or guidelines.\n",
+  "arguments": {
+    "type": "object",
+    "properties": {
+      "designSystem": {
+        "description": "Required. Asset wrapper with name + updated fields. Full replacement, not merge.",
+        "type": "object",
+        "properties": {
+          "name": { "description": "Required. Asset name from create or list (e.g., assets/ds_abc123).", "type": "string" },
+          "displayName": { "type": "string" },
+          "theme": { "description": "Updated DesignTheme object.", "type": "object" },
+          "designTokens": { "type": "string" },
+          "styleGuidelines": { "type": "string" }
+        },
+        "required": ["name"]
+      }
+    },
+    "required": ["designSystem"],
+    "description": "Request message for UpdateDesignSystem."
+  },
+  "outputSchema": {
+    "type": "object",
+    "properties": {
+      "name": { "type": "string" },
+      "displayName": { "type": "string" },
+      "designSystem": { "type": "object" }
+    },
+    "description": "Updated Asset response."
+  }
+}

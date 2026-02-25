@@ -1,0 +1,52 @@
+{
+  "name": "upload_screens_from_images",
+  "description": "Uploads one or more images into a Stitch project as new screens. Supports PNG, JPEG, WebP, and GIF formats.\n\n**Input Requirements:**\n1. **`projectId` (string - MANDATORY):** Numeric ID only — no `projects/` prefix.\n2. **`images` (array - MANDATORY):** Array of image objects with base64 content and MIME type.\n",
+  "arguments": {
+    "type": "object",
+    "properties": {
+      "projectId": {
+        "description": "Required. Numeric project ID only — do NOT include 'projects/' prefix.",
+        "type": "string"
+      },
+      "images": {
+        "description": "Required. Array of images to upload.",
+        "type": "array",
+        "items": {
+          "$ref": "#/$defs/ImageUpload"
+        }
+      }
+    },
+    "required": ["projectId", "images"],
+    "description": "Request message for UploadScreensFromImages.",
+    "$defs": {
+      "ImageUpload": {
+        "description": "An image to upload as a screen.",
+        "properties": {
+          "fileContentBase64": {
+            "description": "Base64-encoded image data. No data: URI prefix.",
+            "type": "string"
+          },
+          "mimeType": {
+            "description": "MIME type of the image.",
+            "enum": ["image/png", "image/jpeg", "image/webp", "image/gif"],
+            "type": "string"
+          }
+        },
+        "required": ["fileContentBase64", "mimeType"],
+        "type": "object"
+      }
+    }
+  },
+  "outputSchema": {
+    "type": "object",
+    "properties": {
+      "outputComponents": {
+        "description": "Array of output components with session information.",
+        "type": "array"
+      },
+      "projectId": { "type": "string" },
+      "sessionId": { "type": "string" }
+    },
+    "description": "Response message for UploadScreensFromImages."
+  }
+}

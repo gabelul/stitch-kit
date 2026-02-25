@@ -1,0 +1,20 @@
+{
+  "name": "delete_project",
+  "description": "Permanently deletes a Stitch project and all its screens, designs, and history. This action is irreversible.\n",
+  "arguments": {
+    "type": "object",
+    "properties": {
+      "name": {
+        "description": "Required. The resource name of the project to delete. Format: projects/{project}",
+        "type": "string"
+      }
+    },
+    "required": ["name"],
+    "description": "Request message for DeleteProject."
+  },
+  "outputSchema": {
+    "type": "object",
+    "properties": {},
+    "description": "Empty response on success."
+  }
+}

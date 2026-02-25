@@ -1,0 +1,77 @@
+{
+  "name": "generate_variants",
+  "description": "Generates design variants of existing screens. Explores alternative layouts, color schemes, fonts, or content with configurable creativity levels.\n\n**Input Requirements (CRITICAL):**\n1. **`projectId` (string - MANDATORY):** Numeric ID only.\n2. **`selectedScreenIds` (array - MANDATORY):** Numeric screen IDs to vary.\n3. **`variantOptions` (object - RECOMMENDED):** Controls variant generation.\n",
+  "arguments": {
+    "type": "object",
+    "properties": {
+      "projectId": {
+        "description": "Required. Numeric project ID only — do NOT include 'projects/' prefix.",
+        "type": "string"
+      },
+      "selectedScreenIds": {
+        "description": "Required. Array of numeric screen IDs to generate variants from.",
+        "type": "array",
+        "items": { "type": "string" }
+      },
+      "prompt": {
+        "description": "Optional. Guidance text for the variant direction.",
+        "type": "string"
+      },
+      "variantOptions": {
+        "$ref": "#/$defs/VariantOptions",
+        "description": "Optional but recommended. Controls what and how much to vary."
+      },
+      "deviceType": {
+        "description": "Optional. Device type context.",
+        "enum": ["DEVICE_TYPE_UNSPECIFIED", "MOBILE", "DESKTOP", "TABLET", "AGNOSTIC"],
+        "type": "string"
+      },
+      "modelId": {
+        "description": "Optional. GEMINI_3_PRO for higher quality, GEMINI_3_FLASH for speed.",
+        "enum": ["MODEL_ID_UNSPECIFIED", "GEMINI_3_PRO", "GEMINI_3_FLASH"],
+        "type": "string"
+      }
+    },
+    "required": ["projectId", "selectedScreenIds"],
+    "description": "Request message for GenerateVariants.",
+    "$defs": {
+      "VariantOptions": {
+        "description": "Configuration for variant generation.",
+        "properties": {
+          "variantCount": {
+            "description": "Number of variants to generate (1-5).",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 5
+          },
+          "creativeRange": {
+            "description": "How much to deviate from the original design.",
+            "enum": ["CREATIVE_RANGE_UNSPECIFIED", "REFINE", "EXPLORE", "REIMAGINE"],
+            "type": "string"
+          },
+          "aspects": {
+            "description": "Which design aspects to vary.",
+            "type": "array",
+            "items": {
+              "enum": ["ASPECT_UNSPECIFIED", "LAYOUT", "COLOR_SCHEME", "IMAGES", "TEXT_FONT", "TEXT_CONTENT"],
+              "type": "string"
+            }
+          }
+        },
+        "type": "object"
+      }
+    }
+  },
+  "outputSchema": {
+    "type": "object",
+    "properties": {
+      "outputComponents": {
+        "description": "Array of output components with generated variant screens.",
+        "type": "array"
+      },
+      "projectId": { "type": "string" },
+      "sessionId": { "type": "string" }
+    },
+    "description": "Response message for GenerateVariants."
+  }
+}

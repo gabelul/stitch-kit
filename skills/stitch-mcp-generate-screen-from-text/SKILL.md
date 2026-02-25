@@ -65,7 +65,7 @@ For best results, use the `stitch-ui-prompt-architect` skill to assemble the pro
 | `MOBILE` | Mobile app, phone-sized UI (default if uncertain) |
 | `DESKTOP` | Web dashboard, landing page, SaaS UI |
 | `TABLET` | Tablet-specific layout |
-| `SMART_WATCH` | Wearable, compact screen |
+| `AGNOSTIC` | Not tied to a specific device — responsive/fluid layout |
 
 ### `modelId`
 | Value | Use when |

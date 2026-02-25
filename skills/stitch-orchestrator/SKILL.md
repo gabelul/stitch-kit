@@ -1,10 +1,11 @@
 ---
 name: stitch-orchestrator
-description: Master entry point for all Stitch design workflows. Routes from user request → design spec → prompt assembly → screen generation → design system extraction → framework conversion (Next.js, Svelte, HTML, React Native, or SwiftUI) → optional quality pass.
+description: Master entry point for all Stitch design workflows. Routes from user request → design spec → prompt assembly → screen generation → iteration (edit, variants, design systems) → design system extraction → framework conversion (Next.js, Svelte, HTML, React Native, or SwiftUI) → optional quality pass.
 allowed-tools:
   - "stitch*:*"
   - "Read"
   - "Write"
+  - "Bash"
 ---
 
 # Stitch Orchestrator
@@ -20,6 +21,8 @@ Trigger phrases:
 - "Design X using Stitch"
 - "Create a Stitch project for..."
 - "Generate a Stitch screen for..."
+- "Edit my Stitch screen..."
+- "Upload this screenshot to Stitch..."
 
 ## Preflight — Step 0
 
@@ -46,10 +49,13 @@ Determine what the user wants:
 
 | Intent | Approach |
 |--------|---------|
-| **New screen** — design from scratch | Full workflow: Steps 2 → 7 |
+| **New screen** — design from scratch | Full workflow: Steps 2 → 9 |
+| **Edit existing** — iterate on a screen | Skip Steps 2–3. Call `stitch-mcp-edit-screens` with edit instruction. Then offer Step 5b menu. |
+| **Upload screenshot** — import existing UI | Call `stitch-mcp-upload-screens-from-images`, then offer edit or convert (Step 5b). |
 | **Refine existing** — iterate on a screen | Skip Step 2 (reuse project ID). Preserve layout structure in new prompt. |
-| **Export existing** — just get the code | Skip Steps 2-5. Go to Step 6 (get screen) → Step 7 (convert). |
-| **Variants** — explore design directions | Use `stitch-ui-design-variants` to generate 3 prompts, then execute each. |
+| **Export existing** — just get the code | Skip Steps 2-5. Go to Step 6 (get screen) → Step 8 (convert). |
+| **Variants** — explore design directions | Call `stitch-mcp-generate-variants` natively (1 API call). Present results, then Step 5b. |
+| **Delete project** — clean up | Call `stitch-mcp-delete-project` with confirmation gate. Stop after deletion. |
 
 ### Step 2: Generate Design Spec
 
@@ -84,6 +90,15 @@ If any of these are missing — re-invoke the prompt architect. Don't send vague
 
 If creating new: Call `stitch-mcp-create-project` → get `projectId` (both numeric and full-path forms)
 
+#### Step 4b: Check for existing design systems
+
+After selecting a project:
+
+1. Call `stitch-mcp-list-design-systems` with the projectId
+2. If design systems exist: "This project has design system: **[name]**. Apply to new screens?"
+3. If the user accepts: store the `assetId` for use in Step 5b
+4. Optionally offer cleanup: "Want to delete any old projects?" → `stitch-mcp-delete-project`
+
 ### Step 5: Generate the screen
 
 Call `stitch-mcp-generate-screen-from-text` with:
@@ -102,6 +117,27 @@ Call `stitch-mcp-generate-screen-from-text` with:
 >
 > **Never** spam `generate_screen_from_text` with retries — each call creates a new generation.
 
+#### Step 5b: Post-generation iteration loop
+
+After generation completes, present the iteration menu:
+
+> "Screen generated! Before converting to code:
+> **A)** Edit this screen (change colors, layout, content) → text-based refinement
+> **B)** Generate variants (explore alternatives) → see different takes
+> **C)** Apply a design system → match an existing theme
+> **D)** Proceed to code conversion → Step 6"
+
+If the user stored an assetId from Step 4b, add:
+> **C)** Apply design system **[name]** → already selected
+
+Route based on selection:
+- **A** → `stitch-mcp-edit-screens` → after edit, return to this menu
+- **B** → `stitch-mcp-generate-variants` → after selecting winner, return to this menu
+- **C** → `stitch-mcp-apply-design-system` with stored assetId → after applying, return to this menu
+- **D** → proceed to Step 6
+
+This loop allows multiple rounds. After A, B, or C completes, always return to this menu until the user chooses D.
+
 ### Step 6: Retrieve the screen
 
 1. Call `stitch-mcp-list-screens` with `projects/[projectId]` → find the new screen
@@ -118,7 +154,10 @@ Check the `deviceType` from the screen response, then ask the relevant question:
 > B) Convert to Svelte 5 (SvelteKit) — lightweight web app
 > C) Convert to HTML + CSS — platform-agnostic, works in WebViews
 > D) Extract design tokens only
-> E) Just the Stitch design for now"
+> E) Edit this screen (iterate with text prompts)
+> F) Generate variants (explore alternatives)
+> G) Create a Stitch Design System from this screen
+> H) Just the Stitch design for now"
 
 **If `deviceType: MOBILE`:**
 > "Screen generated! Would you like me to:
@@ -127,7 +166,15 @@ Check the `deviceType` from the screen response, then ask the relevant question:
 > C) Convert to HTML + CSS — mobile web, Capacitor, or Ionic
 > D) Convert to Next.js (App Router) — mobile-first web app
 > E) Extract design tokens only
-> F) Just the Stitch design for now"
+> F) Edit this screen (iterate with text prompts)
+> G) Generate variants (explore alternatives)
+> H) Create a Stitch Design System from this screen
+> I) Just the Stitch design for now"
+
+Route edit/variant/design-system options back to the appropriate skills:
+- Edit → `stitch-mcp-edit-screens` → re-retrieve → show this menu again
+- Variants → `stitch-mcp-generate-variants` → pick winner → re-retrieve → show this menu again
+- Design System → proceed to Step 7b
 
 ### Step 7: Design system extraction (recommended before conversion)
 
@@ -137,6 +184,23 @@ Call `stitch-design-system` → generates:
 - `design-tokens.css` (CSS variables, light + dark mode)
 - `tailwind-theme.css` (Tailwind v4 config)
 - `DESIGN.md` (extended design document)
+
+#### Step 7b: Stitch Design System bridge
+
+After extracting CSS tokens, offer:
+
+> "Want to also create a Stitch Design System from these tokens?
+> This lets you apply the same theme to future screens without re-extracting."
+
+If the user accepts:
+1. Map CSS variables to DesignTheme fields:
+   - `--color-primary` → `customColor`
+   - `--color-bg` / `--bg-light` → `backgroundLight`
+   - `--bg-dark` → `backgroundDark`
+   - `--font-family` → `font` (map to closest enum: e.g., "DM Sans" → `DM_SANS`)
+   - `--border-radius` → `roundness` (4px→`ROUND_FOUR`, 8px→`ROUND_EIGHT`, 12px→`ROUND_TWELVE`, 16px+→`ROUND_FULL`)
+2. Call `stitch-mcp-create-design-system` with the mapped values
+3. Store the returned asset name for future use
 
 ### Step 8: Framework conversion
 
@@ -224,15 +288,47 @@ When tools are unavailable, produce a ready-to-use prompt instead.
 
 ---
 
+## Consolidated ID format table
+
+This is the #1 source of bugs. Every MCP tool has specific ID format requirements:
+
+| Tool | projectId | screenId | Other IDs | Notes |
+|------|-----------|----------|-----------|-------|
+| `create_project` | — | — | Returns `projects/ID` | Extract numeric for later |
+| `get_project` | `projects/ID` | — | — | Full path |
+| `delete_project` | `projects/ID` | — | — | Full path |
+| `list_projects` | — | — | — | Returns full paths |
+| `list_screens` | `projects/ID` | — | — | Returns full paths |
+| `get_screen` | Numeric | Numeric | — | No prefixes |
+| `generate_screen_from_text` | Numeric | — | — | No prefix |
+| `upload_screens_from_images` | Numeric | — | — | No prefix |
+| `edit_screens` | Numeric | Numeric array | — | No prefixes |
+| `generate_variants` | Numeric | Numeric array | — | No prefixes |
+| `create_design_system` | Numeric (optional) | — | — | Returns Asset `name` |
+| `update_design_system` | — | — | Asset `name` required | — |
+| `list_design_systems` | Numeric (optional) | — | — | Returns Asset names |
+| `apply_design_system` | Numeric | Numeric array | `assetId` required | — |
+
+**Rules of thumb:**
+- **Read operations** (`get_project`, `list_screens`, `delete_project`) → `projects/ID` full path
+- **Generation operations** (`generate_screen_from_text`, `edit_screens`, `generate_variants`, `upload_screens_from_images`, `apply_design_system`) → numeric only
+- **Design system operations** → numeric `projectId` (optional), asset `name` for identity
+
+---
+
 ## Anti-patterns — never do these
 
 - **Never report fake success.** If a tool call fails, say so and stop.
 - **Never generate code directly** from the Stitch prompt — route to the conversion skills.
 - **Never confuse a Stitch project with a code repository.** Stitch project = design workspace.
 - **Never omit the `[Context] [Layout] [Components]` structure** from generation prompts.
-- **Never use `projects/ID`** for `generate_screen_from_text` or `get_screen` — they need numeric IDs.
+- **Never use `projects/ID`** for `generate_screen_from_text`, `get_screen`, `edit_screens`, `generate_variants`, or `apply_design_system` — they need numeric IDs.
 - **Never create a new project when projects already exist without asking.** Check existing projects first with `stitch-mcp-list-projects`.
 - **Never retry `generate_screen_from_text` immediately on failure.** Wait 60 seconds, retry once max. Each call creates a new generation — retries mean duplicate screens.
+- **Never call `delete_project` without explicit user confirmation.** Always show the project name and screen count first.
+- **Never call `edit_screens` with a vague prompt.** Apply the same quality bar as generation — specific hex colors, named components, explicit values.
+- **Never call `generate_variants` without an existing screen to vary.** Variants require a source design.
+- **Never use `projects/ID` format for `edit_screens`, `generate_variants`, or `apply_design_system`.** These all take numeric IDs only.
 
 ---
 

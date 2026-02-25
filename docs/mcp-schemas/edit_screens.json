@@ -1,0 +1,46 @@
+{
+  "name": "edit_screens",
+  "description": "Edits existing screens within a project using a text prompt. The primary iteration tool — modify colors, layout, content, or style without regenerating from scratch.\n\n**Input Requirements (CRITICAL):**\n1. **`projectId` (string - MANDATORY):** Numeric ID only.\n2. **`selectedScreenIds` (array - MANDATORY):** Numeric screen IDs, no prefix.\n3. **`prompt` (string - MANDATORY):** The edit instruction.\n\n**Instructions:**\n* This action can take a few minutes. DO NOT RETRY.\n* If `output_components` contains suggestions, present them to the user.\n",
+  "arguments": {
+    "type": "object",
+    "properties": {
+      "projectId": {
+        "description": "Required. Numeric project ID only — do NOT include 'projects/' prefix.",
+        "type": "string"
+      },
+      "selectedScreenIds": {
+        "description": "Required. Array of numeric screen IDs to edit. No 'projects/' or 'screens/' prefix.",
+        "type": "array",
+        "items": { "type": "string" }
+      },
+      "prompt": {
+        "description": "Required. The text prompt describing the desired edits.",
+        "type": "string"
+      },
+      "deviceType": {
+        "description": "Optional. The device type context for the edit.",
+        "enum": ["DEVICE_TYPE_UNSPECIFIED", "MOBILE", "DESKTOP", "TABLET", "AGNOSTIC"],
+        "type": "string"
+      },
+      "modelId": {
+        "description": "Optional. GEMINI_3_PRO for complex edits, GEMINI_3_FLASH for simple changes.",
+        "enum": ["MODEL_ID_UNSPECIFIED", "GEMINI_3_PRO", "GEMINI_3_FLASH"],
+        "type": "string"
+      }
+    },
+    "required": ["projectId", "selectedScreenIds", "prompt"],
+    "description": "Request message for EditScreens."
+  },
+  "outputSchema": {
+    "type": "object",
+    "properties": {
+      "outputComponents": {
+        "description": "Array of output components. May contain text responses, design objects, or suggestions.",
+        "type": "array"
+      },
+      "projectId": { "type": "string" },
+      "sessionId": { "type": "string" }
+    },
+    "description": "Response message for EditScreens."
+  }
+}
