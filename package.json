@@ -1,0 +1,41 @@
+{
+  "name": "stitch-kit",
+  "version": "1.5.0",
+  "description": "AI UI design to production code — Stitch MCP skills for Claude Code and Codex CLI. Generates screens, iterates designs, extracts tokens, converts to Next.js, Svelte, React, React Native, SwiftUI, or HTML.",
+  "bin": {
+    "stitch-kit": "./bin/stitch-kit.mjs"
+  },
+  "type": "module",
+  "files": [
+    "bin/",
+    "skills/",
+    "agents/",
+    "docs/",
+    "scripts/",
+    "AGENTS.md",
+    "README.md",
+    "CHANGELOG.md",
+    "LICENSE"
+  ],
+  "keywords": [
+    "stitch",
+    "ui-design",
+    "text-to-ui",
+    "claude-code",
+    "codex-cli",
+    "mcp",
+    "design-to-code",
+    "nextjs",
+    "svelte",
+    "react-native",
+    "swiftui",
+    "agent-skills"
+  ],
+  "author": "gabelul",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gabelul/stitch-kit.git"
+  },
+  "homepage": "https://github.com/gabelul/stitch-kit#readme"
+}

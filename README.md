@@ -10,12 +10,23 @@ I built this because Stitch MCP generates beautiful screens, and then... you're 
 
 ## Install
 
-### Claude Code
+### Quick install (both platforms)
+
+```bash
+npx stitch-kit
+```
+
+Auto-detects Claude Code and/or Codex CLI and installs to the right places. Also tells you if Stitch MCP needs configuring.
+
+To update later: `npx stitch-kit update` (npx always fetches the latest version).
+To check what's installed: `npx stitch-kit status`.
+
+### Claude Code (plugin)
 
 Stitch MCP first (it's what actually talks to Google's generation API):
 
 ```bash
-claude mcp add stitch npx @google/stitch-mcp
+claude mcp add stitch -- npx -y @google/stitch-mcp
 ```
 
 Sign in at [stitch.withgoogle.com](https://stitch.withgoogle.com) to do the Google auth thing. Then the plugin:
@@ -29,7 +40,11 @@ Restart Claude Code. The `stitch-kit` agent activates automatically when you des
 
 ### Codex CLI
 
-Clone and run the installer — symlinks everything into `~/.agents/` so Codex picks it up automatically:
+```bash
+npx stitch-kit
+```
+
+Or clone and run the installer manually:
 
 ```bash
 git clone https://github.com/gabelul/stitch-kit.git

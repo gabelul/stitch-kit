@@ -23,10 +23,28 @@ skills/{skill-name}/
 - **examples/**: Load for few-shot context when needed
 - **resources/**, **scripts/**: Progressive disclosure — reference only when relevant
 
-## Installing (Claude Code)
+## Quick install (both platforms)
 
 ```bash
-claude mcp add stitch npx @google/stitch-mcp
+npx stitch-kit
+```
+
+Auto-detects Claude Code and/or Codex CLI and installs to the right places. Also tells you if Stitch MCP needs configuring.
+
+To update later: `npx stitch-kit update` (npx always fetches the latest version).
+To check what's installed: `npx stitch-kit status`.
+
+## Installing (Claude Code)
+
+Stitch MCP first:
+
+```bash
+claude mcp add stitch -- npx -y @google/stitch-mcp
+```
+
+Then the plugin:
+
+```bash
 /plugin marketplace add https://github.com/gabelul/stitch-kit.git
 /plugin install stitch-kit@stitch-kit
 ```
@@ -34,11 +52,17 @@ claude mcp add stitch npx @google/stitch-mcp
 ## Installing (Codex CLI)
 
 ```bash
+npx stitch-kit
+```
+
+Or clone and run the installer manually:
+
+```bash
 git clone https://github.com/gabelul/stitch-kit.git
 cd stitch-kit && bash install-codex.sh
 ```
 
-Symlinks all skills into `~/.agents/skills/` and the agent definition into `~/.agents/agents/`. Then add Stitch MCP to `~/.codex/config.toml`:
+Then wire up Stitch MCP in `~/.codex/config.toml`:
 
 ```toml
 [mcp_servers.stitch]
