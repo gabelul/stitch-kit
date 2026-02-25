@@ -30,6 +30,12 @@ name: Release
 on:
   push:
     branches: [main]
+  workflow_dispatch:
+    inputs:
+      publish:
+        description: 'Force publish to npm (use when release exists but publish failed)'
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -52,7 +58,7 @@ jobs:
   publish-npm:
     name: Publish to npm
     needs: release-please
-    if: ${{ needs.release-please.outputs.release_created }}
+    if: ${{ needs.release-please.outputs.release_created || (github.event_name == 'workflow_dispatch' && inputs.publish) }}
     runs-on: ubuntu-latest
     environment: npm
     permissions:
