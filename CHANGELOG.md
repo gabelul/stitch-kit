@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.1.0](https://github.com/gabelul/stitch-kit/compare/v1.0.0...v1.1.0) (2026-02-25)
+
+
+### Features
+
+* add npx installer for cross-platform setup ([1afa5ee](https://github.com/gabelul/stitch-kit/commit/1afa5ee09a74ba3abf40b1e7f51791e9363ec1af))
+* auto-configure Stitch MCP with optional API key prompt ([c03ba72](https://github.com/gabelul/stitch-kit/commit/c03ba7221f74d651c846b21321cfcef4c1047c76))
+* refactor installer to registry pattern with 7 CLI clients ([#3](https://github.com/gabelul/stitch-kit/issues/3)) ([a350fe7](https://github.com/gabelul/stitch-kit/commit/a350fe722155e602da3c5573a486b465ece72be8))
+
+
+### Bug Fixes
+
+* use remote HTTP server for Stitch MCP, not nonexistent npm package ([6c040cb](https://github.com/gabelul/stitch-kit/commit/6c040cb15a72e80e6e249fe747e9283ee2a01ca2))
+* use scoped package name and add automated npm publishing ([3810f81](https://github.com/gabelul/stitch-kit/commit/3810f81e422d4aaafcbaa0800ca080a69692b966))
+
 ## 1.0.0 (2026-02-25)
 
 
