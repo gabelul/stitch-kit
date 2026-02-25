@@ -3,8 +3,8 @@
 /**
  * stitch-kit CLI installer
  *
- * Installs stitch-kit skills and agent definition for Claude Code and/or Codex CLI.
- * Detects which platforms are available and installs to the right locations.
+ * Installs stitch-kit skills and agent definition for supported code editors/CLIs.
+ * Uses a registry pattern — adding a new client = adding one config object.
  *
  * Usage:
  *   npx @booplex/stitch-kit              — install (default)
@@ -13,39 +13,37 @@
  *   npx @booplex/stitch-kit uninstall    — remove stitch-kit from all platforms
  *   npx @booplex/stitch-kit status       — show what's installed where
  *
- * Platforms:
- *   Claude Code — agent → ~/.claude/agents/, MCP config, plugin recommendation
- *   Codex CLI   — agent → ~/.codex/agents/, skills → ~/.codex/skills/
+ * Supported platforms (auto-detected):
+ *   Claude Code  — agent + MCP + plugin system
+ *   Codex CLI    — agent + skills + MCP (TOML)
+ *   Cursor       — MCP only
+ *   VS Code      — MCP only
+ *   OpenCode     — agent + skills + MCP
+ *   Crush        — skills + MCP
+ *   Gemini CLI   — extension install (no MCP config file)
  */
 
-import { existsSync, mkdirSync, cpSync, rmSync, readFileSync, writeFileSync, readdirSync, lstatSync, symlinkSync, unlinkSync } from 'node:fs';
+import { existsSync, mkdirSync, cpSync, rmSync, readFileSync, writeFileSync, readdirSync, lstatSync, unlinkSync } from 'node:fs';
 import { join, dirname, resolve } from 'node:path';
 import { homedir } from 'node:os';
 import { fileURLToPath } from 'node:url';
 import { execSync } from 'node:child_process';
 import { createInterface } from 'node:readline';
 
-// ── Constants ──────────────────────────────────────────────────────────────────
+// ── Shared Constants ────────────────────────────────────────────────────────────
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const PACKAGE_ROOT = resolve(__dirname, '..');
 
 const HOME = homedir();
-const CLAUDE_DIR = join(HOME, '.claude');
-const CLAUDE_AGENTS_DIR = join(CLAUDE_DIR, 'agents');
-const CLAUDE_PLUGINS_FILE = join(CLAUDE_DIR, 'plugins', 'installed_plugins.json');
-
-const CODEX_DIR = join(HOME, '.codex');
-const CODEX_AGENTS_DIR = join(CODEX_DIR, 'agents');
-const CODEX_SKILLS_DIR = join(CODEX_DIR, 'skills');
-
 const SKILLS_SRC = join(PACKAGE_ROOT, 'skills');
 const AGENTS_SRC = join(PACKAGE_ROOT, 'agents');
+const STITCH_MCP_URL = 'https://stitch.googleapis.com/mcp';
 
 const VERSION = JSON.parse(readFileSync(join(PACKAGE_ROOT, 'package.json'), 'utf8')).version;
 
-// ── Helpers ────────────────────────────────────────────────────────────────────
+// ── Helpers ─────────────────────────────────────────────────────────────────────
 
 /** Prints styled output — keeps it readable without dependencies */
 function log(msg) { console.log(msg); }
@@ -53,35 +51,6 @@ function logOk(msg) { console.log(`  ✓ ${msg}`); }
 function logSkip(msg) { console.log(`  → ${msg}`); }
 function logWarn(msg) { console.log(`  ⚠ ${msg}`); }
 function logErr(msg) { console.error(`  ✗ ${msg}`); }
-
-/** Check if Claude Code is installed (has ~/.claude/) */
-function hasClaudeCode() {
-  return existsSync(CLAUDE_DIR);
-}
-
-/** Check if Codex CLI is installed (has ~/.codex/) */
-function hasCodex() {
-  return existsSync(CODEX_DIR);
-}
-
-/** Check if stitch-kit is already installed as a Claude Code plugin */
-function isPluginInstalled() {
-  if (!existsSync(CLAUDE_PLUGINS_FILE)) return false;
-  try {
-    const plugins = JSON.parse(readFileSync(CLAUDE_PLUGINS_FILE, 'utf8'));
-    // installed_plugins.json is an array of plugin objects
-    if (Array.isArray(plugins)) {
-      return plugins.some(p =>
-        (p.name && p.name.includes('stitch-kit')) ||
-        (p.source && p.source.includes('stitch-kit'))
-      );
-    }
-    // Or it could be an object with plugin entries
-    return JSON.stringify(plugins).includes('stitch-kit');
-  } catch {
-    return false;
-  }
-}
 
 /**
  * Prompt the user for input via stdin.
@@ -99,142 +68,11 @@ function prompt(question) {
 }
 
 /**
- * Check if Stitch MCP is configured for a platform, and install it if not.
- * Prompts for optional API key when installing.
- * @param {'claude' | 'codex'} platform - Which platform to check/configure
- * @param {string} [apiKey] - Optional Stitch API key (shared across platforms)
- * @returns {'already' | 'installed' | 'failed'} Result of the check/install
- */
-function checkAndInstallStitchMcp(platform, apiKey) {
-  if (platform === 'claude') {
-    // Check settings.json for MCP config (user-level)
-    const settingsFile = join(CLAUDE_DIR, 'settings.json');
-    if (existsSync(settingsFile)) {
-      try {
-        const settings = JSON.parse(readFileSync(settingsFile, 'utf8'));
-        if (settings.mcpServers && 'stitch' in settings.mcpServers) {
-          return 'already';
-        }
-      } catch { /* ignore parse errors */ }
-    }
-
-    // Also check project-level .mcp.json
-    const mcpJson = join(process.cwd(), '.mcp.json');
-    if (existsSync(mcpJson)) {
-      try {
-        const mcp = JSON.parse(readFileSync(mcpJson, 'utf8'));
-        if (mcp.mcpServers && 'stitch' in mcp.mcpServers) {
-          return 'already';
-        }
-      } catch { /* ignore */ }
-    }
-
-    // Not configured — need an API key to set up the remote MCP server.
-    // Stitch MCP is a remote HTTP server at stitch.googleapis.com, not a local npm package.
-    if (!apiKey) {
-      return 'failed';
-    }
-
-    // Write directly to settings.json (user scope)
-    try {
-      let settings = {};
-      if (existsSync(settingsFile)) {
-        settings = JSON.parse(readFileSync(settingsFile, 'utf8'));
-      }
-      if (!settings.mcpServers) settings.mcpServers = {};
-
-      settings.mcpServers.stitch = {
-        type: 'http',
-        url: 'https://stitch.googleapis.com/mcp',
-        headers: {
-          'X-Goog-Api-Key': apiKey,
-        },
-      };
-
-      writeFileSync(settingsFile, JSON.stringify(settings, null, 2) + '\n');
-      return 'installed';
-    } catch {
-      return 'failed';
-    }
-  }
-
-  if (platform === 'codex') {
-    // Check config.toml for stitch MCP
-    const configFile = join(CODEX_DIR, 'config.toml');
-    if (existsSync(configFile)) {
-      try {
-        const content = readFileSync(configFile, 'utf8');
-        if (content.includes('[mcp_servers.stitch]')) {
-          return 'already';
-        }
-      } catch { /* ignore */ }
-    }
-
-    // Not configured — need an API key for the remote MCP server
-    if (!apiKey) {
-      return 'failed';
-    }
-
-    // Append the stitch MCP block to config.toml
-    try {
-      let stitchBlock = `\n[mcp_servers.stitch]\nurl = "https://stitch.googleapis.com/mcp"\n\n[mcp_servers.stitch.headers]\nX-Goog-Api-Key = "${apiKey}"\n`;
-
-      if (existsSync(configFile)) {
-        const content = readFileSync(configFile, 'utf8');
-        writeFileSync(configFile, content + stitchBlock);
-      } else {
-        mkdirSync(CODEX_DIR, { recursive: true });
-        writeFileSync(configFile, stitchBlock.trimStart());
-      }
-      return 'installed';
-    } catch {
-      return 'failed';
-    }
-  }
-
-  return 'failed';
-}
-
-/**
- * Check if Stitch MCP is configured (read-only, for status command).
- * @param {'claude' | 'codex'} platform
- * @returns {boolean}
- */
-function isStitchMcpConfigured(platform) {
-  if (platform === 'claude') {
-    const settingsFile = join(CLAUDE_DIR, 'settings.json');
-    if (existsSync(settingsFile)) {
-      try {
-        const settings = JSON.parse(readFileSync(settingsFile, 'utf8'));
-        if (settings.mcpServers && 'stitch' in settings.mcpServers) return true;
-      } catch { /* ignore */ }
-    }
-    const mcpJson = join(process.cwd(), '.mcp.json');
-    if (existsSync(mcpJson)) {
-      try {
-        const mcp = JSON.parse(readFileSync(mcpJson, 'utf8'));
-        if (mcp.mcpServers && 'stitch' in mcp.mcpServers) return true;
-      } catch { /* ignore */ }
-    }
-    return false;
-  }
-
-  if (platform === 'codex') {
-    const configFile = join(CODEX_DIR, 'config.toml');
-    if (existsSync(configFile)) {
-      try {
-        return readFileSync(configFile, 'utf8').includes('[mcp_servers.stitch]');
-      } catch { /* ignore */ }
-    }
-    return false;
-  }
-
-  return false;
-}
-
-/**
  * Copy a file, creating parent directories as needed.
- * Returns true if the file was written, false if skipped.
+ * @param {string} src - Source file path
+ * @param {string} dest - Destination file path
+ * @param {boolean} overwrite - Whether to overwrite existing files
+ * @returns {boolean} True if the file was written
  */
 function copyFile(src, dest, overwrite = true) {
   if (!existsSync(src)) {
@@ -272,164 +110,658 @@ function listSkills() {
   });
 }
 
-// ── Install ────────────────────────────────────────────────────────────────────
-
 /**
- * Install stitch-kit for Claude Code.
- * @param {string} [apiKey] - Optional Stitch API key for MCP config
+ * Check if a shell command exists on the system PATH.
+ * @param {string} cmd - Command name to check
+ * @returns {boolean} True if command is available
  */
-function installClaudeCode(apiKey) {
-  log('');
-  log('Claude Code');
-  log('───────────');
-
-  const pluginInstalled = isPluginInstalled();
-
-  // Always install/update the agent definition
-  const agentSrc = join(AGENTS_SRC, 'stitch-kit.md');
-  const agentDest = join(CLAUDE_AGENTS_DIR, 'stitch-kit.md');
-
-  if (copyFile(agentSrc, agentDest)) {
-    logOk(`Agent installed → ${agentDest}`);
-  }
-
-  // Check and auto-configure Stitch MCP
-  const mcpStatus = checkAndInstallStitchMcp('claude', apiKey);
-
-  if (mcpStatus === 'installed') {
-    logOk('Stitch MCP configured with API key');
-  } else if (mcpStatus === 'already') {
-    logOk('Stitch MCP already configured');
-  } else {
-    logWarn('Stitch MCP not configured (no API key provided)');
-    log('');
-    log('  Add it manually:');
-    log('    claude mcp add stitch --transport http https://stitch.googleapis.com/mcp \\');
-    log('      --header "X-Goog-Api-Key: YOUR-API-KEY" -s user');
-    log('');
-  }
-
-  // Skills: plugin system is the right path for Claude Code
-  if (pluginInstalled) {
-    logOk('Plugin already installed — skills delivered via plugin system');
-    log('');
-    log('  To update the plugin to the latest version:');
-    log('    /plugin install stitch-kit@stitch-kit');
-  } else {
-    log('');
-    log('  For full skill support in Claude Code, install the plugin:');
-    log('');
-    log('    /plugin marketplace add https://github.com/gabelul/stitch-kit.git');
-    log('    /plugin install stitch-kit@stitch-kit');
-    log('');
-    log('  The agent works standalone with MCP tools, but skills add');
-    log('  prompt engineering, design tokens, and framework conversion.');
+function commandExists(cmd) {
+  try {
+    execSync(`command -v ${cmd}`, { stdio: 'ignore' });
+    return true;
+  } catch {
+    return false;
   }
 }
 
+// ── Client Registry ─────────────────────────────────────────────────────────────
+//
+// Each client declares how to detect it, where its MCP config lives,
+// the JSON structure it expects, and where agents/skills go.
+// Generic functions iterate this registry — no per-platform if/else.
+
 /**
- * Install stitch-kit for Codex CLI.
- * @param {string} [apiKey] - Optional Stitch API key for MCP config
+ * @typedef {Object} McpConfig
+ * @property {string} configPath - Full path to the MCP config file
+ * @property {string} format - Config format: 'json' or 'toml'
+ * @property {string} wrapperKey - Top-level key wrapping MCP servers (e.g. 'mcpServers', 'servers', 'mcp')
+ * @property {string} urlField - Field name for the server URL
+ * @property {Object} extraFields - Extra fields per MCP entry (e.g. { type: 'http' })
+ * @property {Object} extraHeaders - Extra headers beyond X-Goog-Api-Key (e.g. { Accept: 'application/json' })
+ * @property {string[]} fallbackPaths - Additional paths to check for existing config
+ * @property {string[]} manualInstructions - Lines to show when API key is not provided
  */
-function installCodex(apiKey) {
-  log('');
-  log('Codex CLI');
-  log('─────────');
 
-  // Install agent
-  const agentSrc = join(AGENTS_SRC, 'stitch-kit.md');
-  const agentDest = join(CODEX_AGENTS_DIR, 'stitch-kit.md');
-  mkdirSync(CODEX_AGENTS_DIR, { recursive: true });
+/**
+ * @typedef {Object} Client
+ * @property {string} id - Unique identifier
+ * @property {string} name - Human-readable name
+ * @property {Function} detect - Returns true if client is installed
+ * @property {McpConfig|null} mcp - MCP configuration (null for extension-based installs)
+ * @property {string|null} agentDir - Where to copy agent .md files (null = not supported)
+ * @property {string|null} skillsDir - Where to copy skill directories (null = not supported)
+ * @property {Function|null} postInstall - Optional hook called after install
+ * @property {string|null} installUrl - URL where user can install this client
+ * @property {boolean} isExtensionBased - True if MCP is installed via extension (e.g. Gemini CLI)
+ * @property {string[]} extensionInstructions - Lines to show for extension-based installs
+ */
 
-  if (copyFile(agentSrc, agentDest)) {
-    logOk(`Agent installed → ${agentDest}`);
-  }
+const CLAUDE_DIR = join(HOME, '.claude');
+const CLAUDE_PLUGINS_FILE = join(CLAUDE_DIR, 'plugins', 'installed_plugins.json');
 
-  // Install skills — copy each skill directory
-  mkdirSync(CODEX_SKILLS_DIR, { recursive: true });
-  const skills = listSkills();
-  let installed = 0;
-  let updated = 0;
-
-  for (const skillName of skills) {
-    const src = join(SKILLS_SRC, skillName);
-    const dest = join(CODEX_SKILLS_DIR, skillName);
-
-    const existed = existsSync(dest);
-
-    // Remove old symlinks or dirs before copying fresh
-    if (existed) {
-      if (lstatSync(dest).isSymbolicLink()) {
-        unlinkSync(dest);
-      } else {
-        rmSync(dest, { recursive: true, force: true });
-      }
-      updated++;
-    } else {
-      installed++;
+/**
+ * Check if stitch-kit is already installed as a Claude Code plugin.
+ * @returns {boolean}
+ */
+function isPluginInstalled() {
+  if (!existsSync(CLAUDE_PLUGINS_FILE)) return false;
+  try {
+    const plugins = JSON.parse(readFileSync(CLAUDE_PLUGINS_FILE, 'utf8'));
+    if (Array.isArray(plugins)) {
+      return plugins.some(p =>
+        (p.name && p.name.includes('stitch-kit')) ||
+        (p.source && p.source.includes('stitch-kit'))
+      );
     }
-
-    copyDir(src, dest);
+    return JSON.stringify(plugins).includes('stitch-kit');
+  } catch {
+    return false;
   }
-
-  logOk(`${installed} skills installed, ${updated} updated (${skills.length} total)`);
-
-  // Check and auto-configure Stitch MCP for Codex
-  const mcpStatus = checkAndInstallStitchMcp('codex', apiKey);
-
-  if (mcpStatus === 'installed') {
-    logOk('Stitch MCP configured with API key in config.toml');
-  } else if (mcpStatus === 'already') {
-    logOk('Stitch MCP already in config.toml');
-  } else {
-    logWarn('Stitch MCP not configured (no API key provided)');
-    log('');
-    log('  Add it manually to ~/.codex/config.toml:');
-    log('');
-    log('    [mcp_servers.stitch]');
-    log('    url = "https://stitch.googleapis.com/mcp"');
-    log('');
-    log('    [mcp_servers.stitch.headers]');
-    log('    X-Goog-Api-Key = "YOUR-API-KEY"');
-  }
-
-  log('');
-  log('  Use $stitch-kit to invoke the agent');
-  log('  Use $stitch-orchestrator for the full pipeline');
 }
 
+/** The registry of all supported CLI clients */
+const CLIENTS = [
+  // ── Claude Code ─────────────────────────────────────────────────────────────
+  {
+    id: 'claude-code',
+    name: 'Claude Code',
+    detect: () => existsSync(CLAUDE_DIR),
+    mcp: {
+      configPath: join(CLAUDE_DIR, 'settings.json'),
+      format: 'json',
+      wrapperKey: 'mcpServers',
+      urlField: 'url',
+      extraFields: { type: 'http' },
+      extraHeaders: {},
+      fallbackPaths: [join(process.cwd(), '.mcp.json')],
+      manualInstructions: [
+        '  Add it manually:',
+        '    claude mcp add stitch --transport http https://stitch.googleapis.com/mcp \\',
+        '      --header "X-Goog-Api-Key: YOUR-API-KEY" -s user',
+      ],
+    },
+    agentDir: join(CLAUDE_DIR, 'agents'),
+    skillsDir: null,  // Skills delivered via plugin system
+    postInstall: () => {
+      // Claude Code-specific: recommend plugin for skills
+      const pluginInstalled = isPluginInstalled();
+      if (pluginInstalled) {
+        logOk('Plugin already installed — skills delivered via plugin system');
+        log('');
+        log('  To update the plugin to the latest version:');
+        log('    /plugin install stitch-kit@stitch-kit');
+      } else {
+        log('');
+        log('  For full skill support in Claude Code, install the plugin:');
+        log('');
+        log('    /plugin marketplace add https://github.com/gabelul/stitch-kit.git');
+        log('    /plugin install stitch-kit@stitch-kit');
+        log('');
+        log('  The agent works standalone with MCP tools, but skills add');
+        log('  prompt engineering, design tokens, and framework conversion.');
+      }
+    },
+    installUrl: 'https://claude.ai/code',
+    isExtensionBased: false,
+    extensionInstructions: [],
+  },
+
+  // ── Codex CLI ───────────────────────────────────────────────────────────────
+  {
+    id: 'codex-cli',
+    name: 'Codex CLI',
+    detect: () => existsSync(join(HOME, '.codex')),
+    mcp: {
+      configPath: join(HOME, '.codex', 'config.toml'),
+      format: 'toml',
+      wrapperKey: 'mcp_servers',  // TOML section key
+      urlField: 'url',
+      extraFields: {},
+      extraHeaders: {},
+      fallbackPaths: [],
+      manualInstructions: [
+        '  Add it manually to ~/.codex/config.toml:',
+        '',
+        '    [mcp_servers.stitch]',
+        '    url = "https://stitch.googleapis.com/mcp"',
+        '',
+        '    [mcp_servers.stitch.headers]',
+        '    X-Goog-Api-Key = "YOUR-API-KEY"',
+      ],
+    },
+    agentDir: join(HOME, '.codex', 'agents'),
+    skillsDir: join(HOME, '.codex', 'skills'),
+    postInstall: () => {
+      log('');
+      log('  Use $stitch-kit to invoke the agent');
+      log('  Use $stitch-orchestrator for the full pipeline');
+    },
+    installUrl: 'https://github.com/openai/codex',
+    isExtensionBased: false,
+    extensionInstructions: [],
+  },
+
+  // ── Cursor ──────────────────────────────────────────────────────────────────
+  {
+    id: 'cursor',
+    name: 'Cursor',
+    detect: () => existsSync(join(HOME, '.cursor')),
+    mcp: {
+      configPath: join(HOME, '.cursor', 'mcp.json'),
+      format: 'json',
+      wrapperKey: 'mcpServers',
+      urlField: 'url',
+      extraFields: {},
+      extraHeaders: {},
+      fallbackPaths: [],
+      manualInstructions: [
+        '  Add it manually to ~/.cursor/mcp.json:',
+        '',
+        '    { "mcpServers": { "stitch": {',
+        '      "url": "https://stitch.googleapis.com/mcp",',
+        '      "headers": { "X-Goog-Api-Key": "YOUR-API-KEY" }',
+        '    } } }',
+      ],
+    },
+    agentDir: null,
+    skillsDir: null,
+    postInstall: null,
+    installUrl: 'https://cursor.sh',
+    isExtensionBased: false,
+    extensionInstructions: [],
+  },
+
+  // ── VS Code ─────────────────────────────────────────────────────────────────
+  // VS Code uses 'servers' (not 'mcpServers') and requires type: 'http' + Accept header
+  {
+    id: 'vscode',
+    name: 'VS Code',
+    detect: () => existsSync(join(HOME, '.vscode')),
+    mcp: {
+      configPath: join(HOME, '.vscode', 'mcp.json'),
+      format: 'json',
+      wrapperKey: 'servers',
+      urlField: 'url',
+      extraFields: { type: 'http' },
+      extraHeaders: { Accept: 'application/json' },
+      fallbackPaths: [],
+      manualInstructions: [
+        '  Add it manually to .vscode/mcp.json:',
+        '',
+        '    { "servers": { "stitch": {',
+        '      "url": "https://stitch.googleapis.com/mcp",',
+        '      "type": "http",',
+        '      "headers": { "Accept": "application/json", "X-Goog-Api-Key": "YOUR-API-KEY" }',
+        '    } } }',
+      ],
+    },
+    agentDir: null,
+    skillsDir: null,
+    postInstall: null,
+    installUrl: 'https://code.visualstudio.com',
+    isExtensionBased: false,
+    extensionInstructions: [],
+  },
+
+  // ── OpenCode ────────────────────────────────────────────────────────────────
+  // OpenCode uses 'mcp' wrapper key with type: 'remote' and an 'enabled' flag
+  {
+    id: 'opencode',
+    name: 'OpenCode',
+    detect: () => existsSync(join(HOME, '.config', 'opencode')),
+    mcp: {
+      configPath: join(HOME, '.config', 'opencode', 'opencode.json'),
+      format: 'json',
+      wrapperKey: 'mcp',
+      urlField: 'url',
+      extraFields: { type: 'remote', enabled: true },
+      extraHeaders: {},
+      fallbackPaths: [],
+      manualInstructions: [
+        '  Add it manually to ~/.config/opencode/opencode.json:',
+        '',
+        '    { "mcp": { "stitch": {',
+        '      "type": "remote",',
+        '      "url": "https://stitch.googleapis.com/mcp",',
+        '      "enabled": true,',
+        '      "headers": { "X-Goog-Api-Key": "YOUR-API-KEY" }',
+        '    } } }',
+      ],
+    },
+    agentDir: join(HOME, '.config', 'opencode', 'agents'),
+    skillsDir: join(HOME, '.config', 'opencode', 'skills'),
+    postInstall: null,
+    installUrl: 'https://github.com/opencode-ai/opencode',
+    isExtensionBased: false,
+    extensionInstructions: [],
+  },
+
+  // ── Crush ───────────────────────────────────────────────────────────────────
+  // Crush uses 'mcp' wrapper key with type: 'http' (no agent dir, skills only)
+  {
+    id: 'crush',
+    name: 'Crush',
+    detect: () => existsSync(join(HOME, '.config', 'crush')),
+    mcp: {
+      configPath: join(HOME, '.config', 'crush', 'crush.json'),
+      format: 'json',
+      wrapperKey: 'mcp',
+      urlField: 'url',
+      extraFields: { type: 'http' },
+      extraHeaders: {},
+      fallbackPaths: [],
+      manualInstructions: [
+        '  Add it manually to ~/.config/crush/crush.json:',
+        '',
+        '    { "mcp": { "stitch": {',
+        '      "type": "http",',
+        '      "url": "https://stitch.googleapis.com/mcp",',
+        '      "headers": { "X-Goog-Api-Key": "YOUR-API-KEY" }',
+        '    } } }',
+      ],
+    },
+    agentDir: null,
+    skillsDir: join(HOME, '.config', 'crush', 'skills'),
+    postInstall: null,
+    installUrl: 'https://github.com/charmbracelet/crush',
+    isExtensionBased: false,
+    extensionInstructions: [],
+  },
+
+  // ── Gemini CLI ──────────────────────────────────────────────────────────────
+  // Gemini CLI uses extension install, not MCP config files
+  {
+    id: 'gemini-cli',
+    name: 'Gemini CLI',
+    detect: () => commandExists('gemini'),
+    mcp: null,  // No MCP config file — uses extension system
+    agentDir: null,
+    skillsDir: null,
+    postInstall: null,
+    installUrl: 'https://github.com/google-gemini/gemini-cli',
+    isExtensionBased: true,
+    extensionInstructions: [
+      '  Install the Stitch extension for Gemini CLI:',
+      '',
+      '    gemini extensions install https://github.com/gemini-cli-extensions/stitch',
+    ],
+  },
+];
+
+// ── Generic MCP Operations ──────────────────────────────────────────────────────
+
 /**
- * Check if Stitch MCP needs installing on any detected platform.
- * @returns {boolean} True if at least one platform needs MCP configured
+ * Check if Stitch MCP is already configured for a client.
+ * Handles both JSON and TOML formats, plus fallback paths.
+ * @param {Client} client - Client to check
+ * @returns {boolean} True if stitch MCP entry exists
  */
-function needsStitchMcp() {
-  if (hasClaudeCode() && !isStitchMcpConfigured('claude')) return true;
-  if (hasCodex() && !isStitchMcpConfigured('codex')) return true;
+function isMcpConfigured(client) {
+  if (!client.mcp) return false;
+  const { configPath, format, wrapperKey, fallbackPaths } = client.mcp;
+
+  // Check the primary config path
+  if (existsSync(configPath)) {
+    try {
+      if (format === 'toml') {
+        // TOML: simple string search for the section header
+        const content = readFileSync(configPath, 'utf8');
+        if (content.includes(`[${wrapperKey}.stitch]`)) return true;
+      } else {
+        // JSON: parse and check for stitch key under the wrapper
+        const config = JSON.parse(readFileSync(configPath, 'utf8'));
+        if (config[wrapperKey] && 'stitch' in config[wrapperKey]) return true;
+      }
+    } catch { /* ignore parse errors, treat as not configured */ }
+  }
+
+  // Check fallback paths (e.g. project-level .mcp.json for Claude Code)
+  for (const fallback of (fallbackPaths || [])) {
+    if (existsSync(fallback)) {
+      try {
+        const config = JSON.parse(readFileSync(fallback, 'utf8'));
+        if (config[wrapperKey] && 'stitch' in config[wrapperKey]) return true;
+      } catch { /* ignore */ }
+    }
+  }
+
   return false;
 }
 
+/**
+ * Build the Stitch MCP entry object for a client.
+ * Each client has different JSON structure requirements (url field, extra fields, headers).
+ * @param {Client} client - Client to build entry for
+ * @param {string} apiKey - The Stitch API key
+ * @returns {Object} The MCP entry to write
+ */
+function buildMcpEntry(client, apiKey) {
+  const { urlField, extraFields, extraHeaders } = client.mcp;
+
+  // Base entry: URL + any extra fields (type, enabled, etc.)
+  const entry = {
+    [urlField]: STITCH_MCP_URL,
+    ...extraFields,
+  };
+
+  // Headers: always include API key, plus any client-specific extras
+  entry.headers = {
+    ...extraHeaders,
+    'X-Goog-Api-Key': apiKey,
+  };
+
+  return entry;
+}
+
+/**
+ * Install Stitch MCP configuration for a client.
+ * Handles JSON (read-merge-write) and TOML (append) formats.
+ * @param {Client} client - Client to configure
+ * @param {string} apiKey - The Stitch API key
+ * @returns {'already' | 'installed' | 'skipped' | 'failed'} Result
+ */
+function installMcp(client, apiKey) {
+  if (!client.mcp) return 'skipped';
+
+  // Already configured? Don't touch it.
+  if (isMcpConfigured(client)) return 'already';
+
+  // No API key? Can't configure a remote MCP server without one.
+  if (!apiKey) return 'skipped';
+
+  const { configPath, format, wrapperKey } = client.mcp;
+
+  try {
+    if (format === 'toml') {
+      // ── TOML: append the stitch MCP block ──────────────────────────────
+      // Codex CLI is currently the only TOML client. We append rather than
+      // parse TOML (no dependency needed) since the format is simple.
+      const stitchBlock = [
+        '',
+        `[${wrapperKey}.stitch]`,
+        `url = "${STITCH_MCP_URL}"`,
+        '',
+        `[${wrapperKey}.stitch.headers]`,
+        `X-Goog-Api-Key = "${apiKey}"`,
+        '',
+      ].join('\n');
+
+      if (existsSync(configPath)) {
+        const content = readFileSync(configPath, 'utf8');
+        writeFileSync(configPath, content + stitchBlock);
+      } else {
+        mkdirSync(dirname(configPath), { recursive: true });
+        writeFileSync(configPath, stitchBlock.trimStart());
+      }
+    } else {
+      // ── JSON: read → merge → write ─────────────────────────────────────
+      // Safe merge: read existing config, add stitch entry under the wrapper key.
+      let config = {};
+      if (existsSync(configPath)) {
+        config = JSON.parse(readFileSync(configPath, 'utf8'));
+      } else {
+        mkdirSync(dirname(configPath), { recursive: true });
+      }
+
+      if (!config[wrapperKey]) config[wrapperKey] = {};
+      config[wrapperKey].stitch = buildMcpEntry(client, apiKey);
+
+      writeFileSync(configPath, JSON.stringify(config, null, 2) + '\n');
+    }
+
+    return 'installed';
+  } catch {
+    return 'failed';
+  }
+}
+
+// ── Generic Install / Uninstall / Status ────────────────────────────────────────
+
+/**
+ * Install stitch-kit for a single client: agent → skills → MCP → postInstall.
+ * @param {Client} client - Client to install for
+ * @param {string} apiKey - Optional Stitch API key for MCP config
+ */
+function installClient(client, apiKey) {
+  log('');
+  log(client.name);
+  log('─'.repeat(client.name.length));
+
+  // ── Agent (if supported) ─────────────────────────────────────────────────
+  if (client.agentDir) {
+    const agentSrc = join(AGENTS_SRC, 'stitch-kit.md');
+    const agentDest = join(client.agentDir, 'stitch-kit.md');
+    mkdirSync(client.agentDir, { recursive: true });
+
+    if (copyFile(agentSrc, agentDest)) {
+      logOk(`Agent installed → ${agentDest}`);
+    }
+  }
+
+  // ── Skills (if supported) ────────────────────────────────────────────────
+  if (client.skillsDir) {
+    mkdirSync(client.skillsDir, { recursive: true });
+    const skills = listSkills();
+    let installed = 0;
+    let updated = 0;
+
+    for (const skillName of skills) {
+      const src = join(SKILLS_SRC, skillName);
+      const dest = join(client.skillsDir, skillName);
+      const existed = existsSync(dest);
+
+      // Remove old symlinks or dirs before copying fresh
+      if (existed) {
+        if (lstatSync(dest).isSymbolicLink()) {
+          unlinkSync(dest);
+        } else {
+          rmSync(dest, { recursive: true, force: true });
+        }
+        updated++;
+      } else {
+        installed++;
+      }
+
+      copyDir(src, dest);
+    }
+
+    logOk(`${installed} skills installed, ${updated} updated (${skills.length} total)`);
+  }
+
+  // ── MCP configuration ────────────────────────────────────────────────────
+  if (client.mcp) {
+    const mcpStatus = installMcp(client, apiKey);
+
+    if (mcpStatus === 'installed') {
+      logOk(`Stitch MCP configured with API key`);
+    } else if (mcpStatus === 'already') {
+      logOk('Stitch MCP already configured');
+    } else {
+      logWarn('Stitch MCP not configured (no API key provided)');
+      log('');
+      for (const line of client.mcp.manualInstructions) {
+        log(line);
+      }
+      log('');
+    }
+  }
+
+  // ── Extension-based install (Gemini CLI) ─────────────────────────────────
+  if (client.isExtensionBased) {
+    log('');
+    for (const line of client.extensionInstructions) {
+      log(line);
+    }
+  }
+
+  // ── Post-install hook (Claude Code plugin recommendation, etc.) ──────────
+  if (client.postInstall) {
+    client.postInstall();
+  }
+}
+
+/**
+ * Uninstall stitch-kit from a single client: remove agent + skills.
+ * MCP config is left in place (user may want to keep it).
+ * @param {Client} client - Client to uninstall from
+ */
+function uninstallClient(client) {
+  let didSomething = false;
+
+  // ── Remove agent ─────────────────────────────────────────────────────────
+  if (client.agentDir) {
+    const agentPath = join(client.agentDir, 'stitch-kit.md');
+    if (existsSync(agentPath)) {
+      rmSync(agentPath);
+      logOk(`Removed ${client.name} agent`);
+      didSomething = true;
+    }
+  }
+
+  // ── Remove skills ────────────────────────────────────────────────────────
+  if (client.skillsDir) {
+    const skills = listSkills();
+    let removed = 0;
+    for (const skillName of skills) {
+      const dest = join(client.skillsDir, skillName);
+      if (existsSync(dest)) {
+        if (lstatSync(dest).isSymbolicLink()) {
+          unlinkSync(dest);
+        } else {
+          rmSync(dest, { recursive: true, force: true });
+        }
+        removed++;
+      }
+    }
+    if (removed > 0) {
+      logOk(`Removed ${removed} ${client.name} skills`);
+      didSomething = true;
+    }
+  }
+
+  // ── Claude Code specific: warn about plugin ──────────────────────────────
+  if (client.id === 'claude-code' && isPluginInstalled()) {
+    logWarn('stitch-kit plugin is still installed in Claude Code.');
+    log('  To remove it, run inside Claude Code: /plugin uninstall stitch-kit');
+    didSomething = true;
+  }
+
+  if (!didSomething) {
+    logSkip(`Nothing to remove for ${client.name}`);
+  }
+}
+
+/**
+ * Show installation status for a single client.
+ * Reports agent, skills, MCP, and plugin status as applicable.
+ * @param {Client} client - Client to report on
+ */
+function statusClient(client) {
+  log('');
+  log(client.name);
+  log('─'.repeat(client.name.length));
+
+  if (!client.detect()) {
+    logWarn(`Not detected`);
+    return;
+  }
+
+  // ── Agent status ─────────────────────────────────────────────────────────
+  if (client.agentDir) {
+    const agentExists = existsSync(join(client.agentDir, 'stitch-kit.md'));
+    if (agentExists) logOk('Agent: installed');
+    else logWarn('Agent: not installed');
+  }
+
+  // ── Skills status ────────────────────────────────────────────────────────
+  if (client.skillsDir) {
+    const skills = listSkills();
+    let installedCount = 0;
+    for (const s of skills) {
+      if (existsSync(join(client.skillsDir, s))) installedCount++;
+    }
+    if (installedCount === skills.length) {
+      logOk(`Skills: ${installedCount}/${skills.length} installed`);
+    } else if (installedCount > 0) {
+      logWarn(`Skills: ${installedCount}/${skills.length} installed (outdated — run npx @booplex/stitch-kit update)`);
+    } else {
+      logWarn('Skills: none installed');
+    }
+  }
+
+  // ── Plugin status (Claude Code only) ─────────────────────────────────────
+  if (client.id === 'claude-code') {
+    const pluginExists = isPluginInstalled();
+    if (pluginExists) logOk('Plugin: installed (skills delivered via plugin)');
+    else logWarn('Plugin: not installed (skills not available — run /plugin install)');
+  }
+
+  // ── MCP status ───────────────────────────────────────────────────────────
+  if (client.mcp) {
+    if (isMcpConfigured(client)) logOk('Stitch MCP: configured');
+    else logWarn('Stitch MCP: not configured — run npx @booplex/stitch-kit to add it');
+  }
+
+  // ── Extension-based status (Gemini CLI) ──────────────────────────────────
+  if (client.isExtensionBased) {
+    logSkip('Extension-based — run "gemini extensions list" to check');
+  }
+}
+
+// ── Main Commands ───────────────────────────────────────────────────────────────
+
+/**
+ * Main install flow:
+ * 1. Detect all clients
+ * 2. Prompt for API key once (shared across all platforms)
+ * 3. Install for each detected client
+ */
 async function install() {
   log(`stitch-kit v${VERSION} — installer`);
   log('════════════════════════════════');
 
-  const claude = hasClaudeCode();
-  const codex = hasCodex();
+  // Detect which clients are present
+  const detected = CLIENTS.filter(c => c.detect());
 
-  if (!claude && !codex) {
+  if (detected.length === 0) {
     log('');
-    logErr('Neither Claude Code (~/.claude/) nor Codex CLI (~/.codex/) found.');
+    logErr('No supported platforms detected.');
     log('');
-    log('  Install Claude Code: https://claude.ai/code');
-    log('  Install Codex CLI:   https://github.com/openai/codex');
+    log('  Supported platforms:');
+    for (const c of CLIENTS) {
+      log(`    ${c.name.padEnd(14)} ${c.installUrl}`);
+    }
     log('');
     process.exit(1);
   }
 
-  // Prompt for Stitch API key if MCP needs configuring
-  // Stitch MCP is a remote server — it requires an API key or OAuth.
-  // API key is the simplest path for most users.
+  // Check if any detected client needs MCP configured
+  // (has MCP config support and isn't already set up)
+  const needsMcp = detected.some(c => c.mcp && !isMcpConfigured(c));
+
+  // Prompt for API key once, shared across all platforms
   let apiKey = '';
-  if (needsStitchMcp()) {
+  if (needsMcp) {
     log('');
     log('Stitch MCP needs to be configured.');
     log('Stitch is a remote MCP server — it needs an API key to authenticate.');
@@ -447,63 +779,32 @@ async function install() {
     }
   }
 
-  if (claude) installClaudeCode(apiKey);
-  if (codex) installCodex(apiKey);
+  // Install for each detected client
+  for (const client of detected) {
+    installClient(client, apiKey);
+  }
 
+  // Summary
   log('');
   log('════════════════════════════════');
   log('Done.');
-  if (claude && codex) {
-    log('Installed for both Claude Code and Codex CLI.');
-  } else if (claude) {
-    log('Installed for Claude Code.');
-  } else {
-    log('Installed for Codex CLI.');
-  }
+  const names = detected.map(c => c.name).join(', ');
+  log(`Installed for: ${names}`);
   log('');
 }
 
-// ── Uninstall ──────────────────────────────────────────────────────────────────
-
+/**
+ * Uninstall stitch-kit from all detected platforms.
+ * Removes agents and skills. Leaves MCP config in place.
+ */
 function uninstall() {
   log(`stitch-kit v${VERSION} — uninstaller`);
   log('══════════════════════════════════');
 
-  // Claude Code — remove agent only (plugin managed separately)
-  const claudeAgent = join(CLAUDE_AGENTS_DIR, 'stitch-kit.md');
-  if (existsSync(claudeAgent)) {
-    rmSync(claudeAgent);
-    logOk('Removed Claude Code agent');
-  }
-
-  if (isPluginInstalled()) {
-    logWarn('stitch-kit plugin is still installed in Claude Code.');
-    log('  To remove it, run inside Claude Code: /plugin uninstall stitch-kit');
-  }
-
-  // Codex — remove agent + all stitch skills
-  const codexAgent = join(CODEX_AGENTS_DIR, 'stitch-kit.md');
-  if (existsSync(codexAgent)) {
-    rmSync(codexAgent);
-    logOk('Removed Codex agent');
-  }
-
-  const skills = listSkills();
-  let removed = 0;
-  for (const skillName of skills) {
-    const dest = join(CODEX_SKILLS_DIR, skillName);
-    if (existsSync(dest)) {
-      if (lstatSync(dest).isSymbolicLink()) {
-        unlinkSync(dest);
-      } else {
-        rmSync(dest, { recursive: true, force: true });
-      }
-      removed++;
+  for (const client of CLIENTS) {
+    if (client.detect()) {
+      uninstallClient(client);
     }
-  }
-
-  if (removed > 0) {
-    logOk(`Removed ${removed} Codex skills`);
   }
 
   log('');
@@ -511,63 +812,22 @@ function uninstall() {
   log('');
 }
 
-// ── Status ─────────────────────────────────────────────────────────────────────
-
+/**
+ * Show installation status for all platforms.
+ * Shows both detected and undetected platforms.
+ */
 function status() {
   log(`stitch-kit v${VERSION} — status`);
   log('══════════════════════════════');
 
-  log('');
-  log('Claude Code');
-  log('───────────');
-  if (!hasClaudeCode()) {
-    logWarn('Not installed (~/.claude/ not found)');
-  } else {
-    const agentExists = existsSync(join(CLAUDE_AGENTS_DIR, 'stitch-kit.md'));
-    const pluginExists = isPluginInstalled();
-
-    if (agentExists) logOk('Agent: installed');
-    else logWarn('Agent: not installed');
-
-    if (pluginExists) logOk('Plugin: installed (skills delivered via plugin)');
-    else logWarn('Plugin: not installed (skills not available — run /plugin install)');
-
-    if (isStitchMcpConfigured('claude')) logOk('Stitch MCP: configured');
-    else logWarn('Stitch MCP: not configured — run npx @booplex/stitch-kit to add it');
-  }
-
-  log('');
-  log('Codex CLI');
-  log('─────────');
-  if (!hasCodex()) {
-    logWarn('Not installed (~/.codex/ not found)');
-  } else {
-    const agentExists = existsSync(join(CODEX_AGENTS_DIR, 'stitch-kit.md'));
-    if (agentExists) logOk('Agent: installed');
-    else logWarn('Agent: not installed');
-
-    if (isStitchMcpConfigured('codex')) logOk('Stitch MCP: configured');
-    else logWarn('Stitch MCP: not configured — run npx @booplex/stitch-kit to add it');
-
-    // Count installed skills
-    const skills = listSkills();
-    let installedCount = 0;
-    for (const s of skills) {
-      if (existsSync(join(CODEX_SKILLS_DIR, s))) installedCount++;
-    }
-    if (installedCount === skills.length) {
-      logOk(`Skills: ${installedCount}/${skills.length} installed`);
-    } else if (installedCount > 0) {
-      logWarn(`Skills: ${installedCount}/${skills.length} installed (outdated — run npx @booplex/stitch-kit update)`);
-    } else {
-      logWarn('Skills: none installed');
-    }
+  for (const client of CLIENTS) {
+    statusClient(client);
   }
 
   log('');
 }
 
-// ── CLI entry point ────────────────────────────────────────────────────────────
+// ── CLI entry point ─────────────────────────────────────────────────────────────
 
 const command = process.argv[2] || 'install';
 
@@ -599,9 +859,16 @@ switch (command) {
     log('  uninstall Remove stitch-kit from all platforms');
     log('  status    Show what is installed where');
     log('');
-    log('Platforms detected automatically:');
-    log('  Claude Code  ~/.claude/agents/ + plugin system');
-    log('  Codex CLI    ~/.codex/agents/ + ~/.codex/skills/');
+    log('Supported platforms (auto-detected):');
+    for (const c of CLIENTS) {
+      const features = [];
+      if (c.agentDir) features.push('agent');
+      if (c.skillsDir) features.push('skills');
+      if (c.mcp) features.push('MCP');
+      if (c.isExtensionBased) features.push('extension');
+      if (c.id === 'claude-code') features.push('plugin');
+      log(`  ${c.name.padEnd(14)} ${features.join(' + ')}`);
+    }
     log('');
     break;
   default:
