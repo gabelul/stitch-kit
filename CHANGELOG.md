@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.6.1](https://github.com/gabelul/stitch-kit/compare/v1.6.0...v1.6.1) (2026-02-25)
+
+
+### Bug Fixes
+
+* upgrade Node to 22 and npm to latest for OIDC trusted publishing ([08bcd7e](https://github.com/gabelul/stitch-kit/commit/08bcd7e4374fdb45042b9205a046a91de33b1ab3))
+
 ## [1.6.0](https://github.com/gabelul/stitch-kit/compare/v1.5.0...v1.6.0) (2026-02-25)
 
 
