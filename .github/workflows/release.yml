@@ -1,10 +1,11 @@
-# release.yml — stitch-kit automated releases
+# release.yml — stitch-kit automated releases + npm publish
 #
 # Uses release-please to automate versioning based on conventional commits.
 # How it works:
 #   1. Every push to main is analyzed for conventional commits (feat, fix, etc.)
 #   2. release-please opens a "Release PR" with the version bump + CHANGELOG update
 #   3. When you merge the Release PR, it creates a GitHub release + tag automatically
+#   4. If a release was created, publishes to npm via OIDC trusted publishing (no token)
 #
 # Version bump rules (from conventional commits):
 #   feat:            → minor bump (1.3.0 → 1.4.0)
@@ -12,8 +13,15 @@
 #   BREAKING CHANGE: → major bump (1.3.0 → 2.0.0)
 #
 # Files that get their version bumped automatically:
+#   - package.json                    (version field)
 #   - .claude-plugin/plugin.json      (version field)
 #   - .claude-plugin/marketplace.json (metadata.version field)
+#
+# npm publishing uses OIDC trusted publishing — no NPM_TOKEN secret required.
+# One-time setup on npmjs.com:
+#   1. Go to https://www.npmjs.com/package/@booplex/stitch-kit/access
+#   2. Under "Publishing access", click "Add trusted publisher"
+#   3. Set: owner=gabelul, repo=stitch-kit, workflow=release.yml, environment=npm
 #
 # See release-please-config.json for full configuration.
 
@@ -31,9 +39,32 @@ jobs:
   release-please:
     name: Create or update release PR
     runs-on: ubuntu-latest
+    outputs:
+      release_created: ${{ steps.release.outputs.release_created }}
     steps:
       - uses: googleapis/release-please-action@v4
+        id: release
         with:
           release-type: simple
           config-file: release-please-config.json
           manifest-file: .release-please-manifest.json
+
+  publish-npm:
+    name: Publish to npm
+    needs: release-please
+    if: ${{ needs.release-please.outputs.release_created }}
+    runs-on: ubuntu-latest
+    environment: npm
+    permissions:
+      contents: read
+      id-token: write  # OIDC trusted publishing — no NPM_TOKEN needed
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: https://registry.npmjs.org
+
+      # Trusted publishing handles auth via OIDC — provenance is automatic
+      - run: npm publish --provenance --access public

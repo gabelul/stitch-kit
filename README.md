@@ -13,13 +13,13 @@ I built this because Stitch MCP generates beautiful screens, and then... you're 
 ### Quick install (both platforms)
 
 ```bash
-npx stitch-kit
+npx @booplex/stitch-kit
 ```
 
 Auto-detects Claude Code and/or Codex CLI and installs to the right places. Also tells you if Stitch MCP needs configuring.
 
-To update later: `npx stitch-kit update` (npx always fetches the latest version).
-To check what's installed: `npx stitch-kit status`.
+To update later: `npx @booplex/stitch-kit update` (npx always fetches the latest version).
+To check what's installed: `npx @booplex/stitch-kit status`.
 
 ### Claude Code (plugin)
 
@@ -41,7 +41,7 @@ Restart Claude Code. The `stitch-kit` agent activates automatically when you des
 ### Codex CLI
 
 ```bash
-npx stitch-kit
+npx @booplex/stitch-kit
 ```
 
 Or clone and run the installer manually:

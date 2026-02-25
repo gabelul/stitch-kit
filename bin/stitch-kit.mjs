@@ -7,11 +7,11 @@
  * Detects which platforms are available and installs to the right locations.
  *
  * Usage:
- *   npx stitch-kit              — install (default)
- *   npx stitch-kit install      — install or update
- *   npx stitch-kit update       — same as install (npx always fetches latest)
- *   npx stitch-kit uninstall    — remove stitch-kit from all platforms
- *   npx stitch-kit status       — show what's installed where
+ *   npx @booplex/stitch-kit              — install (default)
+ *   npx @booplex/stitch-kit install      — install or update
+ *   npx @booplex/stitch-kit update       — same as install (npx always fetches latest)
+ *   npx @booplex/stitch-kit uninstall    — remove stitch-kit from all platforms
+ *   npx @booplex/stitch-kit status       — show what's installed where
  *
  * Platforms:
  *   Claude Code — agent → ~/.claude/agents/, MCP config, plugin recommendation
@@ -377,7 +377,7 @@ function status() {
     if (installedCount === skills.length) {
       logOk(`Skills: ${installedCount}/${skills.length} installed`);
     } else if (installedCount > 0) {
-      logWarn(`Skills: ${installedCount}/${skills.length} installed (outdated — run npx stitch-kit update)`);
+      logWarn(`Skills: ${installedCount}/${skills.length} installed (outdated — run npx @booplex/stitch-kit update)`);
     } else {
       logWarn('Skills: none installed');
     }
@@ -410,7 +410,7 @@ switch (command) {
   case '-h':
     log(`stitch-kit v${VERSION}`);
     log('');
-    log('Usage: npx stitch-kit [command]');
+    log('Usage: npx @booplex/stitch-kit [command]');
     log('');
     log('Commands:');
     log('  install   Install or update stitch-kit (default)');
@@ -425,6 +425,6 @@ switch (command) {
     break;
   default:
     logErr(`Unknown command: ${command}`);
-    log('Run: npx stitch-kit --help');
+    log('Run: npx @booplex/stitch-kit --help');
     process.exit(1);
 }
