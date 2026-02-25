@@ -18,10 +18,12 @@
  *   Codex CLI   — agent → ~/.codex/agents/, skills → ~/.codex/skills/
  */
 
-import { existsSync, mkdirSync, cpSync, rmSync, readFileSync, readdirSync, lstatSync, symlinkSync, unlinkSync } from 'node:fs';
+import { existsSync, mkdirSync, cpSync, rmSync, readFileSync, writeFileSync, readdirSync, lstatSync, symlinkSync, unlinkSync } from 'node:fs';
 import { join, dirname, resolve } from 'node:path';
 import { homedir } from 'node:os';
 import { fileURLToPath } from 'node:url';
+import { execSync } from 'node:child_process';
+import { createInterface } from 'node:readline';
 
 // ── Constants ──────────────────────────────────────────────────────────────────
 
@@ -82,6 +84,154 @@ function isPluginInstalled() {
 }
 
 /**
+ * Prompt the user for input via stdin.
+ * @param {string} question - The question to display
+ * @returns {Promise<string>} The user's input (trimmed)
+ */
+function prompt(question) {
+  const rl = createInterface({ input: process.stdin, output: process.stdout });
+  return new Promise((resolve) => {
+    rl.question(question, (answer) => {
+      rl.close();
+      resolve(answer.trim());
+    });
+  });
+}
+
+/**
+ * Check if Stitch MCP is configured for a platform, and install it if not.
+ * Prompts for optional API key when installing.
+ * @param {'claude' | 'codex'} platform - Which platform to check/configure
+ * @param {string} [apiKey] - Optional Stitch API key (shared across platforms)
+ * @returns {'already' | 'installed' | 'failed'} Result of the check/install
+ */
+function checkAndInstallStitchMcp(platform, apiKey) {
+  if (platform === 'claude') {
+    // Check settings.json for MCP config (user-level)
+    const settingsFile = join(CLAUDE_DIR, 'settings.json');
+    if (existsSync(settingsFile)) {
+      try {
+        const settings = JSON.parse(readFileSync(settingsFile, 'utf8'));
+        if (settings.mcpServers && 'stitch' in settings.mcpServers) {
+          return 'already';
+        }
+      } catch { /* ignore parse errors */ }
+    }
+
+    // Also check project-level .mcp.json
+    const mcpJson = join(process.cwd(), '.mcp.json');
+    if (existsSync(mcpJson)) {
+      try {
+        const mcp = JSON.parse(readFileSync(mcpJson, 'utf8'));
+        if (mcp.mcpServers && 'stitch' in mcp.mcpServers) {
+          return 'already';
+        }
+      } catch { /* ignore */ }
+    }
+
+    // Not configured — write directly to settings.json (user scope)
+    // We write directly because `claude mcp add` defaults to local scope
+    // and can behave unexpectedly when run outside a project directory.
+    try {
+      let settings = {};
+      if (existsSync(settingsFile)) {
+        settings = JSON.parse(readFileSync(settingsFile, 'utf8'));
+      }
+      if (!settings.mcpServers) settings.mcpServers = {};
+
+      const mcpConfig = {
+        command: 'npx',
+        args: ['-y', '@google/stitch-mcp'],
+      };
+
+      // Add API key as environment variable if provided
+      if (apiKey) {
+        mcpConfig.env = { STITCH_API_KEY: apiKey };
+      }
+
+      settings.mcpServers.stitch = mcpConfig;
+      writeFileSync(settingsFile, JSON.stringify(settings, null, 2) + '\n');
+      return 'installed';
+    } catch {
+      return 'failed';
+    }
+  }
+
+  if (platform === 'codex') {
+    // Check config.toml for stitch MCP
+    const configFile = join(CODEX_DIR, 'config.toml');
+    if (existsSync(configFile)) {
+      try {
+        const content = readFileSync(configFile, 'utf8');
+        if (content.includes('[mcp_servers.stitch]')) {
+          return 'already';
+        }
+      } catch { /* ignore */ }
+    }
+
+    // Not configured — append the stitch MCP block to config.toml
+    try {
+      let stitchBlock = `\n[mcp_servers.stitch]\ncommand = "npx"\nargs = ["-y", "@google/stitch-mcp"]\n`;
+
+      // Add API key as environment variable if provided
+      if (apiKey) {
+        stitchBlock += `\n[mcp_servers.stitch.env]\nSTITCH_API_KEY = "${apiKey}"\n`;
+      }
+
+      if (existsSync(configFile)) {
+        const content = readFileSync(configFile, 'utf8');
+        writeFileSync(configFile, content + stitchBlock);
+      } else {
+        mkdirSync(CODEX_DIR, { recursive: true });
+        writeFileSync(configFile, stitchBlock.trimStart());
+      }
+      return 'installed';
+    } catch {
+      return 'failed';
+    }
+  }
+
+  return 'failed';
+}
+
+/**
+ * Check if Stitch MCP is configured (read-only, for status command).
+ * @param {'claude' | 'codex'} platform
+ * @returns {boolean}
+ */
+function isStitchMcpConfigured(platform) {
+  if (platform === 'claude') {
+    const settingsFile = join(CLAUDE_DIR, 'settings.json');
+    if (existsSync(settingsFile)) {
+      try {
+        const settings = JSON.parse(readFileSync(settingsFile, 'utf8'));
+        if (settings.mcpServers && 'stitch' in settings.mcpServers) return true;
+      } catch { /* ignore */ }
+    }
+    const mcpJson = join(process.cwd(), '.mcp.json');
+    if (existsSync(mcpJson)) {
+      try {
+        const mcp = JSON.parse(readFileSync(mcpJson, 'utf8'));
+        if (mcp.mcpServers && 'stitch' in mcp.mcpServers) return true;
+      } catch { /* ignore */ }
+    }
+    return false;
+  }
+
+  if (platform === 'codex') {
+    const configFile = join(CODEX_DIR, 'config.toml');
+    if (existsSync(configFile)) {
+      try {
+        return readFileSync(configFile, 'utf8').includes('[mcp_servers.stitch]');
+      } catch { /* ignore */ }
+    }
+    return false;
+  }
+
+  return false;
+}
+
+/**
  * Copy a file, creating parent directories as needed.
  * Returns true if the file was written, false if skipped.
  */
@@ -123,7 +273,11 @@ function listSkills() {
 
 // ── Install ────────────────────────────────────────────────────────────────────
 
-function installClaudeCode() {
+/**
+ * Install stitch-kit for Claude Code.
+ * @param {string} [apiKey] - Optional Stitch API key for MCP config
+ */
+function installClaudeCode(apiKey) {
   log('');
   log('Claude Code');
   log('───────────');
@@ -138,34 +292,24 @@ function installClaudeCode() {
     logOk(`Agent installed → ${agentDest}`);
   }
 
-  // Check if Stitch MCP is configured by reading the settings file directly
-  let mcpConfigured = false;
-  const claudeSettingsFile = join(CLAUDE_DIR, 'settings.json');
-  if (existsSync(claudeSettingsFile)) {
-    try {
-      const settings = JSON.parse(readFileSync(claudeSettingsFile, 'utf8'));
-      mcpConfigured = settings.mcpServers && 'stitch' in settings.mcpServers;
-    } catch { /* ignore parse errors */ }
-  }
-  // Also check project-level .mcp.json in common locations
-  if (!mcpConfigured) {
-    const mcpJson = join(process.cwd(), '.mcp.json');
-    if (existsSync(mcpJson)) {
-      try {
-        const mcp = JSON.parse(readFileSync(mcpJson, 'utf8'));
-        mcpConfigured = mcp.mcpServers && 'stitch' in mcp.mcpServers;
-      } catch { /* ignore */ }
-    }
-  }
+  // Check and auto-configure Stitch MCP
+  const mcpStatus = checkAndInstallStitchMcp('claude', apiKey);
 
-  if (!mcpConfigured) {
+  if (mcpStatus === 'installed') {
+    logOk('Stitch MCP configured automatically');
+    if (!apiKey) {
+      log('');
+      log('  Sign in at https://stitch.withgoogle.com to complete Google auth.');
+      log('  (Or re-run with an API key: npx @booplex/stitch-kit install)');
+    }
+  } else if (mcpStatus === 'already') {
+    logOk('Stitch MCP already configured');
+  } else {
+    logWarn('Could not auto-configure Stitch MCP');
     log('');
-    log('  Stitch MCP not detected. To add it, run in your terminal:');
-    log('');
+    log('  Add it manually:');
     log('    claude mcp add stitch -- npx -y @google/stitch-mcp');
     log('');
-  } else {
-    logOk('Stitch MCP already configured');
   }
 
   // Skills: plugin system is the right path for Claude Code
@@ -186,7 +330,11 @@ function installClaudeCode() {
   }
 }
 
-function installCodex() {
+/**
+ * Install stitch-kit for Codex CLI.
+ * @param {string} [apiKey] - Optional Stitch API key for MCP config
+ */
+function installCodex(apiKey) {
   log('');
   log('Codex CLI');
   log('─────────');
@@ -229,25 +377,25 @@ function installCodex() {
 
   logOk(`${installed} skills installed, ${updated} updated (${skills.length} total)`);
 
-  // Check Stitch MCP in codex config
-  const codexConfig = join(CODEX_DIR, 'config.toml');
-  let mcpConfigured = false;
-  if (existsSync(codexConfig)) {
-    try {
-      const content = readFileSync(codexConfig, 'utf8');
-      mcpConfigured = content.includes('stitch');
-    } catch { /* ignore */ }
-  }
+  // Check and auto-configure Stitch MCP for Codex
+  const mcpStatus = checkAndInstallStitchMcp('codex', apiKey);
 
-  if (!mcpConfigured) {
+  if (mcpStatus === 'installed') {
+    logOk('Stitch MCP configured automatically in config.toml');
+    if (!apiKey) {
+      log('');
+      log('  Sign in at https://stitch.withgoogle.com to complete Google auth.');
+    }
+  } else if (mcpStatus === 'already') {
+    logOk('Stitch MCP already in config.toml');
+  } else {
+    logWarn('Could not auto-configure Stitch MCP');
     log('');
-    log('  Add Stitch MCP to ~/.codex/config.toml:');
+    log('  Add it manually to ~/.codex/config.toml:');
     log('');
     log('    [mcp_servers.stitch]');
     log('    command = "npx"');
     log('    args = ["-y", "@google/stitch-mcp"]');
-  } else {
-    logOk('Stitch MCP already in config.toml');
   }
 
   log('');
@@ -255,7 +403,17 @@ function installCodex() {
   log('  Use $stitch-orchestrator for the full pipeline');
 }
 
-function install() {
+/**
+ * Check if Stitch MCP needs installing on any detected platform.
+ * @returns {boolean} True if at least one platform needs MCP configured
+ */
+function needsStitchMcp() {
+  if (hasClaudeCode() && !isStitchMcpConfigured('claude')) return true;
+  if (hasCodex() && !isStitchMcpConfigured('codex')) return true;
+  return false;
+}
+
+async function install() {
   log(`stitch-kit v${VERSION} — installer`);
   log('════════════════════════════════');
 
@@ -272,8 +430,24 @@ function install() {
     process.exit(1);
   }
 
-  if (claude) installClaudeCode();
-  if (codex) installCodex();
+  // Prompt for Stitch API key if MCP needs configuring
+  let apiKey = '';
+  if (needsStitchMcp()) {
+    log('');
+    log('Stitch MCP needs to be configured.');
+    log('You can authenticate with a Stitch API key, or skip to use Google OAuth instead.');
+    log('(Get your key at https://stitch.withgoogle.com → Settings → API Keys)');
+    log('');
+    apiKey = await prompt('  Stitch API key (press Enter to skip): ');
+    if (apiKey) {
+      logOk('API key provided — will configure for all platforms');
+    } else {
+      logSkip('No API key — will use Google OAuth (sign in at stitch.withgoogle.com after install)');
+    }
+  }
+
+  if (claude) installClaudeCode(apiKey);
+  if (codex) installCodex(apiKey);
 
   log('');
   log('════════════════════════════════');
@@ -356,6 +530,9 @@ function status() {
 
     if (pluginExists) logOk('Plugin: installed (skills delivered via plugin)');
     else logWarn('Plugin: not installed (skills not available — run /plugin install)');
+
+    if (isStitchMcpConfigured('claude')) logOk('Stitch MCP: configured');
+    else logWarn('Stitch MCP: not configured — run npx @booplex/stitch-kit to add it');
   }
 
   log('');
@@ -367,6 +544,9 @@ function status() {
     const agentExists = existsSync(join(CODEX_AGENTS_DIR, 'stitch-kit.md'));
     if (agentExists) logOk('Agent: installed');
     else logWarn('Agent: not installed');
+
+    if (isStitchMcpConfigured('codex')) logOk('Stitch MCP: configured');
+    else logWarn('Stitch MCP: not configured — run npx @booplex/stitch-kit to add it');
 
     // Count installed skills
     const skills = listSkills();
@@ -393,7 +573,7 @@ const command = process.argv[2] || 'install';
 switch (command) {
   case 'install':
   case 'update':
-    install();
+    await install();
     break;
   case 'uninstall':
   case 'remove':

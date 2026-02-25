@@ -10,48 +10,58 @@ I built this because Stitch MCP generates beautiful screens, and then... you're 
 
 ## Install
 
-### Quick install (both platforms)
+### Quick install (recommended)
 
 ```bash
 npx @booplex/stitch-kit
 ```
 
-Auto-detects Claude Code and/or Codex CLI and installs to the right places. Also tells you if Stitch MCP needs configuring.
+This single command handles everything:
+- Auto-detects Claude Code and/or Codex CLI
+- Installs the agent definition and skills
+- **Configures Stitch MCP automatically** (the Google generation API)
+- Checks for the Claude Code plugin and tells you how to add it
 
-To update later: `npx @booplex/stitch-kit update` (npx always fetches the latest version).
-To check what's installed: `npx @booplex/stitch-kit status`.
+To update: `npx @booplex/stitch-kit update` (npx always fetches the latest).
+To check status: `npx @booplex/stitch-kit status`.
 
-### Claude Code (plugin)
+After installing, sign in at [stitch.withgoogle.com](https://stitch.withgoogle.com) to complete Google auth.
 
-Stitch MCP first (it's what actually talks to Google's generation API):
+### Claude Code plugin (optional, adds skills)
 
-```bash
-claude mcp add stitch -- npx -y @google/stitch-mcp
-```
-
-Sign in at [stitch.withgoogle.com](https://stitch.withgoogle.com) to do the Google auth thing. Then the plugin:
+The NPX installer sets up the agent and MCP. For full skill support (prompt engineering, design tokens, framework conversion), also install the plugin inside Claude Code:
 
 ```bash
 /plugin marketplace add https://github.com/gabelul/stitch-kit.git
 /plugin install stitch-kit@stitch-kit
 ```
 
-Restart Claude Code. The `stitch-kit` agent activates automatically when you describe Stitch tasks — it may not appear in the Plugin agents list depending on your Claude Code version, but it works when invoked.
+The agent works standalone with MCP tools, but skills add structured workflows for better output quality.
 
-### Codex CLI
+### Manual setup (if you prefer)
+
+<details>
+<summary>Claude Code — manual steps</summary>
 
 ```bash
-npx @booplex/stitch-kit
-```
+# 1. Add Stitch MCP
+claude mcp add stitch -- npx -y @google/stitch-mcp
 
-Or clone and run the installer manually:
+# 2. Install the plugin (inside Claude Code)
+/plugin marketplace add https://github.com/gabelul/stitch-kit.git
+/plugin install stitch-kit@stitch-kit
+```
+</details>
+
+<details>
+<summary>Codex CLI — manual steps</summary>
 
 ```bash
 git clone https://github.com/gabelul/stitch-kit.git
 cd stitch-kit && bash install-codex.sh
 ```
 
-Then wire up Stitch MCP in `~/.codex/config.toml`:
+Then add Stitch MCP to `~/.codex/config.toml`:
 
 ```toml
 [mcp_servers.stitch]
@@ -59,7 +69,8 @@ command = "npx"
 args = ["-y", "@google/stitch-mcp"]
 ```
 
-Use `$stitch-kit` to activate the agent or `$stitch-orchestrator` to go straight to the pipeline.
+Use `$stitch-kit` to activate the agent or `$stitch-orchestrator` for the full pipeline.
+</details>
 
 ---
 
