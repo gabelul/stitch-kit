@@ -5,14 +5,14 @@
   },
   "metadata": {
     "description": "The Claude Code plugin that turns Stitch into a full development workflow — prompt engineering, all 14 MCP wrappers, design tokens, design systems, and production-ready components for Next.js, Svelte, React, React Native, SwiftUI, and HTML.",
-    "version": "1.5.0"
+    "version": "1.6.0"
   },
   "plugins": [
     {
       "name": "stitch-kit",
       "description": "Everything — all 34 skills in one install.",
       "source": "./",
-      "strict": false,
+      "strict": true,
       "skills": [
         "./skills/stitch-orchestrator",
         "./skills/stitch-ui-design-spec-generator",
