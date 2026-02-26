@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.6.2](https://github.com/gabelul/stitch-kit/compare/v1.6.1...v1.6.2) (2026-02-26)
+
+
+### Bug Fixes
+
+* resolve plugin conflicting manifests error ([805586e](https://github.com/gabelul/stitch-kit/commit/805586e871d7ca17b40900ee8571d737c0d0d78c))
+
 ## [1.6.1](https://github.com/gabelul/stitch-kit/compare/v1.6.0...v1.6.1) (2026-02-25)
 
 
