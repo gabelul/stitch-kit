@@ -1,6 +1,6 @@
 {
   "name": "@booplex/stitch-kit",
-  "version": "1.6.2",
+  "version": "1.7.0",
   "description": "AI UI design to production code — Stitch MCP skills for Claude Code and Codex CLI. Generates screens, iterates designs, extracts tokens, converts to Next.js, Svelte, React, React Native, SwiftUI, or HTML.",
   "bin": {
     "stitch-kit": "./bin/stitch-kit.mjs"
