@@ -11,7 +11,7 @@ Generates a UI design screen from a structured text prompt. This is the central 
 
 ## Critical prerequisite
 
-**Only use this skill when the user explicitly mentions "Stitch".**
+**Only use this skill when the user explicitly mentions "Stitch" or when called from an upstream skill (e.g. stitch-ideate, stitch-orchestrator).**
 
 You must have a `projectId` before calling this. If you don't have one:
 - Create a new project via `stitch-mcp-create-project`
@@ -88,12 +88,35 @@ Before calling this tool, verify the prompt:
 - [ ] Uses realistic content (not Lorem Ipsum)
 - [ ] Specifies light or dark mode explicitly
 
+## Batch generation from full PRDs
+
+When the prompt is a **complete PRD document** (product overview, design system, multiple screen specifications, build guide), Stitch will generate **multiple screens in a single call** — not just one. Stitch generates up to 10 screens per call. A PRD with 8 screen specs typically produces 5-7 screens automatically.
+
+This is the same mechanism Stitch's web Ideate uses for "generate all screens". The PRD format acts as a comprehensive prompt that Stitch decomposes internally.
+
+**How to use batch generation:**
+1. Send the full PRD text as the `prompt` parameter
+2. Stitch generates up to ~10 screens per call from a multi-screen PRD
+3. Two possible outcomes depending on whether the MCP response times out:
+
+   **If response returns with data:**
+   - Check `output_components` for continuation suggestions (e.g. "Yes, make them all", "Generate remaining screens")
+   - Automatically call `generate_screen_from_text` again with the suggestion text as the `prompt` — the user already initiated generation, no need to re-confirm
+   - Repeat until no more `output_components` suggestions appear (max 3 continuation calls to prevent infinite loops)
+
+   **If response returns empty (HTTP timeout):**
+   - Generation is still running server-side — do NOT retry
+   - Wait 90-120 seconds, then call `list_screens` to discover what was generated
+   - If empty, wait another 60 seconds and retry the list call
+   - Generate any missing screens individually with focused prompts referencing the PRD's design system
+
 ## Timing
 
-Stitch generation takes 60–180 seconds. This is normal behavior, not a timeout.
+Stitch generation takes 60–180 seconds for single screens and up to 5 minutes for multi-screen PRD generation. This is normal behavior, not a timeout.
 - Do NOT retry during this window
 - Do NOT assume failure if it takes > 60 seconds
-- If it fails: wait 60 seconds, retry ONCE max
+- The MCP tool may return empty for long generations — check `list_screens` afterward
+- If it fails: wait 90 seconds, check `list_screens`, retry ONCE max if nothing appeared
 - Each call creates a new generation — retries mean duplicate screens
 
 ## References

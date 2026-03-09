@@ -43,6 +43,54 @@ Note the tool namespace prefix (e.g., `stitch:` or `mcp__stitch__`). Use this pr
 
 Execute all steps autonomously. **Do not ask for confirmation between steps.** Report progress as you go.
 
+### Step 0.5: Ideation gate (smart detection)
+
+Before running the spec generator, score the user's request to determine if it needs ideation.
+
+**Specificity scoring — check for these signals:**
+
+| Signal | Points | Example |
+|--------|--------|---------|
+| Hex color mentioned (`#3B82F6`) | +2 | "indigo primary #6366F1" |
+| Font specified | +2 | "use Inter" |
+| Layout described | +2 | "sidebar nav with main content area" |
+| Screen type named | +1 | "dashboard", "login page", "settings" |
+| Device specified | +1 | "mobile app", "desktop" |
+| Component details | +1 | "data table with sortable columns" |
+| Design style named | +1 | "glassmorphism", "brutalist", "minimal" |
+| Uncertain language | -2 | "maybe", "something like", "not sure", "I think" |
+| Research request | -3 | "analyze", "look at trends", "find examples of" |
+| Explicit ideation | -5 | "ideate", "brainstorm", "explore ideas", "help me figure out" |
+
+**Routing logic:**
+
+| Score | Route |
+|-------|-------|
+| **6+** | **Direct generation** — request is specific enough. Proceed to Step 1 → Steps 2-3 (spec + prompt). |
+| **2-5** | **Offer choice** — request has some detail but gaps remain. Ask: "Want to ideate first or generate directly?" |
+| **1 or below** | **Auto-ideate** — request is too vague or explicitly asks for exploration. Route to `stitch-ideate` directly. |
+
+**Offer ideation (score 2-5):**
+> "You've got a direction but some pieces are missing (like [specific gaps — colors, layout, screens]). Want to:
+> **A)** Ideate first — I'll ask a few questions to nail down the gaps before generating
+> **B)** Generate directly — I'll fill in the blanks with smart defaults and we'll iterate after"
+
+**Auto-ideate (score 1 or below):**
+> "Let me help you explore this idea before generating anything. A few questions..."
+> Route to `stitch-ideate` directly — no need to ask.
+
+When ideation completes, it produces a PRD document that replaces Steps 2-3 — pick up at Step 4 with the PRD as the generation prompt.
+
+**Examples:**
+
+| Request | Score | Route |
+|---------|-------|-------|
+| "Dark dashboard, sidebar nav, indigo #6366F1, Inter font, KPI cards" | 9 | Direct generation |
+| "A SaaS dashboard for project management" | 3 | Offer choice |
+| "Make something for tracking expenses" | 1 | Auto-ideate |
+| "Analyze the top 3 checkout flows and design one for me" | -2 | Auto-ideate (research) |
+| "I want to explore ideas for a meditation app" | -4 | Auto-ideate (explicit) |
+
 ### Step 1: Classify intent
 
 Determine what the user wants:

@@ -10,11 +10,12 @@
   "plugins": [
     {
       "name": "stitch-kit",
-      "description": "Everything — all 34 skills in one install.",
+      "description": "Everything — all 35 skills in one install.",
       "source": "./",
       "strict": true,
       "skills": [
         "./skills/stitch-orchestrator",
+        "./skills/stitch-ideate",
         "./skills/stitch-ui-design-spec-generator",
         "./skills/stitch-ui-prompt-architect",
         "./skills/stitch-ui-design-variants",

@@ -4,7 +4,7 @@ The Claude Code plugin for AI UI design — generate screens with Stitch MCP and
 
 I built this because Stitch MCP generates beautiful screens, and then... you're on your own. The raw output is HTML. Getting it into Next.js with dark mode, proper TypeScript, design tokens, and accessibility? That's the part nobody talks about. So I built the pipeline that handles it.
 
-34 skills. One entry point. Covers the full trip from "describe a UI" to production-ready components in Next.js, Svelte, React, React Native, SwiftUI, or plain HTML. Works in Claude Code and Codex CLI.
+35 skills. One entry point. Covers the full trip from "describe a UI" to production-ready components in Next.js, Svelte, React, React Native, SwiftUI, or plain HTML. Works in Claude Code and Codex CLI.
 
 ---
 
@@ -22,8 +22,15 @@ This single command handles everything:
 - **Configures Stitch MCP automatically** (the Google generation API)
 - Checks for the Claude Code plugin and tells you how to add it
 
-To update: `npx @booplex/stitch-kit update` (npx always fetches the latest).
-To check status: `npx @booplex/stitch-kit status`.
+To update:  (npx always fetches the latest).
+```bash
+npx @booplex/stitch-kit update
+```
+
+To check status: 
+```bash
+npx @booplex/stitch-kit status.
+```
 
 After installing, sign in at [stitch.withgoogle.com](https://stitch.withgoogle.com) to complete Google auth.
 
@@ -81,8 +88,8 @@ Use `$stitch-kit` to activate the agent or `$stitch-orchestrator` for the full p
 
 ## How it works
 
-1. You describe what you want to build
-2. `stitch-orchestrator` handles: spec → prompt → generate → retrieve → tokens → convert
+1. You describe what you want to build (or let `stitch-ideate` help you figure it out through conversation)
+2. `stitch-orchestrator` handles: ideate → spec → prompt → generate → retrieve → tokens → convert
 3. You get TypeScript components with dark mode, responsive layout, and ARIA — not vibes
 
 There's an agent definition (`agents/stitch-kit.md`) for both Claude Code and Codex — a Stitch-aware agent that knows the ID format quirks, routes to the right skill, and doesn't hallucinate MCP tool names.
@@ -95,7 +102,7 @@ Four layers. Each one exists for a reason.
 
 | Layer | What it is | What it does |
 |-------|------------|-------------|
-| **Brain** (`stitch-ui-*`) | Design intelligence | Spec generation, prompt engineering, design variants. No API calls, no cost. |
+| **Brain** (`stitch-ui-*`, `stitch-ideate`) | Design intelligence | Ideation agent, spec generation, prompt engineering, design variants. No API calls, no cost. |
 | **Hands** (`stitch-mcp-*`) | MCP wrappers | One skill per Stitch API tool (all 14). Handles the ID format mess so the orchestrator doesn't have to. |
 | **Quality** | Post-gen polish | Design tokens → CSS vars, WCAG 2.1 AA audit, animations with reduced-motion. |
 | **Loop** | Multi-page builds | `DESIGN.md` carries visual state between screens so your 5th screen looks like your 1st. |
@@ -166,7 +173,7 @@ The [official repo](https://github.com/google-labs-code/stitch-skills) has 6 ski
 
 ## Full skill reference
 
-All 34 skills with descriptions, layers, and the ID format table → [docs/skills-index.md](docs/skills-index.md)
+All 35 skills with descriptions, layers, and the ID format table → [docs/skills-index.md](docs/skills-index.md)
 
 MCP API schemas (JSON Schema for all 14 Stitch tools) → [docs/mcp-schemas/](docs/mcp-schemas/)
 

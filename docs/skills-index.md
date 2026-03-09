@@ -1,6 +1,6 @@
 # stitch-kit Skills Index
 
-Quick reference — all 34 skills organized by layer and stage.
+Quick reference — all 35 skills organized by layer and stage.
 
 **Layers:**
 - **Orchestrator** — entry point that coordinates other skills
@@ -17,6 +17,7 @@ Quick reference — all 34 skills organized by layer and stage.
 | Skill | Description | Layer | Stage |
 |-------|-------------|-------|-------|
 | `stitch-orchestrator` | End-to-end workflow: request → spec → prompt → generate → iterate → retrieve → convert → quality | Orchestrator | All |
+| `stitch-ideate` | Conversational design ideation agent — adaptive questioning → rich PRD document → auto-generate screens | Brain | Ideation |
 | `stitch-ui-design-spec-generator` | User request / PRD → structured Design Spec JSON (theme, color, font, device, density) | Brain | Design input |
 | `stitch-ui-prompt-architect` | Two paths: Path A (vague → enhanced) or Path B (spec + request → `[Context][Layout][Components]`) | Brain | Design input |
 | `stitch-ui-design-variants` | Generate 3 alternative prompt variants for A/B design exploration. Native API detection for `generate_variants` when available. | Brain | Variants |
