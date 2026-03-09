@@ -1,10 +1,12 @@
-# stitch-kit — AI UI design to production code, for Claude Code and Codex
+# stitch-kit — Give your coding agent design superpowers
 
-The Claude Code plugin for AI UI design — generate screens with Stitch MCP and convert them to something you can actually ship.
+Coding agents are incredible at building software. But ask Claude Code or Codex to *design* a UI and you get gray boxes with blue buttons. Meanwhile, Google's [Stitch](https://stitch.withgoogle.com) generates stunning, pixel-perfect screens from text — but it's just a raw MCP tool. No coding agent knows how to use it well.
 
-I built this because Stitch MCP generates beautiful screens, and then... you're on your own. The raw output is HTML. Getting it into Next.js with dark mode, proper TypeScript, design tokens, and accessibility? That's the part nobody talks about. So I built the pipeline that handles it.
+stitch-kit bridges the gap. It's a skill set that teaches AI coding agents how to think about design, use Stitch's full power, and turn the results into production code. Ideation, visual research, prompt engineering, multi-screen generation, design systems, iteration — and then conversion to real framework components when you're ready to ship.
 
-35 skills. One entry point. Covers the full trip from "describe a UI" to production-ready components in Next.js, Svelte, React, React Native, SwiftUI, or plain HTML. Works in Claude Code and Codex CLI.
+**The result:** You describe what you want. Your agent researches trends, proposes design directions, generates a full PRD, creates all the screens in Stitch (up to 10 per batch), iterates until it's right, and converts to production Next.js, Svelte, React, React Native, SwiftUI, or HTML. The whole pipeline, from "I have a vague idea" to shippable code.
+
+35 skills. Works in Claude Code, Codex CLI, and any agent that supports MCP.
 
 ---
 
@@ -36,7 +38,7 @@ After installing, sign in at [stitch.withgoogle.com](https://stitch.withgoogle.c
 
 ### Claude Code plugin (optional, adds skills)
 
-The NPX installer sets up the agent and MCP. For full skill support (prompt engineering, design tokens, framework conversion), also install the plugin inside Claude Code:
+The NPX installer sets up the agent and MCP. For the full skill set (ideation, prompt engineering, design systems, iteration, framework conversion), also install the plugin inside Claude Code:
 
 ```bash
 /plugin marketplace add https://github.com/gabelul/stitch-kit.git
@@ -88,26 +90,32 @@ Use `$stitch-kit` to activate the agent or `$stitch-orchestrator` for the full p
 
 ## How it works
 
-1. You describe what you want to build (or let `stitch-ideate` help you figure it out through conversation)
-2. `stitch-orchestrator` handles: ideate → spec → prompt → generate → retrieve → tokens → convert
-3. You get TypeScript components with dark mode, responsive layout, and ARIA — not vibes
+**The problem:** Stitch MCP is powerful but raw. Agents send it bad prompts, mess up ID formats, generate one screen at a time, and have no design taste. The output is HTML with no framework structure, no dark mode, no accessibility.
 
-There's an agent definition (`agents/stitch-kit.md`) for both Claude Code and Codex — a Stitch-aware agent that knows the ID format quirks, routes to the right skill, and doesn't hallucinate MCP tool names.
+**What stitch-kit does:**
+
+1. **Think** — `stitch-ideate` researches trends, analyzes competitors, and proposes 3 design directions with color palettes, typography, and mood. It does the design thinking your coding agent can't.
+2. **Generate** — `stitch-orchestrator` turns the design direction into a structured prompt, sends the full PRD to Stitch, and batch-generates up to 10 screens in one call. Handles all the MCP quirks (ID formats, timeouts, continuation loops) automatically.
+3. **Iterate** — Edit screens with text prompts, generate variants, apply design systems for consistency across screens. The agent knows when to use each tool.
+4. **Ship** — Convert to production components with dark mode, TypeScript, design tokens, and ARIA. Not a code dump — structured framework components you'd actually commit.
+
+There's an agent definition (`agents/stitch-kit.md`) for both Claude Code and Codex — a Stitch-aware agent that knows the full skill set, routes to the right tool, and doesn't hallucinate MCP names.
 
 ---
 
 ## Architecture
 
-Four layers. Each one exists for a reason.
+Five layers. Each one solves a real problem agents have with Stitch.
 
-| Layer | What it is | What it does |
-|-------|------------|-------------|
-| **Brain** (`stitch-ui-*`, `stitch-ideate`) | Design intelligence | Ideation agent, spec generation, prompt engineering, design variants. No API calls, no cost. |
-| **Hands** (`stitch-mcp-*`) | MCP wrappers | One skill per Stitch API tool (all 14). Handles the ID format mess so the orchestrator doesn't have to. |
-| **Quality** | Post-gen polish | Design tokens → CSS vars, WCAG 2.1 AA audit, animations with reduced-motion. |
-| **Loop** | Multi-page builds | `DESIGN.md` carries visual state between screens so your 5th screen looks like your 1st. |
+| Layer | Skills | What problem it solves |
+|-------|--------|----------------------|
+| **Orchestrator** | `stitch-orchestrator` | Agents don't know when to ideate vs. generate vs. iterate. The orchestrator scores request specificity and routes automatically. |
+| **Brain** (`stitch-ideate`, `stitch-ui-*`) | 5 skills | Agents write terrible Stitch prompts. The brain layer does design research, builds structured specs, and engineers prompts that produce quality output. |
+| **MCP Wrappers** (`stitch-mcp-*`) | 14 skills | Stitch uses inconsistent ID formats across tools (numeric vs `projects/ID`). Agents get this wrong constantly. Wrappers bake the rules in. |
+| **Conversion** | 9 skills | Stitch outputs raw HTML. These skills convert to production Next.js, Svelte, React, React Native, SwiftUI, or HTML with dark mode, tokens, and TypeScript. |
+| **Quality** | 4 skills | Generated UIs lack accessibility, animation, and design consistency. Quality skills add WCAG compliance, motion, and cross-screen visual coherence. |
 
-**Why do the MCP wrappers exist?** Because `generate_screen_from_text` and `get_screen` want numeric IDs, while `get_project` and `list_screens` want `projects/ID` — and agents get this wrong constantly. The wrappers bake the rules in so you don't have to think about it. (It's a small thing that ruins a lot of runs.)
+**Why do the MCP wrappers matter?** Because `generate_screen_from_text` wants `"3780309359108792857"` while `list_screens` wants `"projects/3780309359108792857"` — and every agent gets this wrong. It's a small thing that ruins a lot of runs.
 
 Details → [docs/architecture.md](docs/architecture.md)
 
@@ -129,7 +137,7 @@ Every skill tells the agent what it does and when to reach for it. The examples 
 
 ## vs. the official Google Stitch Skills
 
-The [official repo](https://github.com/google-labs-code/stitch-skills) has 6 skills. stitch-kit has 35. Every official skill has a local equivalent that's stronger:
+The [official repo](https://github.com/google-labs-code/stitch-skills) gives agents basic Stitch capabilities — enhance a prompt, convert to React, make a video. stitch-kit gives agents the full design-to-ship pipeline: ideation, research, multi-screen generation, iteration, design systems, and conversion to 7 frameworks. 6 skills vs. 35.
 
 | Official | stitch-kit | What's different |
 |----------|-----------|-----------------|
@@ -158,7 +166,7 @@ The [official repo](https://github.com/google-labs-code/stitch-skills) has 6 ski
 
 ---
 
-## Output targets
+## Ship to any framework
 
 | Target | Skill | Notes |
 |--------|-------|-------|
