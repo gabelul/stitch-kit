@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.8.0](https://github.com/gabelul/stitch-kit/compare/stitch-kit-v1.7.0...stitch-kit-v1.8.0) (2026-03-09)
+
+
+### New Skills & Features
+
+* add stitch-ideate conversational design agent with batch generation ([f73d3fd](https://github.com/gabelul/stitch-kit/commit/f73d3fd96a98b5b6a0fa35a733ea395b7106c80a))
+
+
+### Documentation
+
+* reframe README from "convert tool" to "design superpowers for coding agents" ([98f13e7](https://github.com/gabelul/stitch-kit/commit/98f13e78343123078163e929e32006e73e5300cb))
+* update README, AGENTS.md, and agent definition for stitch-ideate ([91043c6](https://github.com/gabelul/stitch-kit/commit/91043c6e567394cd569773d77bfa6d2f2d708c32))
+
 ## [1.7.0](https://github.com/gabelul/stitch-kit/compare/stitch-kit-v1.6.2...stitch-kit-v1.7.0) (2026-02-27)
 
 
