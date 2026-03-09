@@ -1,6 +1,6 @@
 {
   "name": "stitch-kit",
-  "description": "AI UI design to production code — Stitch MCP skills for Claude Code. Generates screens, extracts design tokens, and converts to Next.js, Svelte, React, React Native, SwiftUI, or HTML.",
+  "description": "Design superpowers for Claude Code — 35 skills that teach your agent to ideate, research, generate, iterate, and ship beautiful UIs using Google Stitch MCP.",
   "version": "1.8.0",
   "author": {
     "name": "gabelul"

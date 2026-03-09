@@ -1,7 +1,7 @@
 {
   "name": "@booplex/stitch-kit",
   "version": "1.8.0",
-  "description": "AI UI design to production code — Stitch MCP skills for Claude Code and Codex CLI. Generates screens, iterates designs, extracts tokens, converts to Next.js, Svelte, React, React Native, SwiftUI, or HTML.",
+  "description": "Give your coding agent design superpowers — 35 skills that teach AI agents to ideate, research, generate, iterate, and ship beautiful UIs using Google Stitch MCP. Works with Claude Code, Codex CLI, and any MCP-compatible agent.",
   "bin": {
     "stitch-kit": "./bin/stitch-kit.mjs"
   },
@@ -19,17 +19,20 @@
   ],
   "keywords": [
     "stitch",
+    "stitch-mcp",
     "ui-design",
+    "ai-design",
     "text-to-ui",
     "claude-code",
     "codex-cli",
     "mcp",
+    "design-agent",
+    "agent-skills",
     "design-to-code",
     "nextjs",
     "svelte",
     "react-native",
-    "swiftui",
-    "agent-skills"
+    "swiftui"
   ],
   "author": "gabelul",
   "license": "Apache-2.0",
