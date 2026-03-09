@@ -129,7 +129,7 @@ Every skill tells the agent what it does and when to reach for it. The examples 
 
 ## vs. the official Google Stitch Skills
 
-The [official repo](https://github.com/google-labs-code/stitch-skills) has 6 skills. stitch-kit has 34. Every official skill has a local equivalent that's stronger:
+The [official repo](https://github.com/google-labs-code/stitch-skills) has 6 skills. stitch-kit has 35. Every official skill has a local equivalent that's stronger:
 
 | Official | stitch-kit | What's different |
 |----------|-----------|-----------------|
@@ -147,7 +147,8 @@ The [official repo](https://github.com/google-labs-code/stitch-skills) has 6 ski
 - `stitch-mcp-upload-screens-from-images` — import screenshots for redesign workflows
 - `stitch-mcp-create/update/list/apply-design-system` — full Stitch Design System lifecycle
 - `stitch-mcp-delete-project` — project cleanup with confirmation gate
-- `stitch-orchestrator` (end-to-end coordinator with post-generation iteration loop)
+- `stitch-ideate` (conversational design agent — researches trends, proposes directions, produces PRDs, batch-generates screens)
+- `stitch-orchestrator` (end-to-end coordinator with ideation gate + post-generation iteration loop)
 - `stitch-ui-design-spec-generator` (structured spec first, then prompt — better output than pure prompt enhancement)
 - Mobile: `stitch-react-native-components` + `stitch-swiftui-components`
 - `stitch-design-system` (token extraction → CSS custom properties)

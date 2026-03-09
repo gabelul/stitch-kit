@@ -4,7 +4,7 @@ Guidance for Claude Code, Cursor, Copilot, Codex CLI, and other AI agents workin
 
 ## What this repo is
 
-A collection of Claude Code **skills** — 34 packaged instructions and scripts that extend AI agents with Stitch-specific capabilities: text-to-UI generation, design iteration (edit, variants, design systems), design token extraction, and multi-framework conversion. Think of it as a Stitch co-pilot that wraps all 14 MCP tools and knows the footguns so you don't have to learn them the hard way.
+A collection of Claude Code **skills** — 35 packaged instructions and scripts that extend AI agents with Stitch-specific capabilities: text-to-UI generation, design iteration (edit, variants, design systems), design token extraction, and multi-framework conversion. Think of it as a Stitch co-pilot that wraps all 14 MCP tools and knows the footguns so you don't have to learn them the hard way.
 
 ## Skill structure
 
@@ -87,7 +87,7 @@ For Stitch-based UI generation, load **`stitch-orchestrator`** or invoke the **`
 
 | Layer | Count | Purpose |
 |-------|-------|---------|
-| **Brain** (`stitch-ui-*`) | 4 | Design intelligence — specs, prompts, variants, UED guide |
+| **Brain** (`stitch-ui-*`, `stitch-ideate`) | 5 | Design intelligence — ideation agent, specs, prompts, variants, UED guide |
 | **Hands** (`stitch-mcp-*`) | 14 | MCP wrappers — one per Stitch API tool, handles ID format rules |
 | **Conversion** | 7+ | Stitch HTML → framework components (Next.js, Svelte, React, HTML, RN, SwiftUI, shadcn) |
 | **Quality** | 3 | Design tokens, accessibility audit, animations |
@@ -107,6 +107,7 @@ Without MCP: the orchestrator falls back to prompt-only mode (generates ready-to
 | Skill | When to invoke |
 |-------|----------------|
 | `stitch-orchestrator` | "Use Stitch to design X" — handles everything |
+| `stitch-ideate` | "Help me brainstorm", "ideate a UI", vague requests → conversational design agent → PRD → batch generation |
 | `stitch-ui-design-spec-generator` | User request → structured JSON design spec |
 | `stitch-ui-prompt-architect` | Design spec → structured Stitch prompt |
 | `stitch-mcp-edit-screens` | Edit existing screens with text prompts (iteration) |
