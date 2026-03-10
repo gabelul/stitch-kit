@@ -27,8 +27,10 @@ Fill every section. Use the `[PLACEHOLDER]` markers as guides. Remove all placeh
 
 ## Screens
 
-[Bullet list of all screens with one-line descriptions. Format:]
+[Bullet list of all screens with one-line descriptions. Minimum 5 app screens + 1 style guide. Format:]
 - **[Screen Name]:** [Purpose in one sentence. Include the primary interaction pattern.]
+- ...
+- **Component Style Guide:** Visual reference page showing every UI component in all states — buttons, inputs, cards, badges, typography scale, color swatches, and spacing system.
 
 ---
 
@@ -119,6 +121,43 @@ Fill every section. Use the `[PLACEHOLDER]` markers as guides. Remove all placeh
 **Interactions:**
 [Hover effects, keyboard shortcuts, click targets, transitions.]
 
+### [Last]. Component Style Guide
+
+**Purpose:** Visual reference showing every UI component used across all screens, in every state.
+
+**Layout:**
+Full-width single-column page with sections for each component category. Generous spacing between sections.
+
+**Key Elements:**
+- **Color Swatches:**
+  - All palette colors displayed as labeled rectangles with hex values
+  - Background, Surface, Border, Text, Accent, Success, Warning, Error
+- **Typography Scale:**
+  - Every heading level (H1-H6), body text, captions, labels, monospace
+  - Show font name, weight, size, and line-height
+- **Buttons:**
+  - Primary, Secondary, Ghost, Destructive — each in Default, Hover, Active, Disabled states
+  - Small, Medium, Large sizes
+- **Form Controls:**
+  - Text input, Textarea, Select, Checkbox, Radio, Toggle, Slider
+  - Each in Default, Focus, Error, Disabled states
+- **Cards & Containers:**
+  - Content card, Modal, Dropdown, Tooltip, Toast notification
+  - With and without shadows/borders as defined in design system
+- **Data Display:**
+  - Badge, Tag, Avatar, Progress bar, Status indicator
+  - Table row (if tables are used in the app)
+- **Navigation:**
+  - Sidebar item, Tab, Breadcrumb, Pagination
+  - Active, Hover, Inactive states
+- **Spacing & Grid:**
+  - Visual spacing scale (4px, 8px, 12px, 16px, 24px, 32px, 48px)
+  - Grid column examples
+
+**States:** N/A — this screen shows all states of all components.
+
+**Interactions:** None — this is a static reference page.
+
 </details>
 
 ---
@@ -129,10 +168,11 @@ Fill every section. Use the `[PLACEHOLDER]` markers as guides. Remove all placeh
 **Stack:** HTML + Tailwind CSS v3
 
 **Build Order:**
-[Numbered list prioritizing the most complex/foundational screen first.]
+[Numbered list prioritizing the most complex/foundational screen first. Style guide is always last.]
 1. **[Screen Name]:** [Why build this first — what does it establish?]
 2. **[Screen Name]:** [What it reuses from #1, what new patterns it introduces.]
 3. **[Remaining screens]:** [How they derive from earlier work.]
+4. **Component Style Guide:** [Generated last — references all components from above screens. Use this as the source of truth for design token extraction.]
 
 [Optional: Tailwind config notes, custom utility needs, font loading strategy.]
 
@@ -163,8 +203,11 @@ Fill every section. Use the `[PLACEHOLDER]` markers as guides. Remove all placeh
 - Use real-sounding data: "$24.99" not "$XX.XX", "Sarah Chen" not "User Name"
 - Describe what happens on hover, not just what it looks like at rest
 - Include keyboard shortcuts if targeting technical users
+- Minimum 5 app screens + 1 Component Style Guide = 6 screens total
+- The style guide screen is always last and shows every component used across all other screens
 
 ### Build Guide
 - Always recommend building the most complex screen first — it establishes the pattern library
 - Note which screens share components (reduces build time)
+- Component Style Guide is always built last — it references all components from other screens
 - Include Tailwind config extensions needed for custom colors/fonts

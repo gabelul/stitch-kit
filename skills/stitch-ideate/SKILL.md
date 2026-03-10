@@ -256,11 +256,19 @@ Options:
 
 ## Phase 4: Screen Architecture
 
-**Goal:** Define the screens and how they connect.
+**Goal:** Define the screens and how they connect. Minimum 5 screens per direction.
+
+**Why 5 minimum?** Fewer than 5 screens usually means the app is underspecified — you're missing flows. Stitch generates better results when it has enough context to understand the full product. More screens = more visual consistency cues for the AI.
+
+**Mandatory screen: Component Style Guide.** Every PRD includes a "Component Style Guide" screen — a single page that renders every UI component (buttons in all states, input fields, cards, badges, typography scale, color swatches, spacing examples). This screen:
+- Acts as a visual contract for the design system
+- Gives conversion skills a reference for consistent tokens
+- Catches design inconsistencies before they spread across screens
+- Is always the **last screen** in the PRD (generated after all app screens)
 
 Ask with `AskUserQuestion`:
 
-**Question 1 — "What screens do you need? Pick the essential ones."**
+**Question 1 — "What screens does your app need?"**
 Options (adapt to product type — these are examples for a SaaS tool):
 - Dashboard / Home (overview, KPIs, status)
 - List / Grid view (browse items, search, filter)
@@ -268,13 +276,24 @@ Options (adapt to product type — these are examples for a SaaS tool):
 - Settings / Configuration (account, preferences)
 - Auth (login, signup, onboarding)
 
-Allow multi-select. Then ask:
+Allow multi-select. If the user picks fewer than 4, suggest additional screens based on the product type and flows described. The goal is 5+ app screens + 1 style guide = 6+ total.
+
+Then ask:
 
 **Question 2 — "What's the most important user flow?"**
 Free text. Example: "User sees an alert on the dashboard, clicks through to the detail view, makes a change, and sees the result."
 
-After answers: Outline the screen list and primary flow:
-> "5 screens: Dashboard, Project List, Keyword Explorer, AI Config, Settings. Primary flow: Alert on dashboard -> drill into keyword data -> inject keywords to AI agent."
+After answers: Outline the screen list (including the style guide) and primary flow:
+> "6 screens: Dashboard, Project List, Keyword Explorer, AI Config, Settings, + Component Style Guide. Primary flow: Alert on dashboard -> drill into keyword data -> inject keywords to AI agent."
+
+**Screen count guidelines by product type:**
+
+| Product type | Typical screens | Examples |
+|-------------|----------------|----------|
+| Landing page / marketing site | 3-4 + style guide | Hero, Features, Pricing, Contact |
+| Simple app (tool, utility) | 5-6 + style guide | Home, Main feature, Detail, Settings, Auth |
+| Full SaaS / dashboard | 7-10 + style guide | Dashboard, List, Detail, Editor, Search, Settings, Auth, Onboarding |
+| E-commerce / marketplace | 8-12 + style guide | Home, Category, Product, Cart, Checkout, Account, Search, Reviews |
 
 ---
 
@@ -313,7 +332,8 @@ Build the full PRD document (see `resources/prd-template.md` for structure) and 
 **Design Direction:** "[Direction Name]" — [one-line description]
 **Inspired by:** [Reference apps]
 
-**Screens:** [List with one-line descriptions]
+**Screens ([N] app screens + Component Style Guide):**
+[List with one-line descriptions]
 **Primary Flow:** [Flow description]
 
 **Design System:**
