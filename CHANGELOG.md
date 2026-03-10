@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.9.0](https://github.com/gabelul/stitch-kit/compare/stitch-kit-v1.8.0...stitch-kit-v1.9.0) (2026-03-10)
+
+
+### New Skills & Features
+
+* enforce minimum 5 screens + component style guide per direction ([c8d7806](https://github.com/gabelul/stitch-kit/commit/c8d78064429acde12135ba120b3cdb5a624807ff))
+
+
+### Documentation
+
+* align all descriptions with "design superpowers" positioning ([49caa39](https://github.com/gabelul/stitch-kit/commit/49caa3902bd3c5cc12d578f73bfa08166168242c))
+* rewrite README with clearer positioning and personality ([6706797](https://github.com/gabelul/stitch-kit/commit/67067977dc172ef3df8ada3759b8d0d07206a400))
+
 ## [1.8.0](https://github.com/gabelul/stitch-kit/compare/stitch-kit-v1.7.0...stitch-kit-v1.8.0) (2026-03-09)
 
 
