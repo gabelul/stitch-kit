@@ -5,7 +5,7 @@
   },
   "metadata": {
     "description": "Design superpowers for Claude Code — 35 skills that teach your agent to ideate, research trends, generate multi-screen UIs with Stitch MCP, iterate with design systems, and ship to Next.js, Svelte, React, React Native, SwiftUI, or HTML.",
-    "version": "1.9.0"
+    "version": "1.10.0"
   },
   "plugins": [
     {
