@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.10.0](https://github.com/gabelul/stitch-kit/compare/stitch-kit-v1.9.0...stitch-kit-v1.10.0) (2026-03-24)
+
+
+### New Skills & Features
+
+* integrate full MCP DesignTheme params and replace deprecated GEMINI_3_PRO ([b871cd2](https://github.com/gabelul/stitch-kit/commit/b871cd2fa75533292cc5e560e44f5138e03910a5))
+
 ## [1.9.0](https://github.com/gabelul/stitch-kit/compare/stitch-kit-v1.8.0...stitch-kit-v1.9.0) (2026-03-10)
 
 
