@@ -9,7 +9,9 @@
 {
   "theme": "DARK",
   "primaryColor": "#00FF88",
-  "font": "Orbitron",
+  "headlineFont": "SPACE_GROTESK",
+  "bodyFont": "INTER",
+  "labelFont": "INTER",
   "roundness": "Low",
   "density": "COMFORTABLE",
   "designMode": "HIGH_FIDELITY",
@@ -29,7 +31,9 @@
 {
   "theme": "LIGHT",
   "primaryColor": "#2563EB",
-  "font": "Inter",
+  "headlineFont": "INTER",
+  "bodyFont": "INTER",
+  "labelFont": "INTER",
   "roundness": "Low",
   "density": "COMPACT",
   "designMode": "HIGH_FIDELITY",
@@ -49,7 +53,9 @@
 {
   "theme": "LIGHT",
   "primaryColor": "#E85D04",
-  "font": "Nunito",
+  "headlineFont": "NUNITO_SANS",
+  "bodyFont": "NUNITO_SANS",
+  "labelFont": "NUNITO_SANS",
   "roundness": "High",
   "density": "COMFORTABLE",
   "designMode": "HIGH_FIDELITY",
@@ -69,7 +75,9 @@
 {
   "theme": "LIGHT",
   "primaryColor": "#6366F1",
-  "font": "DM Sans",
+  "headlineFont": "DM_SANS",
+  "bodyFont": "DM_SANS",
+  "labelFont": "DM_SANS",
   "roundness": "Medium",
   "density": "COMPACT",
   "designMode": "HIGH_FIDELITY",
