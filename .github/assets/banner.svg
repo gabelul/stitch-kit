@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 400" fill="none">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0f0f0f"/>
+      <stop offset="100%" style="stop-color:#1a1a2e"/>
+    </linearGradient>
+    <linearGradient id="purple" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#a855f7"/>
+      <stop offset="100%" style="stop-color:#c084fc"/>
+    </linearGradient>
+    <linearGradient id="teal" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#2dd4bf"/>
+      <stop offset="100%" style="stop-color:#5eead4"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="400" fill="url(#bg)" rx="12"/>
+
+  <!-- Title -->
+  <text x="60" y="80" font-family="system-ui, -apple-system, sans-serif" font-size="48" font-weight="800" fill="white">stitch-kit</text>
+  <text x="60" y="115" font-family="system-ui, -apple-system, sans-serif" font-size="18" fill="#888" font-weight="400">Design superpowers for AI coding agents &#183; Google Stitch MCP</text>
+
+  <!-- Before box -->
+  <rect x="60" y="145" width="520" height="200" rx="8" fill="#1e1e2e" stroke="#a855f744" stroke-width="1"/>
+  <text x="80" y="175" font-family="ui-monospace, monospace" font-size="13" fill="#a855f7" font-weight="600">WITHOUT STITCH-KIT</text>
+  <line x1="80" y1="188" x2="560" y2="188" stroke="#ffffff11"/>
+  <text x="80" y="212" font-family="ui-monospace, monospace" font-size="12.5" fill="#666">agent.generate("make a dashboard")</text>
+  <text x="80" y="237" font-family="ui-monospace, monospace" font-size="12.5" fill="#666">  <tspan fill="#a855f7">wrong ID format</tspan>  &#8594; cryptic error</text>
+  <text x="80" y="262" font-family="ui-monospace, monospace" font-size="12.5" fill="#666">  <tspan fill="#a855f7">no design research</tspan> &#8594; gray boxes</text>
+  <text x="80" y="287" font-family="ui-monospace, monospace" font-size="12.5" fill="#666">  <tspan fill="#a855f7">1 screen at a time</tspan> &#8594; inconsistent</text>
+  <text x="80" y="312" font-family="ui-monospace, monospace" font-size="12.5" fill="#666">  <tspan fill="#a855f7">raw HTML output</tspan>   &#8594; not shippable</text>
+
+  <!-- Arrow -->
+  <text x="600" y="255" font-family="system-ui, sans-serif" font-size="28" fill="#888">&#8594;</text>
+
+  <!-- After box -->
+  <rect x="640" y="145" width="500" height="200" rx="8" fill="#1e1e2e" stroke="#2dd4bf44" stroke-width="1"/>
+  <text x="660" y="175" font-family="ui-monospace, monospace" font-size="13" fill="#2dd4bf" font-weight="600">WITH STITCH-KIT</text>
+  <line x1="660" y1="188" x2="1120" y2="188" stroke="#ffffff11"/>
+  <text x="660" y="212" font-family="ui-monospace, monospace" font-size="12.5" fill="#c8c8c8">agent.ideate("dashboard for analytics")</text>
+  <text x="660" y="237" font-family="ui-monospace, monospace" font-size="12.5" fill="#c8c8c8">  <tspan fill="#2dd4bf">trend research</tspan>   &#8594; 3 directions</text>
+  <text x="660" y="262" font-family="ui-monospace, monospace" font-size="12.5" fill="#c8c8c8">  <tspan fill="#2dd4bf">batch generation</tspan> &#8594; 10 screens</text>
+  <text x="660" y="287" font-family="ui-monospace, monospace" font-size="12.5" fill="#c8c8c8">  <tspan fill="#2dd4bf">design system</tspan>    &#8594; consistent</text>
+  <text x="660" y="312" font-family="ui-monospace, monospace" font-size="12.5" fill="#c8c8c8">  <tspan fill="#2dd4bf">7 frameworks</tspan>     &#8594; ship it</text>
+
+  <!-- Bottom stats bar -->
+  <rect x="60" y="360" width="1080" height="28" rx="4" fill="#ffffff08"/>
+  <text x="80" y="379" font-family="ui-monospace, monospace" font-size="12" fill="#888">35 skills</text>
+  <text x="190" y="379" font-family="ui-monospace, monospace" font-size="12" fill="#555">|</text>
+  <text x="210" y="379" font-family="ui-monospace, monospace" font-size="12" fill="#888">5 layers</text>
+  <text x="315" y="379" font-family="ui-monospace, monospace" font-size="12" fill="#555">|</text>
+  <text x="335" y="379" font-family="ui-monospace, monospace" font-size="12" fill="#888">14 MCP wrappers</text>
+  <text x="520" y="379" font-family="ui-monospace, monospace" font-size="12" fill="#555">|</text>
+  <text x="540" y="379" font-family="ui-monospace, monospace" font-size="12" fill="#888">7 frameworks</text>
+  <text x="680" y="379" font-family="ui-monospace, monospace" font-size="12" fill="#555">|</text>
+  <text x="700" y="379" font-family="ui-monospace, monospace" font-size="12" fill="#888">batch generation</text>
+  <text x="880" y="379" font-family="ui-monospace, monospace" font-size="12" fill="#555">|</text>
+  <text x="900" y="379" font-family="ui-monospace, monospace" font-size="12" fill="#888">Claude Code + Codex CLI</text>
+</svg>

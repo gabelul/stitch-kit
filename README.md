@@ -1,4 +1,8 @@
-# stitch-kit — Give your coding agent design superpowers
+<p align="center">
+  <img src=".github/assets/banner.svg" alt="stitch-kit — design superpowers for AI coding agents" width="100%"/>
+</p>
+
+# stitch-kit — Design superpowers for AI coding agents | Google Stitch MCP plugin
 
 I built this because I got tired of watching Claude Code generate UIs that look like a government form from 2004. Gray boxes, blue buttons, zero taste. Meanwhile, Google's [Stitch](https://stitch.withgoogle.com) generates genuinely beautiful, pixel-perfect screens from text — but it's just a raw MCP tool sitting there, and no coding agent knows how to use it properly.
 
@@ -83,6 +87,10 @@ Use `$stitch-kit` to activate the agent or `$stitch-orchestrator` for the full p
 
 ## What actually happens when you use it
 
+<p align="center">
+  <img src=".github/assets/pipeline.svg" alt="stitch-kit pipeline: describe → ideate → generate → iterate → convert → ship" width="100%"/>
+</p>
+
 Without stitch-kit, your agent sends Stitch a half-baked prompt, gets confused by ID formats, generates one screen, hands you raw HTML, and calls it a day. With stitch-kit:
 
 1. **Think first** — `stitch-ideate` does something your coding agent literally cannot: design research. It fetches trends, analyzes competitor UIs, and proposes 3 distinct design directions with real hex colors, typography pairings, and mood descriptions. It's the design buddy your agent was missing.
@@ -99,15 +107,11 @@ There's also an agent definition (`agents/stitch-kit.md`) for both Claude Code a
 
 ## Architecture
 
-Five layers. I didn't build 35 skills for fun — each layer exists because agents consistently fail at something specific with Stitch.
+<p align="center">
+  <img src=".github/assets/architecture.svg" alt="stitch-kit architecture — 5 layers, 35 skills" width="100%"/>
+</p>
 
-| Layer | Skills | What it fixes |
-|-------|--------|--------------|
-| **Orchestrator** | 1 | Agents don't know when to brainstorm vs. generate vs. iterate. The orchestrator scores your request and routes automatically. |
-| **Brain** (`stitch-ideate`, `stitch-ui-*`) | 5 | Agents write terrible Stitch prompts. The brain layer does design research, builds structured specs, and engineers prompts that actually produce quality output. |
-| **MCP Wrappers** (`stitch-mcp-*`) | 14 | Stitch uses different ID formats across tools (numeric vs `projects/ID`). Every agent gets this wrong. Every. Single. Time. Wrappers handle it. |
-| **Conversion** | 9 | Stitch outputs raw HTML. These convert to production Next.js, Svelte, React, React Native, SwiftUI, or HTML with dark mode, tokens, and TypeScript. |
-| **Quality** | 4 | Generated UIs ship without accessibility, animation, or cross-screen consistency. Quality skills add WCAG compliance, motion, and visual coherence. |
+Five layers. I didn't build 35 skills for fun — each layer exists because agents consistently fail at something specific with Stitch.
 
 **The ID format thing deserves its own callout.** `generate_screen_from_text` wants `"3780309359108792857"`. `list_screens` wants `"projects/3780309359108792857"`. Pass the wrong one and you get a cryptic error. This is the #1 reason agents fail with raw Stitch MCP, and it's the reason I built 14 wrapper skills instead of letting agents call the API directly.
 

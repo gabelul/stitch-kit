@@ -1,0 +1,87 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 280" fill="none">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0f0f0f"/>
+      <stop offset="100%" style="stop-color:#1a1a2e"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="280" fill="url(#bg)" rx="12"/>
+
+  <!-- Title -->
+  <text x="600" y="40" font-family="system-ui, -apple-system, sans-serif" font-size="22" font-weight="700" fill="white" text-anchor="middle">From vague idea to shippable code</text>
+
+  <!-- Step 1: Idea -->
+  <rect x="30" y="70" width="140" height="120" rx="10" fill="#1e1e2e" stroke="#a855f7" stroke-width="1.5"/>
+  <text x="100" y="110" font-family="system-ui, sans-serif" font-size="32" text-anchor="middle" fill="#a855f7">&#128161;</text>
+  <text x="100" y="140" font-family="system-ui, sans-serif" font-size="14" font-weight="600" fill="white" text-anchor="middle">Describe</text>
+  <text x="100" y="158" font-family="ui-monospace, monospace" font-size="10" fill="#888" text-anchor="middle">"analytics dashboard</text>
+  <text x="100" y="172" font-family="ui-monospace, monospace" font-size="10" fill="#888" text-anchor="middle">for SaaS metrics"</text>
+
+  <!-- Arrow 1 -->
+  <text x="190" y="135" font-family="system-ui, sans-serif" font-size="20" fill="#555">&#8594;</text>
+
+  <!-- Step 2: Ideate -->
+  <rect x="215" y="70" width="140" height="120" rx="10" fill="#1e1e2e" stroke="#c084fc" stroke-width="1.5"/>
+  <text x="285" y="110" font-family="system-ui, sans-serif" font-size="32" text-anchor="middle" fill="#c084fc">&#127912;</text>
+  <text x="285" y="140" font-family="system-ui, sans-serif" font-size="14" font-weight="600" fill="white" text-anchor="middle">Ideate</text>
+  <text x="285" y="158" font-family="ui-monospace, monospace" font-size="10" fill="#888" text-anchor="middle">trend research</text>
+  <text x="285" y="172" font-family="ui-monospace, monospace" font-size="10" fill="#888" text-anchor="middle">3 design directions</text>
+
+  <!-- Arrow 2 -->
+  <text x="375" y="135" font-family="system-ui, sans-serif" font-size="20" fill="#555">&#8594;</text>
+
+  <!-- Step 3: Generate -->
+  <rect x="400" y="70" width="140" height="120" rx="10" fill="#1e1e2e" stroke="#38bdf8" stroke-width="1.5"/>
+  <text x="470" y="110" font-family="system-ui, sans-serif" font-size="32" text-anchor="middle" fill="#38bdf8">&#9889;</text>
+  <text x="470" y="140" font-family="system-ui, sans-serif" font-size="14" font-weight="600" fill="white" text-anchor="middle">Generate</text>
+  <text x="470" y="158" font-family="ui-monospace, monospace" font-size="10" fill="#888" text-anchor="middle">batch 10 screens</text>
+  <text x="470" y="172" font-family="ui-monospace, monospace" font-size="10" fill="#888" text-anchor="middle">via Stitch MCP</text>
+
+  <!-- Arrow 3 -->
+  <text x="560" y="135" font-family="system-ui, sans-serif" font-size="20" fill="#555">&#8594;</text>
+
+  <!-- Step 4: Iterate -->
+  <rect x="585" y="70" width="140" height="120" rx="10" fill="#1e1e2e" stroke="#fbbf24" stroke-width="1.5"/>
+  <text x="655" y="110" font-family="system-ui, sans-serif" font-size="32" text-anchor="middle" fill="#fbbf24">&#128260;</text>
+  <text x="655" y="140" font-family="system-ui, sans-serif" font-size="14" font-weight="600" fill="white" text-anchor="middle">Iterate</text>
+  <text x="655" y="158" font-family="ui-monospace, monospace" font-size="10" fill="#888" text-anchor="middle">edit, variants,</text>
+  <text x="655" y="172" font-family="ui-monospace, monospace" font-size="10" fill="#888" text-anchor="middle">design systems</text>
+
+  <!-- Arrow 4 -->
+  <text x="745" y="135" font-family="system-ui, sans-serif" font-size="20" fill="#555">&#8594;</text>
+
+  <!-- Step 5: Convert -->
+  <rect x="770" y="70" width="140" height="120" rx="10" fill="#1e1e2e" stroke="#2dd4bf" stroke-width="1.5"/>
+  <text x="840" y="110" font-family="system-ui, sans-serif" font-size="32" text-anchor="middle" fill="#2dd4bf">&#128736;</text>
+  <text x="840" y="140" font-family="system-ui, sans-serif" font-size="14" font-weight="600" fill="white" text-anchor="middle">Convert</text>
+  <text x="840" y="158" font-family="ui-monospace, monospace" font-size="10" fill="#888" text-anchor="middle">7 framework targets</text>
+  <text x="840" y="172" font-family="ui-monospace, monospace" font-size="10" fill="#888" text-anchor="middle">dark mode + tokens</text>
+
+  <!-- Arrow 5 -->
+  <text x="930" y="135" font-family="system-ui, sans-serif" font-size="20" fill="#555">&#8594;</text>
+
+  <!-- Step 6: Ship -->
+  <rect x="955" y="70" width="210" height="120" rx="10" fill="#1e1e2e" stroke="#5eead4" stroke-width="1.5"/>
+  <text x="1060" y="110" font-family="system-ui, sans-serif" font-size="32" text-anchor="middle" fill="#5eead4">&#128640;</text>
+  <text x="1060" y="140" font-family="system-ui, sans-serif" font-size="14" font-weight="600" fill="white" text-anchor="middle">Ship</text>
+  <text x="1060" y="158" font-family="ui-monospace, monospace" font-size="10" fill="#888" text-anchor="middle">Next.js &#183; Svelte &#183; React</text>
+  <text x="1060" y="172" font-family="ui-monospace, monospace" font-size="10" fill="#888" text-anchor="middle">RN &#183; SwiftUI &#183; HTML</text>
+
+  <!-- Bottom label bar -->
+  <rect x="30" y="210" width="1140" height="55" rx="8" fill="#ffffff05"/>
+  <text x="100" y="237" font-family="ui-monospace, monospace" font-size="11" fill="#a855f7" text-anchor="middle">you talk</text>
+  <text x="285" y="237" font-family="ui-monospace, monospace" font-size="11" fill="#c084fc" text-anchor="middle">stitch-ideate</text>
+  <text x="470" y="237" font-family="ui-monospace, monospace" font-size="11" fill="#38bdf8" text-anchor="middle">stitch-mcp-*</text>
+  <text x="655" y="237" font-family="ui-monospace, monospace" font-size="11" fill="#fbbf24" text-anchor="middle">edit + variants</text>
+  <text x="840" y="237" font-family="ui-monospace, monospace" font-size="11" fill="#2dd4bf" text-anchor="middle">stitch-*-components</text>
+  <text x="1060" y="237" font-family="ui-monospace, monospace" font-size="11" fill="#5eead4" text-anchor="middle">production code</text>
+
+  <text x="100" y="253" font-family="system-ui, sans-serif" font-size="10" fill="#555" text-anchor="middle">natural language</text>
+  <text x="285" y="253" font-family="system-ui, sans-serif" font-size="10" fill="#555" text-anchor="middle">research + PRD</text>
+  <text x="470" y="253" font-family="system-ui, sans-serif" font-size="10" fill="#555" text-anchor="middle">batch generation</text>
+  <text x="655" y="253" font-family="system-ui, sans-serif" font-size="10" fill="#555" text-anchor="middle">refine until right</text>
+  <text x="840" y="253" font-family="system-ui, sans-serif" font-size="10" fill="#555" text-anchor="middle">TypeScript + a11y</text>
+  <text x="1060" y="253" font-family="system-ui, sans-serif" font-size="10" fill="#555" text-anchor="middle">ready to deploy</text>
+</svg>

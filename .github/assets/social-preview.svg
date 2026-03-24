@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 640" fill="none">
+  <defs>
+    <linearGradient id="bg2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0f0f0f"/>
+      <stop offset="100%" style="stop-color:#1a1a2e"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1280" height="640" fill="url(#bg2)"/>
+
+  <!-- Main title -->
+  <text x="640" y="180" font-family="system-ui, -apple-system, sans-serif" font-size="72" font-weight="800" fill="white" text-anchor="middle">stitch-kit</text>
+
+  <!-- Subtitle -->
+  <text x="640" y="235" font-family="system-ui, -apple-system, sans-serif" font-size="24" fill="#aaa" text-anchor="middle" font-weight="400">Design superpowers for AI coding agents</text>
+
+  <!-- Divider -->
+  <line x1="400" y1="270" x2="880" y2="270" stroke="#ffffff15"/>
+
+  <!-- Stats row -->
+  <text x="200" y="340" font-family="ui-monospace, monospace" font-size="42" fill="#a855f7" text-anchor="middle" font-weight="700">35</text>
+  <text x="200" y="370" font-family="system-ui, sans-serif" font-size="16" fill="#888" text-anchor="middle">skills</text>
+
+  <text x="440" y="340" font-family="ui-monospace, monospace" font-size="42" fill="#c084fc" text-anchor="middle" font-weight="700">14</text>
+  <text x="440" y="370" font-family="system-ui, sans-serif" font-size="16" fill="#888" text-anchor="middle">MCP wrappers</text>
+
+  <text x="680" y="340" font-family="ui-monospace, monospace" font-size="42" fill="#2dd4bf" text-anchor="middle" font-weight="700">7</text>
+  <text x="680" y="370" font-family="system-ui, sans-serif" font-size="16" fill="#888" text-anchor="middle">frameworks</text>
+
+  <text x="920" y="340" font-family="ui-monospace, monospace" font-size="42" fill="#5eead4" text-anchor="middle" font-weight="700">10</text>
+  <text x="920" y="370" font-family="system-ui, sans-serif" font-size="16" fill="#888" text-anchor="middle">screens / batch</text>
+
+  <!-- Pipeline teaser -->
+  <text x="640" y="450" font-family="ui-monospace, monospace" font-size="16" fill="#a855f7" text-anchor="middle">"make me an analytics dashboard"</text>
+  <text x="640" y="480" font-family="system-ui, sans-serif" font-size="22" fill="#555" text-anchor="middle">&#8595;</text>
+  <text x="640" y="510" font-family="ui-monospace, monospace" font-size="16" fill="#2dd4bf" text-anchor="middle">ideate &#8594; generate &#8594; iterate &#8594; ship</text>
+
+  <!-- Supported targets -->
+  <text x="640" y="555" font-family="ui-monospace, monospace" font-size="13" fill="#555" text-anchor="middle">Next.js &#183; Svelte &#183; React &#183; React Native &#183; SwiftUI &#183; HTML &#183; shadcn/ui</text>
+
+  <!-- Footer -->
+  <text x="640" y="610" font-family="system-ui, sans-serif" font-size="14" fill="#555" text-anchor="middle">gabelul/stitch-kit  &#183;  Google Stitch MCP  &#183;  Apache 2.0  &#183;  Booplex</text>
+</svg>
