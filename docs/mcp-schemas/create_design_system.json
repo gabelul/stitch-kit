@@ -60,7 +60,70 @@
           "backgroundLight": { "description": "Light mode background (hex).", "type": "string" },
           "backgroundDark": { "description": "Dark mode background (hex).", "type": "string" },
           "preset": { "type": "string" },
-          "description": { "type": "string" }
+          "description": { "type": "string" },
+          "colorVariant": {
+            "enum": [
+              "COLOR_VARIANT_UNSPECIFIED", "MONOCHROME", "NEUTRAL", "TONAL_SPOT",
+              "VIBRANT", "EXPRESSIVE", "FIDELITY", "CONTENT", "RAINBOW", "FRUIT_SALAD"
+            ],
+            "type": "string"
+          },
+          "headlineFont": {
+            "enum": [
+              "FONT_UNSPECIFIED",
+              "BE_VIETNAM_PRO", "EPILOGUE", "INTER", "LEXEND", "MANROPE",
+              "NEWSREADER", "NOTO_SERIF", "PLUS_JAKARTA_SANS", "PUBLIC_SANS",
+              "SPACE_GROTESK", "SPLINE_SANS", "WORK_SANS", "DOMINE",
+              "LIBRE_CASLON_TEXT", "EB_GARAMOND", "LITERATA", "SOURCE_SERIF_FOUR",
+              "MONTSERRAT", "METROPOLIS", "SOURCE_SANS_THREE", "NUNITO_SANS",
+              "ARIMO", "HANKEN_GROTESK", "RUBIK", "GEIST", "DM_SANS",
+              "IBM_PLEX_SANS", "SORA"
+            ],
+            "type": "string"
+          },
+          "bodyFont": {
+            "enum": [
+              "FONT_UNSPECIFIED",
+              "BE_VIETNAM_PRO", "EPILOGUE", "INTER", "LEXEND", "MANROPE",
+              "NEWSREADER", "NOTO_SERIF", "PLUS_JAKARTA_SANS", "PUBLIC_SANS",
+              "SPACE_GROTESK", "SPLINE_SANS", "WORK_SANS", "DOMINE",
+              "LIBRE_CASLON_TEXT", "EB_GARAMOND", "LITERATA", "SOURCE_SERIF_FOUR",
+              "MONTSERRAT", "METROPOLIS", "SOURCE_SANS_THREE", "NUNITO_SANS",
+              "ARIMO", "HANKEN_GROTESK", "RUBIK", "GEIST", "DM_SANS",
+              "IBM_PLEX_SANS", "SORA"
+            ],
+            "type": "string"
+          },
+          "labelFont": {
+            "enum": [
+              "FONT_UNSPECIFIED",
+              "BE_VIETNAM_PRO", "EPILOGUE", "INTER", "LEXEND", "MANROPE",
+              "NEWSREADER", "NOTO_SERIF", "PLUS_JAKARTA_SANS", "PUBLIC_SANS",
+              "SPACE_GROTESK", "SPLINE_SANS", "WORK_SANS", "DOMINE",
+              "LIBRE_CASLON_TEXT", "EB_GARAMOND", "LITERATA", "SOURCE_SERIF_FOUR",
+              "MONTSERRAT", "METROPOLIS", "SOURCE_SANS_THREE", "NUNITO_SANS",
+              "ARIMO", "HANKEN_GROTESK", "RUBIK", "GEIST", "DM_SANS",
+              "IBM_PLEX_SANS", "SORA"
+            ],
+            "type": "string"
+          },
+          "namedColors": {
+            "type": "object",
+            "description": "Semantic color map (40+ tokens like primary, on_primary, surface, etc.)"
+          },
+          "spacingScale": {
+            "format": "int32",
+            "type": "integer",
+            "description": "0=minimal, 1=compact, 2=normal, 3=spacious"
+          },
+          "designMd": {
+            "type": "string",
+            "description": "Auto-generated markdown design system document"
+          },
+          "overridePrimaryColor": { "type": "string", "description": "Hex override for primary color" },
+          "overrideSecondaryColor": { "type": "string" },
+          "overrideTertiaryColor": { "type": "string" },
+          "overrideNeutralColor": { "type": "string" }
         },
         "type": "object"
       }

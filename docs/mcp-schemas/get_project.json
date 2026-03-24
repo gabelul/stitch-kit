@@ -96,7 +96,70 @@
             "enum": ["ROUNDNESS_UNSPECIFIED", "ROUND_TWO", "ROUND_FOUR", "ROUND_EIGHT", "ROUND_TWELVE", "ROUND_FULL"],
             "type": "string"
           },
-          "saturation": { "description": "1–4", "format": "int32", "type": "integer" }
+          "saturation": { "description": "1–4", "format": "int32", "type": "integer" },
+          "colorVariant": {
+            "enum": [
+              "COLOR_VARIANT_UNSPECIFIED", "MONOCHROME", "NEUTRAL", "TONAL_SPOT",
+              "VIBRANT", "EXPRESSIVE", "FIDELITY", "CONTENT", "RAINBOW", "FRUIT_SALAD"
+            ],
+            "type": "string"
+          },
+          "headlineFont": {
+            "enum": [
+              "FONT_UNSPECIFIED",
+              "BE_VIETNAM_PRO", "EPILOGUE", "INTER", "LEXEND", "MANROPE",
+              "NEWSREADER", "NOTO_SERIF", "PLUS_JAKARTA_SANS", "PUBLIC_SANS",
+              "SPACE_GROTESK", "SPLINE_SANS", "WORK_SANS", "DOMINE",
+              "LIBRE_CASLON_TEXT", "EB_GARAMOND", "LITERATA", "SOURCE_SERIF_FOUR",
+              "MONTSERRAT", "METROPOLIS", "SOURCE_SANS_THREE", "NUNITO_SANS",
+              "ARIMO", "HANKEN_GROTESK", "RUBIK", "GEIST", "DM_SANS",
+              "IBM_PLEX_SANS", "SORA"
+            ],
+            "type": "string"
+          },
+          "bodyFont": {
+            "enum": [
+              "FONT_UNSPECIFIED",
+              "BE_VIETNAM_PRO", "EPILOGUE", "INTER", "LEXEND", "MANROPE",
+              "NEWSREADER", "NOTO_SERIF", "PLUS_JAKARTA_SANS", "PUBLIC_SANS",
+              "SPACE_GROTESK", "SPLINE_SANS", "WORK_SANS", "DOMINE",
+              "LIBRE_CASLON_TEXT", "EB_GARAMOND", "LITERATA", "SOURCE_SERIF_FOUR",
+              "MONTSERRAT", "METROPOLIS", "SOURCE_SANS_THREE", "NUNITO_SANS",
+              "ARIMO", "HANKEN_GROTESK", "RUBIK", "GEIST", "DM_SANS",
+              "IBM_PLEX_SANS", "SORA"
+            ],
+            "type": "string"
+          },
+          "labelFont": {
+            "enum": [
+              "FONT_UNSPECIFIED",
+              "BE_VIETNAM_PRO", "EPILOGUE", "INTER", "LEXEND", "MANROPE",
+              "NEWSREADER", "NOTO_SERIF", "PLUS_JAKARTA_SANS", "PUBLIC_SANS",
+              "SPACE_GROTESK", "SPLINE_SANS", "WORK_SANS", "DOMINE",
+              "LIBRE_CASLON_TEXT", "EB_GARAMOND", "LITERATA", "SOURCE_SERIF_FOUR",
+              "MONTSERRAT", "METROPOLIS", "SOURCE_SANS_THREE", "NUNITO_SANS",
+              "ARIMO", "HANKEN_GROTESK", "RUBIK", "GEIST", "DM_SANS",
+              "IBM_PLEX_SANS", "SORA"
+            ],
+            "type": "string"
+          },
+          "namedColors": {
+            "type": "object",
+            "description": "Semantic color map (40+ tokens like primary, on_primary, surface, etc.)"
+          },
+          "spacingScale": {
+            "format": "int32",
+            "type": "integer",
+            "description": "0=minimal, 1=compact, 2=normal, 3=spacious"
+          },
+          "designMd": {
+            "type": "string",
+            "description": "Auto-generated markdown design system document"
+          },
+          "overridePrimaryColor": { "type": "string", "description": "Hex override for primary color" },
+          "overrideSecondaryColor": { "type": "string" },
+          "overrideTertiaryColor": { "type": "string" },
+          "overrideNeutralColor": { "type": "string" }
         },
         "type": "object"
       },
@@ -124,6 +187,10 @@
           "id": { "type": "string" },
           "label": { "type": "string" },
           "sourceScreen": { "description": "Format: projects/{project}/screens/{screen}", "type": "string" },
+          "type": {
+            "enum": ["SCREEN_INSTANCE_TYPE_UNSPECIFIED", "SCREEN_INSTANCE", "DESIGN_SYSTEM_INSTANCE", "GROUP_INSTANCE"],
+            "type": "string"
+          },
           "variantScreenInstance": { "$ref": "#/$defs/ScreenInstance" },
           "width": { "format": "int32", "type": "integer" },
           "x": { "format": "int32", "type": "integer" },

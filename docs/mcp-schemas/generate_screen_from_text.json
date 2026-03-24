@@ -16,11 +16,12 @@
         "type": "string"
       },
       "modelId": {
-        "description": "Optional. GEMINI_3_PRO = Thinking model (higher quality, slower). GEMINI_3_FLASH = default (faster).",
+        "description": "Optional. GEMINI_3_1_PRO = latest Thinking model. GEMINI_3_PRO = deprecated (use 3_1_PRO). GEMINI_3_FLASH = default (faster).",
         "enum": [
           "MODEL_ID_UNSPECIFIED",
           "GEMINI_3_PRO",
-          "GEMINI_3_FLASH"
+          "GEMINI_3_FLASH",
+          "GEMINI_3_1_PRO"
         ],
         "type": "string"
       },
@@ -225,7 +226,70 @@
             "description": "Color saturation 1–4. Higher = more vivid.",
             "format": "int32",
             "type": "integer"
-          }
+          },
+          "colorVariant": {
+            "enum": [
+              "COLOR_VARIANT_UNSPECIFIED", "MONOCHROME", "NEUTRAL", "TONAL_SPOT",
+              "VIBRANT", "EXPRESSIVE", "FIDELITY", "CONTENT", "RAINBOW", "FRUIT_SALAD"
+            ],
+            "type": "string"
+          },
+          "headlineFont": {
+            "enum": [
+              "FONT_UNSPECIFIED",
+              "BE_VIETNAM_PRO", "EPILOGUE", "INTER", "LEXEND", "MANROPE",
+              "NEWSREADER", "NOTO_SERIF", "PLUS_JAKARTA_SANS", "PUBLIC_SANS",
+              "SPACE_GROTESK", "SPLINE_SANS", "WORK_SANS", "DOMINE",
+              "LIBRE_CASLON_TEXT", "EB_GARAMOND", "LITERATA", "SOURCE_SERIF_FOUR",
+              "MONTSERRAT", "METROPOLIS", "SOURCE_SANS_THREE", "NUNITO_SANS",
+              "ARIMO", "HANKEN_GROTESK", "RUBIK", "GEIST", "DM_SANS",
+              "IBM_PLEX_SANS", "SORA"
+            ],
+            "type": "string"
+          },
+          "bodyFont": {
+            "enum": [
+              "FONT_UNSPECIFIED",
+              "BE_VIETNAM_PRO", "EPILOGUE", "INTER", "LEXEND", "MANROPE",
+              "NEWSREADER", "NOTO_SERIF", "PLUS_JAKARTA_SANS", "PUBLIC_SANS",
+              "SPACE_GROTESK", "SPLINE_SANS", "WORK_SANS", "DOMINE",
+              "LIBRE_CASLON_TEXT", "EB_GARAMOND", "LITERATA", "SOURCE_SERIF_FOUR",
+              "MONTSERRAT", "METROPOLIS", "SOURCE_SANS_THREE", "NUNITO_SANS",
+              "ARIMO", "HANKEN_GROTESK", "RUBIK", "GEIST", "DM_SANS",
+              "IBM_PLEX_SANS", "SORA"
+            ],
+            "type": "string"
+          },
+          "labelFont": {
+            "enum": [
+              "FONT_UNSPECIFIED",
+              "BE_VIETNAM_PRO", "EPILOGUE", "INTER", "LEXEND", "MANROPE",
+              "NEWSREADER", "NOTO_SERIF", "PLUS_JAKARTA_SANS", "PUBLIC_SANS",
+              "SPACE_GROTESK", "SPLINE_SANS", "WORK_SANS", "DOMINE",
+              "LIBRE_CASLON_TEXT", "EB_GARAMOND", "LITERATA", "SOURCE_SERIF_FOUR",
+              "MONTSERRAT", "METROPOLIS", "SOURCE_SANS_THREE", "NUNITO_SANS",
+              "ARIMO", "HANKEN_GROTESK", "RUBIK", "GEIST", "DM_SANS",
+              "IBM_PLEX_SANS", "SORA"
+            ],
+            "type": "string"
+          },
+          "namedColors": {
+            "type": "object",
+            "description": "Semantic color map (40+ tokens like primary, on_primary, surface, etc.)"
+          },
+          "spacingScale": {
+            "format": "int32",
+            "type": "integer",
+            "description": "0=minimal, 1=compact, 2=normal, 3=spacious"
+          },
+          "designMd": {
+            "type": "string",
+            "description": "Auto-generated markdown design system document"
+          },
+          "overridePrimaryColor": { "type": "string", "description": "Hex override for primary color" },
+          "overrideSecondaryColor": { "type": "string" },
+          "overrideTertiaryColor": { "type": "string" },
+          "overrideNeutralColor": { "type": "string" }
         },
         "type": "object"
       },
