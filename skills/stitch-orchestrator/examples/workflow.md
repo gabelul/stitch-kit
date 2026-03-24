@@ -31,7 +31,9 @@ Output:
 {
   "theme": "LIGHT",
   "primaryColor": "#6366F1",
-  "font": "DM Sans",
+  "headlineFont": "DM_SANS",
+  "bodyFont": "DM_SANS",
+  "labelFont": "DM_SANS",
   "roundness": "Medium",
   "density": "COMPACT",
   "designMode": "HIGH_FIDELITY",
@@ -80,7 +82,7 @@ Result: `{ "name": "projects/3780309359108792857" }`
     "projectId": "3780309359108792857",
     "prompt": "[assembled prompt from Step 3]",
     "deviceType": "DESKTOP",
-    "modelId": "GEMINI_3_PRO"
+    "modelId": "GEMINI_3_1_PRO"
   }
 }
 ```
