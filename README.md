@@ -203,6 +203,7 @@ Other tools for agents that care about quality:
 
 - **[slopbuster](https://github.com/gabelul/slopbuster)** — AI text humanizer. 100+ patterns, two-pass audit, three-tier scoring. Makes AI-generated prose, code comments, and academic writing sound human.
 - **[pixelslop](https://github.com/gabelul/pixelslop)** — Design quality scanner. Opens real pages in Playwright, measures actual pixels, catches visual AI slop. The visual counterpart to slopbuster.
+- **[pixeltamer](https://github.com/gabelul/pixeltamer-gpt-image-skill)** — Image generation skill for AI coding agents. Two backends (OpenAI API or codex CLI signed in to ChatGPT subscription), three modes (generate, edit, compose up to 16 references), prompting doctrine for gpt-image-2 plus six production recipes.
 - **[claude-code-skill-activator](https://github.com/gabelul/claude-code-skill-activator)** — Skill auto-detection for Claude Code. AI extracts keywords once, then fast offline matching suggests skills as you type.
 
 ---
