@@ -1,0 +1,12 @@
+{
+  "name": "stitch-kit",
+  "version": "1.11.0",
+  "description": "Design superpowers for Codex — skills that ideate, generate, and ship UIs with Google Stitch MCP, with compaction-resilient session state.",
+  "author": {
+    "name": "gabelul"
+  },
+  "repository": "https://github.com/gabelul/stitch-kit",
+  "license": "Apache-2.0",
+  "skills": "./skills/",
+  "hooks": "./hooks/hooks.json"
+}

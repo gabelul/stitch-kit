@@ -8,3 +8,8 @@
 
 # Node
 node_modules/
+
+# Stitch per-user session state (project id, screen ids, PRD drafts, transcript
+# snapshots). Runtime state, never source — and the snapshots can contain
+# conversation content, so it stays out of git.
+.stitch/

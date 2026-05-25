@@ -23,7 +23,7 @@
  *   Gemini CLI   — extension install (no MCP config file)
  */
 
-import { existsSync, mkdirSync, cpSync, rmSync, readFileSync, writeFileSync, readdirSync, lstatSync, unlinkSync } from 'node:fs';
+import { existsSync, mkdirSync, cpSync, rmSync, readFileSync, writeFileSync, readdirSync, lstatSync, unlinkSync, symlinkSync, chmodSync } from 'node:fs';
 import { join, dirname, resolve } from 'node:path';
 import { homedir } from 'node:os';
 import { fileURLToPath } from 'node:url';
@@ -39,6 +39,7 @@ const PACKAGE_ROOT = resolve(__dirname, '..');
 const HOME = homedir();
 const SKILLS_SRC = join(PACKAGE_ROOT, 'skills');
 const AGENTS_SRC = join(PACKAGE_ROOT, 'agents');
+const SESSION_HELPER = join(PACKAGE_ROOT, 'scripts', 'stitch-session.mjs');
 const STITCH_MCP_URL = 'https://stitch.googleapis.com/mcp';
 
 const VERSION = JSON.parse(readFileSync(join(PACKAGE_ROOT, 'package.json'), 'utf8')).version;
@@ -538,6 +539,44 @@ function installMcp(client, apiKey) {
 // ── Generic Install / Uninstall / Status ────────────────────────────────────────
 
 /**
+ * Put the `stitch-session` helper on PATH so skills can call it by name on any
+ * host. Codex skills have no way to reference a bundled script (no
+ * ${CLAUDE_SKILL_DIR} equivalent), so a PATH launcher is the portable answer.
+ * `npm i -g` already links it via the package `bin` field; this covers npx and
+ * git-clone installs by symlinking into ~/.local/bin. Best-effort — a failure
+ * here only means session state won't persist on hosts that rely on the launcher.
+ */
+function installLauncher() {
+  if (commandExists('stitch-session')) {
+    logOk('stitch-session already on PATH');
+    return;
+  }
+  try {
+    chmodSync(SESSION_HELPER, 0o755); // the shebang script must be executable to run as a command
+  } catch {
+    // non-fatal — npm may have already set the mode
+  }
+  const binDir = join(HOME, '.local', 'bin');
+  const link = join(binDir, 'stitch-session');
+  try {
+    mkdirSync(binDir, { recursive: true });
+    // Replace an existing file or (possibly broken) symlink before linking fresh.
+    if (existsSync(link) || lstatSync(link, { throwIfNoEntry: false })) {
+      rmSync(link, { force: true });
+    }
+    symlinkSync(SESSION_HELPER, link);
+    logOk(`stitch-session linked → ${link}`);
+    const onPath = (process.env.PATH || '').split(/[:;]/).includes(binDir);
+    if (!onPath) {
+      logWarn(`${binDir} is not on your PATH — add it so skills can persist session state:`);
+      log('    export PATH="$HOME/.local/bin:$PATH"');
+    }
+  } catch (err) {
+    logWarn(`Could not link stitch-session (${err.message}). Session state may not persist on Codex.`);
+  }
+}
+
+/**
  * Install stitch-kit for a single client: agent → skills → MCP → postInstall.
  * @param {Client} client - Client to install for
  * @param {string} apiKey - Optional Stitch API key for MCP config
@@ -783,6 +822,10 @@ async function install() {
   for (const client of detected) {
     installClient(client, apiKey);
   }
+
+  // Put the session-state helper on PATH (shared across all hosts)
+  log('');
+  installLauncher();
 
   // Summary
   log('');
