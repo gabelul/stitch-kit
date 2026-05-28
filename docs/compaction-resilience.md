@@ -63,7 +63,7 @@ On OpenCode and Crush (skills copied, no plugin hooks), the skill calls no-op cl
 
 ## Honest limitations
 
-- The per-phase flush shrinks the loss window; it doesn't kill it. Content generated *within* a phase, before the next `append-prd`, still relies on the raw-transcript backstop in `snapshots/` (recoverable, not pretty).
+- **Mid-phase reasoning gap.** The per-phase flush captures structured state, not the model's *reasoning* within a phase (why this direction, what surprised it). The durable fix is the [exec plans pattern](https://developers.openai.com/cookbook/articles/codex_exec_plans) — a continuously-updated Decision Log + Surprises file written alongside `prd-draft.md`. Tracked as a follow-up in `docs/dev-docs/exec-plans-followup.md`; the raw-transcript backstop in `snapshots/` is the recoverable-but-ugly stopgap until that lands.
 - Hooks only run when stitch-kit is installed as a Claude Code plugin (they need `CLAUDE_PLUGIN_ROOT`, which the host sets only for hook execution).
 - Re-orientation depends on the host firing `SessionStart` with `source: "compact"` after an auto-compaction. The docs say it does for both auto and manual; confirm with a real `/compact` in your host.
 
