@@ -81,6 +81,8 @@ X-Goog-Api-Key = "YOUR-API-KEY"
 Get your API key at [stitch.withgoogle.com/settings](https://stitch.withgoogle.com/settings).
 
 Use `$stitch-kit` to activate the agent or `$stitch-orchestrator` for the full pipeline.
+
+**Compaction resilience (optional):** to keep your project, screens, and PRD draft across a context compaction, stitch-kit needs the `stitch-session` helper on PATH — `npm i -g @booplex/stitch-kit` provides it, and `install-codex.sh` symlinks it. For automatic re-orientation after a compaction, install stitch-kit as a Codex plugin (`codex plugin add`) and trust its hooks. Details: [docs/compaction-resilience.md](docs/compaction-resilience.md).
 </details>
 
 ---

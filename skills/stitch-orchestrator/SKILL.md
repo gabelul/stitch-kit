@@ -43,6 +43,23 @@ Note the tool namespace prefix (e.g., `stitch:` or `mcp__stitch__`). Use this pr
 
 Execute all steps autonomously. **Do not ask for confirmation between steps.** Report progress as you go.
 
+### Session state (compaction safety)
+
+Record progress to disk as you go, so a context compaction can't make you restart the flow. Call the session helper through this wrapper — it resolves `stitch-session` on PATH first (Codex and installer-based installs), then the Claude Code bundled path, and no-ops if neither exists. Define it at the top of each Bash block (fresh shell each call):
+
+```bash
+ss() { if command -v stitch-session >/dev/null 2>&1; then stitch-session "$@"; elif [ -f "${CLAUDE_SKILL_DIR:-/nonexistent}/../../scripts/stitch-session.mjs" ]; then node "${CLAUDE_SKILL_DIR}/../../scripts/stitch-session.mjs" "$@"; fi; true; }
+```
+
+Then call it at these moments:
+- **Step 4**, once a project is created or chosen: `ss init orchestrator` then `ss set-project <numericId> "<name>" <DEVICE>`
+- **Step 5**, after each screen generates: `ss add-screen <screenId> "<name>"`
+- **Step 7b**, after creating a Stitch Design System: `ss set-design-system <assetId> "<name>"`
+
+If the host compacts, the SessionStart hook reads this state back and tells you which project you were in and what's already generated — so you continue instead of regenerating screens that already exist.
+
+**Resuming:** before Step 4, run `ss read`. If it shows a recent project with screens, you're resuming after a compaction — reuse that project and skip the screens already listed instead of regenerating them. (This covers hosts where the SessionStart hook didn't fire, e.g. Codex hooks that aren't trusted yet.)
+
 ### Step 0.5: Ideation gate (smart detection)
 
 Before running the spec generator, score the user's request to determine if it needs ideation.

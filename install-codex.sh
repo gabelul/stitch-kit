@@ -64,6 +64,21 @@ for agent_file in "$AGENTS_SRC"/*.md; do
   fi
 done
 
+# Put the session-state helper on PATH. Codex skills can't reference a bundled
+# script directly, so skills call `stitch-session` by name to persist state
+# across context compactions.
+echo ""
+echo "Linking session helper → stitch-session"
+LAUNCHER_DEST="$HOME/.local/bin"
+mkdir -p "$LAUNCHER_DEST"
+chmod +x "$REPO_DIR/scripts/stitch-session.mjs" 2>/dev/null || true
+ln -sf "$REPO_DIR/scripts/stitch-session.mjs" "$LAUNCHER_DEST/stitch-session"
+echo "  linked: $LAUNCHER_DEST/stitch-session"
+case ":$PATH:" in
+  *":$LAUNCHER_DEST:"*) ;;
+  *) echo "  note: $LAUNCHER_DEST is not on your PATH — add: export PATH=\"\$HOME/.local/bin:\$PATH\"" ;;
+esac
+
 echo ""
 echo "Done. $linked skills linked, $skipped skipped."
 echo ""
@@ -78,3 +93,7 @@ echo "  X-Goog-Api-Key = \"YOUR-API-KEY\""
 echo ""
 echo "Then in Codex, invoke the agent with: \$stitch-kit"
 echo "Or use any skill directly with: \$stitch-orchestrator"
+echo ""
+echo "Optional — auto re-orientation after a context compaction:"
+echo "  install as a Codex plugin and trust its hooks:  codex plugin add ."
+echo "  (without it, skills still self-recover via session state — see docs/compaction-resilience.md)"

@@ -59,6 +59,27 @@ The ideation runs in **5-7 adaptive phases** with **active research** woven in. 
 
 ---
 
+## Session state (so a compaction can't erase your work)
+
+Ideation is the one flow that can actually lose work to a context compaction: the research and answers from each phase live only in the conversation until the PRD file gets written at Phase 7. So flush progress to disk as you go, using the session helper.
+
+Call the session helper through this wrapper. It resolves `stitch-session` on PATH first (Codex, and any install that ran the `stitch-kit` installer), then the Claude Code bundled path, and no-ops if neither exists. Define it at the top of each Bash block, since every Bash run is a fresh shell:
+
+```bash
+ss() { if command -v stitch-session >/dev/null 2>&1; then stitch-session "$@"; elif [ -f "${CLAUDE_SKILL_DIR:-/nonexistent}/../../scripts/stitch-session.mjs" ]; then node "${CLAUDE_SKILL_DIR}/../../scripts/stitch-session.mjs" "$@"; fi; true; }
+```
+
+Then call it at these moments:
+- **Start of ideation:** `ss init ideate`
+- **End of each phase:** `ss set-phase "<phase-label>"`, then pipe the phase's synthesized content to `append-prd` — `printf '%s\n' "<content>" | ss append-prd`
+- **Phase 7, after writing the final PRD:** `ss set-artifact prdFinal "temp/[product-name]-prd.md"`
+
+`append-prd` builds up `.stitch/session/prd-draft.md` phase by phase, so if the host compacts mid-brainstorm the draft is still on disk and the SessionStart hook points you straight back at it. Keep it light — one `set-phase` plus one `append-prd` per phase is the whole job.
+
+**Resuming:** at the very start, run `ss read`. If it returns recent state, you were compacted mid-flow — pick up from that phase and the existing `prd-draft.md` instead of restarting ideation. (This covers hosts where the SessionStart hook didn't fire, e.g. Codex hooks that aren't trusted yet.)
+
+---
+
 ## Research Engine
 
 Research is not a separate phase — it's woven into the ideation flow. Use `WebSearch` and `WebFetch` at key moments to bring real-world context into the conversation.
