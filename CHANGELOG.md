@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.11.0](https://github.com/gabelul/stitch-kit/compare/stitch-kit-v1.10.0...stitch-kit-v1.11.0) (2026-06-09)
+
+
+### New Skills & Features
+
+* compaction-resilient session state (Claude Code + Codex) ([#15](https://github.com/gabelul/stitch-kit/issues/15)) ([c22fa60](https://github.com/gabelul/stitch-kit/commit/c22fa60cc55a4ef0077b1ff8579e96b47ddb783c))
+
 ## [1.10.0](https://github.com/gabelul/stitch-kit/compare/stitch-kit-v1.9.0...stitch-kit-v1.10.0) (2026-03-24)
 
 
