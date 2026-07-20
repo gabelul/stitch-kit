@@ -63,11 +63,15 @@ The user may provide the project reference in several formats — always extract
     "customColor": "#6366F1",
     "colorVariant": "TONAL_SPOT",
     "roundness": "ROUND_TWELVE",
+    "saturation": 3,
     "spacingScale": 1,
-    "headlineFont": "ROBOTO",
-    "bodyFont": "ROBOTO",
-    "labelFont": "ROBOTO",
-    "font": "ROBOTO",
+    "headlineFont": "INTER",
+    "bodyFont": "INTER",
+    "labelFont": "INTER",
+    "font": "INTER",
+    "headlineFontFamily": "Inter",
+    "bodyFontFamily": "Inter",
+    "labelFontFamily": "Inter",
     "namedColors": {
       "primary": "#5B5FC7",
       "on_primary": "#FFFFFF",
@@ -134,9 +138,9 @@ The user may provide the project reference in several formats — always extract
 | `colorVariant` | enum | `MONOCHROME`, `NEUTRAL`, `TONAL_SPOT`, `VIBRANT`, `EXPRESSIVE`, `FIDELITY`, `CONTENT`, `RAINBOW`, `FRUIT_SALAD` |
 | `roundness` | enum | `ROUND_FOUR`, `ROUND_EIGHT`, `ROUND_TWELVE`, `ROUND_FULL` |
 | `spacingScale` | number | `0`–`3` (density multiplier) |
-| `headlineFont` | enum | 28-font set: `ROBOTO`, `OPEN_SANS`, `LATO`, `MONTSERRAT`, `POPPINS`, `INTER`, `PLAYFAIR_DISPLAY`, `MERRIWEATHER`, `RALEWAY`, `NUNITO`, `SOURCE_SANS_3`, `OSWALD`, `QUICKSAND`, `CABIN`, `BARLOW`, `WORK_SANS`, `DM_SANS`, `SPACE_GROTESK`, `SORA`, `OUTFIT`, `PLUS_JAKARTA_SANS`, `MANROPE`, `ALBERT_SANS`, `FIGTREE`, `GEIST`, `ONEST`, `INSTRUMENT_SANS`, `GENERAL_SANS` |
-| `bodyFont` | enum | Same 28-font set |
-| `labelFont` | enum | Same 28-font set |
+| `headlineFont` | enum | 68-font set: `INTER`, `GEIST`, `DM_SANS`, `MANROPE`, `PLUS_JAKARTA_SANS`, `WORK_SANS`, `SPACE_GROTESK`, `SORA`, `OUTFIT`, `RALEWAY`, `QUICKSAND`, `MONTSERRAT`, `OSWALD`, `PLAYFAIR_DISPLAY`, `MERRIWEATHER`, `NOTO_SERIF`, `EB_GARAMOND`, `LITERATA`, `SOURCE_SERIF_4`, `SOURCE_SANS_3`, `NUNITO_SANS`, `JETBRAINS_MONO`, `BEBAS_NEUE`, `ANTON`, `ARCHIVO_NARROW` — see `stitch-ued-guide` for the full 68-value list |
+| `bodyFont` | enum | Same 68-font set |
+| `labelFont` | enum | Same 68-font set |
 | `font` | enum | **Deprecated** — legacy single-font field, same enum |
 | `namedColors` | object | 40+ semantic color tokens (`primary`, `on_primary`, `surface`, `surface_container`, `outline`, `error`, etc.) |
 | `overridePrimaryColor` | string | Hex override, empty string if unused |
@@ -147,6 +151,8 @@ The user may provide the project reference in several formats — always extract
 | `backgroundDark` | string | Hex background for dark mode |
 | `description` | string | Brief aesthetic description of the theme |
 | `designMd` | string | Auto-generated design system markdown — the full token spec. Can be very long |
+| `spacing` | object | Optional. Map of spacing token name → CSS value (e.g. `{"sm": "8px"}`) |
+| `typography` | object | Optional. Map of typography level name (e.g. `h1`, `body`) → Typography token (`fontFamily`, `fontSize`, `fontWeight`, `letterSpacing`, `lineHeight`, all optional strings) |
 
 ## Project-level fields
 

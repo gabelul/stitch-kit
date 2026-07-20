@@ -10,7 +10,7 @@
   "plugins": [
     {
       "name": "stitch-kit",
-      "description": "Everything — all 35 skills in one install.",
+      "description": "Everything — all 36 skills in one install.",
       "source": "./",
       "strict": true,
       "skills": [
@@ -27,13 +27,14 @@
         "./skills/stitch-mcp-list-screens",
         "./skills/stitch-mcp-get-screen",
         "./skills/stitch-mcp-delete-project",
-        "./skills/stitch-mcp-upload-screens-from-images",
         "./skills/stitch-mcp-edit-screens",
         "./skills/stitch-mcp-generate-variants",
         "./skills/stitch-mcp-create-design-system",
         "./skills/stitch-mcp-update-design-system",
         "./skills/stitch-mcp-list-design-systems",
         "./skills/stitch-mcp-apply-design-system",
+        "./skills/stitch-mcp-upload-design-md",
+        "./skills/stitch-mcp-create-design-system-from-design-md",
         "./skills/stitch-nextjs-components",
         "./skills/stitch-svelte-components",
         "./skills/stitch-react-components",

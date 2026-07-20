@@ -167,7 +167,7 @@
             "type": "string"
           },
           "font": {
-            "description": "Optional. The font of the design.",
+            "description": "Optional. The font of the design. 68 fonts available. SOURCE_SERIF_FOUR, SOURCE_SANS_THREE, and METROPOLIS are deprecated aliases — prefer SOURCE_SERIF_4, SOURCE_SANS_3, and a modern sans alternative respectively.",
             "enum": [
               "FONT_UNSPECIFIED",
               "BE_VIETNAM_PRO",
@@ -186,9 +186,12 @@
               "LIBRE_CASLON_TEXT",
               "EB_GARAMOND",
               "LITERATA",
+              "SOURCE_SERIF_4",
               "SOURCE_SERIF_FOUR",
               "MONTSERRAT",
+              "METROPHOBIC",
               "METROPOLIS",
+              "SOURCE_SANS_3",
               "SOURCE_SANS_THREE",
               "NUNITO_SANS",
               "ARIMO",
@@ -197,7 +200,265 @@
               "GEIST",
               "DM_SANS",
               "IBM_PLEX_SANS",
-              "SORA"
+              "SORA",
+              "ANYBODY",
+              "ANTON",
+              "ARCHIVO_NARROW",
+              "ATKINSON_HYPERLEGIBLE_NEXT",
+              "BARLOW_CONDENSED",
+              "BEBAS_NEUE",
+              "BODONI_MODA",
+              "BRICOLAGE_GROTESQUE",
+              "CHIVO",
+              "CLIMATE_CRISIS",
+              "COMFORTAA",
+              "COURIER_PRIME",
+              "FIRA_SANS",
+              "GOOGLE_SANS",
+              "GOOGLE_SANS_CODE",
+              "GOOGLE_SANS_FLEX",
+              "GOOGLE_SANS_MONO",
+              "GOOGLE_SANS_TEXT",
+              "IBM_PLEX_SERIF",
+              "JETBRAINS_MONO",
+              "KARLA",
+              "LIBRE_FRANKLIN",
+              "MERRIWEATHER",
+              "NOTO_SANS",
+              "OPEN_SANS",
+              "OSWALD",
+              "OUTFIT",
+              "PLAYFAIR_DISPLAY",
+              "POIRET_ONE",
+              "QUESTRIAL",
+              "QUICKSAND",
+              "RALEWAY",
+              "ROBOTO_FLEX",
+              "SPACE_MONO",
+              "SYNE",
+              "VOLLKORN"
+            ],
+            "type": "string"
+          },
+          "headlineFont": {
+            "description": "Optional. Typeface for headings and titles. Same enum as `font`.",
+            "enum": [
+              "FONT_UNSPECIFIED",
+              "BE_VIETNAM_PRO",
+              "EPILOGUE",
+              "INTER",
+              "LEXEND",
+              "MANROPE",
+              "NEWSREADER",
+              "NOTO_SERIF",
+              "PLUS_JAKARTA_SANS",
+              "PUBLIC_SANS",
+              "SPACE_GROTESK",
+              "SPLINE_SANS",
+              "WORK_SANS",
+              "DOMINE",
+              "LIBRE_CASLON_TEXT",
+              "EB_GARAMOND",
+              "LITERATA",
+              "SOURCE_SERIF_4",
+              "SOURCE_SERIF_FOUR",
+              "MONTSERRAT",
+              "METROPHOBIC",
+              "METROPOLIS",
+              "SOURCE_SANS_3",
+              "SOURCE_SANS_THREE",
+              "NUNITO_SANS",
+              "ARIMO",
+              "HANKEN_GROTESK",
+              "RUBIK",
+              "GEIST",
+              "DM_SANS",
+              "IBM_PLEX_SANS",
+              "SORA",
+              "ANYBODY",
+              "ANTON",
+              "ARCHIVO_NARROW",
+              "ATKINSON_HYPERLEGIBLE_NEXT",
+              "BARLOW_CONDENSED",
+              "BEBAS_NEUE",
+              "BODONI_MODA",
+              "BRICOLAGE_GROTESQUE",
+              "CHIVO",
+              "CLIMATE_CRISIS",
+              "COMFORTAA",
+              "COURIER_PRIME",
+              "FIRA_SANS",
+              "GOOGLE_SANS",
+              "GOOGLE_SANS_CODE",
+              "GOOGLE_SANS_FLEX",
+              "GOOGLE_SANS_MONO",
+              "GOOGLE_SANS_TEXT",
+              "IBM_PLEX_SERIF",
+              "JETBRAINS_MONO",
+              "KARLA",
+              "LIBRE_FRANKLIN",
+              "MERRIWEATHER",
+              "NOTO_SANS",
+              "OPEN_SANS",
+              "OSWALD",
+              "OUTFIT",
+              "PLAYFAIR_DISPLAY",
+              "POIRET_ONE",
+              "QUESTRIAL",
+              "QUICKSAND",
+              "RALEWAY",
+              "ROBOTO_FLEX",
+              "SPACE_MONO",
+              "SYNE",
+              "VOLLKORN"
+            ],
+            "type": "string"
+          },
+          "bodyFont": {
+            "description": "Optional. Typeface for body text and paragraphs. Same enum as `font`.",
+            "enum": [
+              "FONT_UNSPECIFIED",
+              "BE_VIETNAM_PRO",
+              "EPILOGUE",
+              "INTER",
+              "LEXEND",
+              "MANROPE",
+              "NEWSREADER",
+              "NOTO_SERIF",
+              "PLUS_JAKARTA_SANS",
+              "PUBLIC_SANS",
+              "SPACE_GROTESK",
+              "SPLINE_SANS",
+              "WORK_SANS",
+              "DOMINE",
+              "LIBRE_CASLON_TEXT",
+              "EB_GARAMOND",
+              "LITERATA",
+              "SOURCE_SERIF_4",
+              "SOURCE_SERIF_FOUR",
+              "MONTSERRAT",
+              "METROPHOBIC",
+              "METROPOLIS",
+              "SOURCE_SANS_3",
+              "SOURCE_SANS_THREE",
+              "NUNITO_SANS",
+              "ARIMO",
+              "HANKEN_GROTESK",
+              "RUBIK",
+              "GEIST",
+              "DM_SANS",
+              "IBM_PLEX_SANS",
+              "SORA",
+              "ANYBODY",
+              "ANTON",
+              "ARCHIVO_NARROW",
+              "ATKINSON_HYPERLEGIBLE_NEXT",
+              "BARLOW_CONDENSED",
+              "BEBAS_NEUE",
+              "BODONI_MODA",
+              "BRICOLAGE_GROTESQUE",
+              "CHIVO",
+              "CLIMATE_CRISIS",
+              "COMFORTAA",
+              "COURIER_PRIME",
+              "FIRA_SANS",
+              "GOOGLE_SANS",
+              "GOOGLE_SANS_CODE",
+              "GOOGLE_SANS_FLEX",
+              "GOOGLE_SANS_MONO",
+              "GOOGLE_SANS_TEXT",
+              "IBM_PLEX_SERIF",
+              "JETBRAINS_MONO",
+              "KARLA",
+              "LIBRE_FRANKLIN",
+              "MERRIWEATHER",
+              "NOTO_SANS",
+              "OPEN_SANS",
+              "OSWALD",
+              "OUTFIT",
+              "PLAYFAIR_DISPLAY",
+              "POIRET_ONE",
+              "QUESTRIAL",
+              "QUICKSAND",
+              "RALEWAY",
+              "ROBOTO_FLEX",
+              "SPACE_MONO",
+              "SYNE",
+              "VOLLKORN"
+            ],
+            "type": "string"
+          },
+          "labelFont": {
+            "description": "Optional. Typeface for labels, captions, and UI chrome. Same enum as `font`.",
+            "enum": [
+              "FONT_UNSPECIFIED",
+              "BE_VIETNAM_PRO",
+              "EPILOGUE",
+              "INTER",
+              "LEXEND",
+              "MANROPE",
+              "NEWSREADER",
+              "NOTO_SERIF",
+              "PLUS_JAKARTA_SANS",
+              "PUBLIC_SANS",
+              "SPACE_GROTESK",
+              "SPLINE_SANS",
+              "WORK_SANS",
+              "DOMINE",
+              "LIBRE_CASLON_TEXT",
+              "EB_GARAMOND",
+              "LITERATA",
+              "SOURCE_SERIF_4",
+              "SOURCE_SERIF_FOUR",
+              "MONTSERRAT",
+              "METROPHOBIC",
+              "METROPOLIS",
+              "SOURCE_SANS_3",
+              "SOURCE_SANS_THREE",
+              "NUNITO_SANS",
+              "ARIMO",
+              "HANKEN_GROTESK",
+              "RUBIK",
+              "GEIST",
+              "DM_SANS",
+              "IBM_PLEX_SANS",
+              "SORA",
+              "ANYBODY",
+              "ANTON",
+              "ARCHIVO_NARROW",
+              "ATKINSON_HYPERLEGIBLE_NEXT",
+              "BARLOW_CONDENSED",
+              "BEBAS_NEUE",
+              "BODONI_MODA",
+              "BRICOLAGE_GROTESQUE",
+              "CHIVO",
+              "CLIMATE_CRISIS",
+              "COMFORTAA",
+              "COURIER_PRIME",
+              "FIRA_SANS",
+              "GOOGLE_SANS",
+              "GOOGLE_SANS_CODE",
+              "GOOGLE_SANS_FLEX",
+              "GOOGLE_SANS_MONO",
+              "GOOGLE_SANS_TEXT",
+              "IBM_PLEX_SERIF",
+              "JETBRAINS_MONO",
+              "KARLA",
+              "LIBRE_FRANKLIN",
+              "MERRIWEATHER",
+              "NOTO_SANS",
+              "OPEN_SANS",
+              "OSWALD",
+              "OUTFIT",
+              "PLAYFAIR_DISPLAY",
+              "POIRET_ONE",
+              "QUESTRIAL",
+              "QUICKSAND",
+              "RALEWAY",
+              "ROBOTO_FLEX",
+              "SPACE_MONO",
+              "SYNE",
+              "VOLLKORN"
             ],
             "type": "string"
           },
@@ -217,10 +478,94 @@
             ],
             "type": "string"
           },
+          "overridePrimaryColor": {
+            "description": "Optional. Hex override for the primary color.",
+            "type": "string"
+          },
+          "overrideSecondaryColor": {
+            "description": "Optional. Hex override for the secondary color.",
+            "type": "string"
+          },
+          "overrideTertiaryColor": {
+            "description": "Optional. Hex override for the tertiary color.",
+            "type": "string"
+          },
+          "overrideNeutralColor": {
+            "description": "Optional. Hex override for the neutral color.",
+            "type": "string"
+          },
+          "spacing": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            },
+            "description": "Optional. Map of spacing token name to CSS value (e.g. {\"sm\": \"8px\"})."
+          },
+          "typography": {
+            "type": "object",
+            "additionalProperties": {
+              "$ref": "#/$defs/Typography"
+            },
+            "description": "Optional. Map of typography level name (e.g. \"h1\", \"body\") to Typography token overrides."
+          },
           "saturation": {
-            "description": "Optional. The saturation of the design between 1 and 4.",
-            "format": "int32",
-            "type": "integer"
+            "type": "number",
+            "description": "Read-only. Colour saturation level returned by the API (observed integer values, e.g. 3). Not settable via create/update_design_system — the input DesignTheme has no saturation field.",
+            "readOnly": true
+          },
+          "namedColors": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            },
+            "description": "Read-only. Resolved semantic colour roles mapped to hex values (background, error, error_container, ...). Populated after the first screen is generated.",
+            "readOnly": true
+          },
+          "spacingScale": {
+            "type": "number",
+            "description": "Read-only. Numeric spacing scale returned by the API. Distinct from the settable `spacing` map.",
+            "readOnly": true
+          },
+          "bodyFontFamily": {
+            "type": "string",
+            "description": "Read-only. Human-readable resolved body font name, e.g. \"Inter\". The enum form is in bodyFont.",
+            "readOnly": true
+          },
+          "headlineFontFamily": {
+            "type": "string",
+            "description": "Read-only. Human-readable resolved headline font name, e.g. \"Libre Caslon Text\".",
+            "readOnly": true
+          },
+          "labelFontFamily": {
+            "type": "string",
+            "description": "Read-only. Human-readable resolved label font name, e.g. \"Public Sans\".",
+            "readOnly": true
+          }
+        },
+        "type": "object"
+      },
+      "Typography": {
+        "description": "A single typography level's CSS overrides.",
+        "properties": {
+          "fontFamily": {
+            "type": "string",
+            "description": "Optional. CSS font-family value."
+          },
+          "fontSize": {
+            "type": "string",
+            "description": "Optional. CSS font-size value (e.g. \"1rem\")."
+          },
+          "fontWeight": {
+            "type": "string",
+            "description": "Optional. CSS font-weight value (e.g. \"600\")."
+          },
+          "letterSpacing": {
+            "type": "string",
+            "description": "Optional. CSS letter-spacing value."
+          },
+          "lineHeight": {
+            "type": "string",
+            "description": "Optional. CSS line-height value."
           }
         },
         "type": "object"
@@ -269,18 +614,39 @@
             "description": "Optional. Human-readable name for the group (e.g., \"Warm Minimalism\").",
             "type": "string"
           },
-          "height": { "format": "int32", "type": "integer" },
-          "hidden": { "description": "User hid this screen from canvas.", "type": "boolean" },
-          "id": { "type": "string" },
-          "label": { "type": "string" },
+          "height": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "hidden": {
+            "description": "User hid this screen from canvas.",
+            "type": "boolean"
+          },
+          "id": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          },
           "sourceScreen": {
             "description": "Format: projects/{project}/screens/{screen}",
             "type": "string"
           },
-          "variantScreenInstance": { "$ref": "#/$defs/ScreenInstance" },
-          "width": { "format": "int32", "type": "integer" },
-          "x": { "format": "int32", "type": "integer" },
-          "y": { "format": "int32", "type": "integer" }
+          "variantScreenInstance": {
+            "$ref": "#/$defs/ScreenInstance"
+          },
+          "width": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "x": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "y": {
+            "format": "int32",
+            "type": "integer"
+          }
         },
         "type": "object"
       }

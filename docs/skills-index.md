@@ -1,6 +1,6 @@
 # stitch-kit Skills Index
 
-Quick reference — all 35 skills organized by layer and stage.
+Quick reference — all 36 skills organized by layer and stage.
 
 **Layers:**
 - **Orchestrator** — entry point that coordinates other skills
@@ -27,7 +27,6 @@ Quick reference — all 35 skills organized by layer and stage.
 | `stitch-mcp-get-project` | Get project metadata (uses `projects/ID` format) | Execution | Discovery |
 | `stitch-mcp-delete-project` | Permanently delete a Stitch project (uses `projects/ID` format, requires confirmation) | Execution | Cleanup |
 | `stitch-mcp-generate-screen-from-text` | Text → UI screen (core Stitch generation — numeric ID only) | Execution | Generate |
-| `stitch-mcp-upload-screens-from-images` | Import screenshots/mockups as new screens (numeric ID, base64 images) | Execution | Generate |
 | `stitch-mcp-edit-screens` | Edit existing screens with text prompts — the iteration tool (numeric IDs) | Execution | Iterate |
 | `stitch-mcp-generate-variants` | Generate design variants with creativity/aspect controls (numeric IDs) | Execution | Iterate |
 | `stitch-mcp-list-screens` | List all screens in a project (uses `projects/ID` format) | Execution | Retrieve |
@@ -36,6 +35,8 @@ Quick reference — all 35 skills organized by layer and stage.
 | `stitch-mcp-update-design-system` | Update an existing design system (requires asset `name`) | Execution | Design Systems |
 | `stitch-mcp-list-design-systems` | List available design systems (optional project filter) | Execution | Design Systems |
 | `stitch-mcp-apply-design-system` | Apply a design system to screens (numeric IDs + assetId) | Execution | Design Systems |
+| `stitch-mcp-upload-design-md` | Upload a DESIGN.md into a project (base64; pairs with the next row) | Execution | Design Systems |
+| `stitch-mcp-create-design-system-from-design-md` | Turn an uploaded DESIGN.md into a design system (screen-instance id + sourceScreen) | Execution | Design Systems |
 | `stitch-nextjs-components` | Stitch HTML → Next.js 15 App Router components (TypeScript, dark mode, ARIA) | Conversion | Web |
 | `stitch-svelte-components` | Stitch HTML → Svelte 5 / SvelteKit (runes, scoped CSS, transitions) | Conversion | Web |
 | `stitch-html-components` | Stitch HTML → platform-agnostic HTML5 + CSS (PWA, WebView, Capacitor) | Conversion | Web |
@@ -81,7 +82,6 @@ This is the most common source of bugs when calling Stitch MCP tools directly:
 | `get_project` | `projects/NUMERIC_ID` | — | — |
 | `delete_project` | `projects/NUMERIC_ID` | — | — |
 | `generate_screen_from_text` | **Numeric only** | — | — |
-| `upload_screens_from_images` | **Numeric only** | — | — |
 | `edit_screens` | **Numeric only** | **Numeric array** | — |
 | `generate_variants` | **Numeric only** | **Numeric array** | — |
 | `list_screens` | `projects/NUMERIC_ID` | — | — |
@@ -93,7 +93,7 @@ This is the most common source of bugs when calling Stitch MCP tools directly:
 
 **Rules of thumb:**
 - **Read operations** (`get_project`, `list_screens`, `delete_project`) → `projects/ID` full path
-- **Generation/mutation** (`generate_screen_from_text`, `edit_screens`, `generate_variants`, `upload_screens_from_images`, `apply_design_system`) → numeric only
+- **Generation/mutation** (`generate_screen_from_text`, `edit_screens`, `generate_variants`, `apply_design_system`) → numeric only
 - **Design system operations** → numeric `projectId` (optional), asset `name` for identity
 
 See `mcp-naming-convention.md` for full details.
@@ -103,7 +103,7 @@ See `mcp-naming-convention.md` for full details.
 ## References
 
 - `mcp-naming-convention.md` — ID format rules
-- `mcp-schemas/` — Formal JSON Schema definitions for all 14 Stitch MCP tools (fonts, roundness, componentRegions, outputComponents, variantOptions, designSystems)
+- `mcp-schemas/` — Formal JSON Schema definitions for the 13 Stitch MCP tools this repo wraps (fonts, roundness, componentRegions, outputComponents, variantOptions, designSystems)
 - `color-prompt-guide.md` — 8 ready-to-use color palettes for Stitch prompts
 - `tailwind-reference.md` — Tailwind utility class reference for conversions
 - `prd-to-stitch-workflow.md` — PRD-driven design workflow

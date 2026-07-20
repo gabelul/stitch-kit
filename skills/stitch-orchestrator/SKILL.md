@@ -22,7 +22,6 @@ Trigger phrases:
 - "Create a Stitch project for..."
 - "Generate a Stitch screen for..."
 - "Edit my Stitch screen..."
-- "Upload this screenshot to Stitch..."
 
 ## Preflight — Step 0
 
@@ -116,7 +115,6 @@ Determine what the user wants:
 |--------|---------|
 | **New screen** — design from scratch | Full workflow: Steps 2 → 9 |
 | **Edit existing** — iterate on a screen | Skip Steps 2–3. Call `stitch-mcp-edit-screens` with edit instruction. Then offer Step 5b menu. |
-| **Upload screenshot** — import existing UI | Call `stitch-mcp-upload-screens-from-images`, then offer edit or convert (Step 5b). |
 | **Refine existing** — iterate on a screen | Skip Step 2 (reuse project ID). Preserve layout structure in new prompt. |
 | **Export existing** — just get the code | Skip Steps 2-5. Go to Step 6 (get screen) → Step 8 (convert). |
 | **Convert non-Stitch HTML** — user already has markup | Skip Steps 2-7 entirely. Go straight to Step 8. The conversion skills accept a local HTML file or a URL as well as a Stitch screen, and that route needs no Stitch account. Do not push the user through generation to manufacture a screen they didn't ask for. |
@@ -382,7 +380,6 @@ This is the #1 source of bugs. Every MCP tool has specific ID format requirement
 | `list_screens` | `projects/ID` | — | — | Returns full paths |
 | `get_screen` | Numeric | Numeric | — | No prefixes |
 | `generate_screen_from_text` | Numeric | — | — | No prefix |
-| `upload_screens_from_images` | Numeric | — | — | No prefix |
 | `edit_screens` | Numeric | Numeric array | — | No prefixes |
 | `generate_variants` | Numeric | Numeric array | — | No prefixes |
 | `create_design_system` | Numeric (optional) | — | — | Returns Asset `name` |
@@ -392,7 +389,7 @@ This is the #1 source of bugs. Every MCP tool has specific ID format requirement
 
 **Rules of thumb:**
 - **Read operations** (`get_project`, `list_screens`, `delete_project`) → `projects/ID` full path
-- **Generation operations** (`generate_screen_from_text`, `edit_screens`, `generate_variants`, `upload_screens_from_images`, `apply_design_system`) → numeric only
+- **Generation operations** (`generate_screen_from_text`, `edit_screens`, `generate_variants`, `apply_design_system`) → numeric only
 - **Design system operations** → numeric `projectId` (optional), asset `name` for identity
 
 ---

@@ -7,7 +7,7 @@ allowed-tools:
 
 # Stitch MCP — List Design Systems
 
-Lists all available Stitch Design Systems. These are reusable theme configurations (colors, fonts, roundness, saturation) that can be applied to screens for visual consistency across a project.
+Lists all available Stitch Design Systems. These are reusable theme configurations (colors, fonts, roundness) that can be applied to screens for visual consistency across a project.
 
 ## Critical prerequisite
 
@@ -55,7 +55,6 @@ Returns an array of Asset objects:
           "colorMode": "LIGHT",
           "font": "DM_SANS",
           "roundness": "ROUND_EIGHT",
-          "saturation": 3,
           "customColor": "#6366F1",
           "backgroundLight": "#FFFFFF",
           "backgroundDark": "#18181B"

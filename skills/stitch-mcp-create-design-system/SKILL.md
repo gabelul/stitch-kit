@@ -1,6 +1,6 @@
 ---
 name: stitch-mcp-create-design-system
-description: Creates a reusable Stitch Design System from theme tokens — colors, fonts, roundness, saturation. Can be applied to future screens for visual consistency.
+description: Creates a reusable Stitch Design System from theme tokens — colors, fonts, roundness. Can be applied to future screens for visual consistency.
 allowed-tools:
   - "stitch*:*"
 ---
@@ -35,7 +35,6 @@ Creates a new Stitch Design System — a reusable theme configuration that can b
         "bodyFont": "DM_SANS",
         "labelFont": "DM_SANS",
         "roundness": "ROUND_EIGHT",
-        "saturation": 3,
         "customColor": "#6366F1",
         "backgroundLight": "#FFFFFF",
         "backgroundDark": "#18181B",
@@ -69,19 +68,27 @@ Creates a new Stitch Design System — a reusable theme configuration that can b
 | `headlineFont` | enum | See font list below | Typeface for headings and titles |
 | `bodyFont` | enum | See font list below | Typeface for body text and paragraphs |
 | `labelFont` | enum | See font list below | Typeface for labels, captions, and UI chrome |
-| `roundness` | enum | `ROUND_FOUR`, `ROUND_EIGHT`, `ROUND_TWELVE`, `ROUND_FULL` | Border radius scale |
-| `saturation` | int | 1–4 | Color vibrancy (1 = muted, 4 = vivid) |
+| `roundness` | enum | `ROUND_FOUR`, `ROUND_EIGHT`, `ROUND_TWELVE`, `ROUND_FULL` (`ROUND_TWO` also exists but is deprecated/unused) | Border radius scale |
 | `customColor` | string | Hex color | Primary brand color |
 | `backgroundLight` | string | Hex color | Light mode background |
 | `backgroundDark` | string | Hex color | Dark mode background |
 | `preset` | string | — | Optional preset theme name |
 | `description` | string | — | Brief aesthetic description |
+| `overridePrimaryColor` / `overrideSecondaryColor` / `overrideTertiaryColor` / `overrideNeutralColor` | string | Hex color | Exact color overrides, take precedence over `customColor` |
+| `spacing` | object | Map of name → CSS value | e.g. `{"sm": "8px"}` |
+| `typography` | object | Map of level name → Typography token | Each token: `fontFamily`, `fontSize`, `fontWeight`, `letterSpacing`, `lineHeight` |
 
-### Available fonts (28 options)
+### Available fonts (68 options)
 
-**Sans-serif:** `INTER`, `DM_SANS`, `GEIST`, `SORA`, `MANROPE`, `RUBIK`, `MONTSERRAT`, `WORK_SANS`, `SPACE_GROTESK`, `PLUS_JAKARTA_SANS`, `PUBLIC_SANS`, `SOURCE_SANS_THREE`, `NUNITO_SANS`, `ARIMO`, `HANKEN_GROTESK`, `IBM_PLEX_SANS`, `SPLINE_SANS`, `LEXEND`, `EPILOGUE`, `BE_VIETNAM_PRO`, `METROPOLIS`
+**Sans-serif:** `INTER`, `DM_SANS`, `GEIST`, `SORA`, `MANROPE`, `RUBIK`, `MONTSERRAT`, `WORK_SANS`, `SPACE_GROTESK`, `PLUS_JAKARTA_SANS`, `PUBLIC_SANS`, `SOURCE_SANS_3`, `NUNITO_SANS`, `ARIMO`, `HANKEN_GROTESK`, `IBM_PLEX_SANS`, `SPLINE_SANS`, `LEXEND`, `EPILOGUE`, `BE_VIETNAM_PRO`, `GOOGLE_SANS`, `GOOGLE_SANS_FLEX`, `GOOGLE_SANS_TEXT`, `NOTO_SANS`, `OPEN_SANS`, `KARLA`, `LIBRE_FRANKLIN`, `FIRA_SANS`, `CHIVO`, `QUESTRIAL`, `OUTFIT`, `BRICOLAGE_GROTESQUE`, `COMFORTAA`, `QUICKSAND`, `RALEWAY`, `ROBOTO_FLEX`, `SYNE`, `OSWALD`, `ANYBODY`, `ATKINSON_HYPERLEGIBLE_NEXT`
 
-**Serif:** `NOTO_SERIF`, `NEWSREADER`, `DOMINE`, `LIBRE_CASLON_TEXT`, `EB_GARAMOND`, `LITERATA`, `SOURCE_SERIF_FOUR`
+**Serif:** `NOTO_SERIF`, `NEWSREADER`, `DOMINE`, `LIBRE_CASLON_TEXT`, `EB_GARAMOND`, `LITERATA`, `SOURCE_SERIF_4`, `IBM_PLEX_SERIF`, `MERRIWEATHER`, `PLAYFAIR_DISPLAY`, `BODONI_MODA`, `VOLLKORN`
+
+**Mono / code:** `JETBRAINS_MONO`, `GOOGLE_SANS_CODE`, `GOOGLE_SANS_MONO`, `SPACE_MONO`, `COURIER_PRIME`
+
+**Condensed / display:** `BEBAS_NEUE`, `ANTON`, `ARCHIVO_NARROW`, `BARLOW_CONDENSED`, `CLIMATE_CRISIS`, `POIRET_ONE`, `METROPHOBIC`
+
+**Deprecated aliases (still valid, prefer the replacement):** `SOURCE_SERIF_FOUR` → `SOURCE_SERIF_4`, `SOURCE_SANS_THREE` → `SOURCE_SANS_3`, `METROPOLIS` → no direct successor
 
 ### `projectId` — optional, numeric only
 
