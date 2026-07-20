@@ -1,6 +1,6 @@
 {
   "name": "@booplex/stitch-kit",
-  "version": "1.11.0",
+  "version": "1.12.0",
   "description": "Your coding agent designs terrible UI. stitch-kit wires it into Google Stitch MCP and teaches it the whole pipeline — ideation, screen generation, design systems, production components. Claude Code, Codex, OpenCode, Crush, Cursor, VS Code, Gemini CLI.",
   "bin": {
     "stitch-kit": "./bin/stitch-kit.mjs",

@@ -5,7 +5,7 @@
   },
   "metadata": {
     "description": "Your agent designs terrible UI. stitch-kit wires it into Google Stitch MCP and teaches it the whole pipeline — ideation, research, multi-screen generation, design systems, and shipping to Next.js, Svelte, React, React Native, SwiftUI, or HTML.",
-    "version": "1.11.0"
+    "version": "1.12.0"
   },
   "plugins": [
     {
