@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.12.0](https://github.com/gabelul/stitch-kit/compare/stitch-kit-v1.11.0...stitch-kit-v1.12.0) (2026-07-20)
+
+
+### New Skills & Features
+
+* accept local HTML and URLs as conversion sources, not just Stitch screens ([#21](https://github.com/gabelul/stitch-kit/issues/21)) ([ebb0a86](https://github.com/gabelul/stitch-kit/commit/ebb0a86fc286c73997051df79723116b132ecb49))
+* resync with the live Stitch MCP API and add the DESIGN.md wrappers ([#22](https://github.com/gabelul/stitch-kit/issues/22)) ([44b9ef6](https://github.com/gabelul/stitch-kit/commit/44b9ef6fd1cb4a88add478a58bedae5ec8f5a72e))
+
+
+### Bug Fixes
+
+* correct client support claims across package metadata ([#19](https://github.com/gabelul/stitch-kit/issues/19)) ([b965811](https://github.com/gabelul/stitch-kit/commit/b965811524a9f646c0955c35d8b8c5b405363010))
+* correct tool shapes, installer hang, and the half-built non-Stitch source paths ([#23](https://github.com/gabelul/stitch-kit/issues/23)) ([f1c4e4f](https://github.com/gabelul/stitch-kit/commit/f1c4e4f4e1a1a1506f36ef006b1038fbbb627f53))
+* replace fictional enum values and date-stamp volatile claims ([#24](https://github.com/gabelul/stitch-kit/issues/24)) ([3dd2e46](https://github.com/gabelul/stitch-kit/commit/3dd2e464387ed21f7014670408550186ff453634))
+
 ## [1.11.0](https://github.com/gabelul/stitch-kit/compare/stitch-kit-v1.10.0...stitch-kit-v1.11.0) (2026-06-09)
 
 
