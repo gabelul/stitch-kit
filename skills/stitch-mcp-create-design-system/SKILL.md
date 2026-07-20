@@ -30,18 +30,13 @@ Creates a new Stitch Design System — a reusable theme configuration that can b
       "displayName": "SaaS Dashboard Theme",
       "theme": {
         "colorMode": "LIGHT",
-        "font": "DM_SANS",
         "headlineFont": "DM_SANS",
         "bodyFont": "DM_SANS",
         "labelFont": "DM_SANS",
         "roundness": "ROUND_EIGHT",
         "customColor": "#6366F1",
-        "backgroundLight": "#FFFFFF",
-        "backgroundDark": "#18181B",
-        "description": "Professional SaaS aesthetic — clean, indigo accent, airy spacing"
-      },
-      "designTokens": "--color-primary: #6366F1;\n--color-bg: #FFFFFF;\n--font-family: 'DM Sans';",
-      "styleGuidelines": "Use indigo for interactive elements. Gray-50 backgrounds for cards. 8px border radius."
+        "colorVariant": "TONAL_SPOT"
+      }
     },
     "projectId": "3780309359108792857"
   }
@@ -56,27 +51,28 @@ Creates a new Stitch Design System — a reusable theme configuration that can b
 |-------|------|----------|-------------|
 | `displayName` | string | Yes | Human-readable name for the design system |
 | `theme` | DesignTheme | Yes | Visual configuration — see below |
-| `designTokens` | string | No | CSS custom properties or token definitions |
-| `styleGuidelines` | string | No | Natural-language design rules |
+
+`designTokens` and `styleGuidelines` are **not** accepted — the live API has no such fields on `DesignSystemInput`. Don't send them.
 
 ### `theme` (DesignTheme) — the visual configuration
+
+Required: `colorMode`, `headlineFont`, `bodyFont`, `roundness`, `customColor`.
 
 | Field | Type | Values | Description |
 |-------|------|--------|-------------|
 | `colorMode` | enum | `LIGHT`, `DARK` | Base appearance mode |
-| `font` | enum | See font list below | **Deprecated** — sets all three font roles. Use the specific fields below instead |
 | `headlineFont` | enum | See font list below | Typeface for headings and titles |
 | `bodyFont` | enum | See font list below | Typeface for body text and paragraphs |
-| `labelFont` | enum | See font list below | Typeface for labels, captions, and UI chrome |
+| `labelFont` | enum | See font list below | Optional. Typeface for labels, captions, and UI chrome |
 | `roundness` | enum | `ROUND_FOUR`, `ROUND_EIGHT`, `ROUND_TWELVE`, `ROUND_FULL` (`ROUND_TWO` also exists but is deprecated/unused) | Border radius scale |
 | `customColor` | string | Hex color | Primary brand color |
-| `backgroundLight` | string | Hex color | Light mode background |
-| `backgroundDark` | string | Hex color | Dark mode background |
-| `preset` | string | — | Optional preset theme name |
-| `description` | string | — | Brief aesthetic description |
-| `overridePrimaryColor` / `overrideSecondaryColor` / `overrideTertiaryColor` / `overrideNeutralColor` | string | Hex color | Exact color overrides, take precedence over `customColor` |
-| `spacing` | object | Map of name → CSS value | e.g. `{"sm": "8px"}` |
-| `typography` | object | Map of level name → Typography token | Each token: `fontFamily`, `fontSize`, `fontWeight`, `letterSpacing`, `lineHeight` |
+| `colorVariant` | enum | `MONOCHROME`, `NEUTRAL`, `TONAL_SPOT`, `VIBRANT`, `EXPRESSIVE`, `FIDELITY`, `CONTENT`, `RAINBOW`, `FRUIT_SALAD` | Optional. Palette generation strategy from `customColor` |
+| `designMd` | string | — | Optional. Design system markdown document |
+| `overridePrimaryColor` / `overrideSecondaryColor` / `overrideTertiaryColor` / `overrideNeutralColor` | string | Hex color | Optional. Exact color overrides, take precedence over `customColor` |
+| `spacing` | object | Map of name → CSS value | Optional. e.g. `{"sm": "8px"}` |
+| `typography` | object | Map of level name → Typography token | Optional. Each token: `fontFamily`, `fontSize`, `fontWeight`, `letterSpacing`, `lineHeight` |
+
+`font` (the deprecated singular font field), `backgroundLight`, `backgroundDark`, `preset`, and `description` are **not** accepted as input — they only ever appear in API *responses* (`get_project`, `list_projects`, etc.), never in what you send here.
 
 ### Available fonts (68 options)
 
@@ -106,10 +102,11 @@ When creating from extracted `design-tokens.css`:
 | CSS Variable | → DesignTheme field |
 |---|---|
 | `--color-primary` | `customColor` |
-| `--color-bg` or `--bg-light` | `backgroundLight` |
-| `--bg-dark` | `backgroundDark` |
-| `--font-family` | `font` (map to closest enum value) |
+| `--font-family` (headings) | `headlineFont` (map to closest enum value) |
+| `--font-family` (body) | `bodyFont` (map to closest enum value) |
 | `--radius` or `--border-radius` | `roundness` (4px→FOUR, 8px→EIGHT, 12px→TWELVE, 16px+→FULL) |
+
+There's no input field for exact background hex values — `backgroundLight`/`backgroundDark` are response-only. Light/dark backgrounds come from `colorMode` plus the palette Stitch derives from `customColor` and `colorVariant`; use `overridePrimaryColor` etc. if you need to pin a specific palette slot instead.
 
 ## Output
 
@@ -117,7 +114,7 @@ Returns an Asset object with a `name` field — **store this** for future `updat
 
 ```json
 {
-  "name": "assets/ds_abc123",
+  "name": "assets/15996705518239280238",
   "displayName": "SaaS Dashboard Theme",
   "designSystem": { ... }
 }
@@ -125,6 +122,9 @@ Returns an Asset object with a `name` field — **store this** for future `updat
 
 ## After creating
 
-- Store the `name` value (e.g., `assets/ds_abc123`) — you'll need it for apply/update
+- Store the `name` value (e.g., `assets/15996705518239280238`). It's used two different ways:
+  - `update_design_system`'s `designSystem.name` — pass it as-is, with the `assets/` prefix
+  - `apply_design_system`'s `assetId` — strip the prefix, pass the bare numeric id
+  - `generate_screen_from_text`'s `designSystem` param — pass it as-is, with the prefix
 - Offer: "Apply this design system to existing screens?" → `stitch-mcp-apply-design-system`
 - The orchestrator stores this for automatic application in Step 5b

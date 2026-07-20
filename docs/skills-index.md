@@ -87,13 +87,16 @@ This is the most common source of bugs when calling Stitch MCP tools directly:
 | `list_screens` | `projects/NUMERIC_ID` | — | — |
 | `get_screen` | **Numeric only** | **Numeric only** | — |
 | `create_design_system` | **Numeric only** (optional) | — | Returns Asset `name` |
-| `update_design_system` | — | — | Asset `name` required |
+| `update_design_system` | — | — | Asset `name` (prefixed) required |
 | `list_design_systems` | **Numeric only** (optional) | — | Returns Asset names |
-| `apply_design_system` | **Numeric only** | **Numeric array** | `assetId` required |
+| `apply_design_system` | **Numeric only** | Screen **instances** (`{id, sourceScreen}`) | `assetId` bare numeric, no prefix |
+| `upload_design_md` | **Numeric only** | — | Body is base64 |
+| `create_design_system_from_design_md` | **Numeric only** | Screen **instance** (`{id, sourceScreen}`) | — |
 
 **Rules of thumb:**
 - **Read operations** (`get_project`, `list_screens`, `delete_project`) → `projects/ID` full path
-- **Generation/mutation** (`generate_screen_from_text`, `edit_screens`, `generate_variants`, `apply_design_system`) → numeric only
+- **Generation/mutation** (`generate_screen_from_text`, `edit_screens`, `generate_variants`) → numeric only
+- **`apply_design_system`** → numeric `projectId`, but screen **instances** (not bare screenIds) and a bare (unprefixed) `assetId`
 - **Design system operations** → numeric `projectId` (optional), asset `name` for identity
 
 See `mcp-naming-convention.md` for full details.
@@ -103,7 +106,7 @@ See `mcp-naming-convention.md` for full details.
 ## References
 
 - `mcp-naming-convention.md` — ID format rules
-- `mcp-schemas/` — Formal JSON Schema definitions for the 13 Stitch MCP tools this repo wraps (fonts, roundness, componentRegions, outputComponents, variantOptions, designSystems)
+- `mcp-schemas/` — Formal JSON Schema definitions for the 15 Stitch MCP tools this repo wraps (fonts, roundness, componentRegions, outputComponents, variantOptions, designSystems)
 - `color-prompt-guide.md` — 8 ready-to-use color palettes for Stitch prompts
 - `tailwind-reference.md` — Tailwind utility class reference for conversions
 - `prd-to-stitch-workflow.md` — PRD-driven design workflow

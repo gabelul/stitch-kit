@@ -32,12 +32,22 @@ You must have a `projectId` before calling this. If you don't have one:
     "projectId": "3780309359108792857",
     "prompt": "[Full structured prompt — see below]",
     "deviceType": "MOBILE",
-    "modelId": "GEMINI_3_1_PRO"
+    "modelId": "GEMINI_3_1_PRO",
+    "designSystem": "assets/15996705518239280238"
   }
 }
 ```
 
 ## Parameter reference
+
+### `designSystem` — optional, PREFIXED asset id
+
+```
+✅ "assets/15996705518239280238"
+❌ "15996705518239280238"
+```
+
+This is how you get design consistency across generated screens — pass the `name` of a design system from `stitch-mcp-create-design-system`, `stitch-mcp-create-design-system-from-design-md`, or `stitch-mcp-list-design-systems` (used as-is, with the `assets/` prefix). This is the opposite format from `apply_design_system`'s `assetId`, which wants the prefix stripped.
 
 ### `projectId` — numeric ID only, no `projects/` prefix
 ```

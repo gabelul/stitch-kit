@@ -32,8 +32,13 @@ You must have:
   "name": "apply_design_system",
   "arguments": {
     "projectId": "3780309359108792857",
-    "selectedScreenIds": ["88805abc123def456", "99906xyz789ghi012"],
-    "assetId": "ds_abc123"
+    "selectedScreenInstances": [
+      {
+        "id": "a1b2c3d4e5f6",
+        "sourceScreen": "projects/3780309359108792857/screens/98b50e2ddc9943efb387052637738f61"
+      }
+    ],
+    "assetId": "15996705518239280238"
   }
 }
 ```
@@ -47,26 +52,34 @@ You must have:
 ❌ "projects/3780309359108792857"
 ```
 
-### `selectedScreenIds` — array of numeric screen IDs
+### `selectedScreenInstances` — array of objects, not screen IDs
+
+This is the one that catches people. It takes screen **instances**, each a `{id, sourceScreen}` pair — not a list of screen ids.
 
 ```
-✅ ["88805abc123def456"]
-❌ ["projects/123/screens/88805abc123def456"]
+✅ [{ "id": "a1b2c3d4e5f6",
+      "sourceScreen": "projects/3780.../screens/98b5..." }]
+
+❌ ["88805abc123def456"]                    ← bare screen ids
+❌ [{ "id": "98b50e2ddc99...", ... }]        ← source screen id in the id slot
 ```
 
-All selected screens will have the design system applied.
+Get both values from `get_project` → `screenInstances`. The `id` is the **instance** id; `sourceScreen` is the full `projects/{p}/screens/{s}` path of the screen behind it. They are different values, and swapping them fails.
 
-### `assetId` — the design system identifier
+Same shape as `create_design_system_from_design_md`, which takes a single instance rather than an array.
 
-The `name` field from a design system asset, or just the ID portion:
+### `assetId` — bare numeric, no prefix
 
 ```
-✅ "ds_abc123"
+✅ "15996705518239280238"
+❌ "assets/15996705518239280238"
 ```
 
-Get this from:
-- `stitch-mcp-list-design-systems` → extract from the `name` field of each asset
-- `stitch-mcp-create-design-system` → returned in the response `name` field
+Get it from:
+- `stitch-mcp-list-design-systems` → take the `name` field (`assets/15996...`) and **strip the `assets/` prefix**
+- `stitch-mcp-create-design-system` → same, strip the prefix from the returned `name`
+
+> `apply_design_system` wants it bare, but `generate_screen_from_text`'s `designSystem` param wants it **prefixed** (`assets/15996...`). Same identifier, two formats, depending on the tool.
 
 ## Output
 

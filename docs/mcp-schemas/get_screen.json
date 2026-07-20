@@ -4,16 +4,26 @@
   "arguments": {
     "type": "object",
     "properties": {
-      "projectId": {
-        "description": "Required. Numeric project ID only — do NOT include 'projects/' prefix.",
+      "name": {
+        "description": "Required. Identifier. The resource name of the screen to retrieve. Format: `projects/{project}/screens/{screen}` Example: `projects/4044680601076201931/screens/98b50e2ddc9943efb387052637738f61`",
         "type": "string"
       },
+      "projectId": {
+        "description": "Required. Numeric project ID only — do NOT include 'projects/' prefix. DEPRECATED — prefer the `name` field.",
+        "type": "string",
+        "deprecated": true
+      },
       "screenId": {
-        "description": "Required. Numeric/hex screen ID — do NOT include path prefix.",
-        "type": "string"
+        "description": "Required. Numeric/hex screen ID — do NOT include path prefix. DEPRECATED — prefer the `name` field.",
+        "type": "string",
+        "deprecated": true
       }
     },
-    "required": ["projectId", "screenId"],
+    "required": [
+      "name",
+      "projectId",
+      "screenId"
+    ],
     "description": "Request message for GetScreen."
   },
   "outputSchema": {
@@ -21,10 +31,19 @@
     "properties": {
       "deviceType": {
         "description": "The device type of the screen.",
-        "enum": ["DEVICE_TYPE_UNSPECIFIED", "MOBILE", "DESKTOP", "TABLET", "AGNOSTIC"],
+        "enum": [
+          "DEVICE_TYPE_UNSPECIFIED",
+          "MOBILE",
+          "DESKTOP",
+          "TABLET",
+          "AGNOSTIC"
+        ],
         "type": "string"
       },
-      "height": { "description": "Screen height in pixels.", "type": "string" },
+      "height": {
+        "description": "Screen height in pixels.",
+        "type": "string"
+      },
       "htmlCode": {
         "$ref": "#/$defs/File",
         "description": "The HTML code of the screen. Use downloadUrl to fetch the full HTML."
@@ -38,8 +57,15 @@
         "$ref": "#/$defs/File",
         "description": "PNG screenshot. Use downloadUrl to download."
       },
-      "title": { "description": "Output only. Generated screen title.", "readOnly": true, "type": "string" },
-      "width": { "description": "Screen width in pixels.", "type": "string" }
+      "title": {
+        "description": "Output only. Generated screen title.",
+        "readOnly": true,
+        "type": "string"
+      },
+      "width": {
+        "description": "Screen width in pixels.",
+        "type": "string"
+      }
     },
     "$defs": {
       "File": {
@@ -65,7 +91,9 @@
       "UserFeedback": {
         "description": "User feedback for a given interaction.",
         "properties": {
-          "comment": { "type": "string" },
+          "comment": {
+            "type": "string"
+          },
           "designFeedbackReason": {
             "enum": [
               "DESIGN_FEEDBACK_REASON_UNSPECIFIED",
@@ -80,7 +108,11 @@
             "type": "string"
           },
           "rating": {
-            "enum": ["RATING_UNSPECIFIED", "POSITIVE", "NEGATIVE"],
+            "enum": [
+              "RATING_UNSPECIFIED",
+              "POSITIVE",
+              "NEGATIVE"
+            ],
             "type": "string"
           }
         },

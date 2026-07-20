@@ -1,31 +1,54 @@
 {
   "name": "update_design_system",
-  "description": "Updates an existing Stitch Design System's theme, tokens, or guidelines.\n",
+  "description": "Updates an existing Stitch Design System's display name and/or theme.\n",
   "arguments": {
     "type": "object",
     "properties": {
+      "name": {
+        "description": "Required. Identifier. The resource name of the design system to update. Format: `assets/{asset_id}` — WITH the `assets/` prefix. Example: `assets/15996705518239280238`. Note apply_design_system takes the same id BARE.",
+        "type": "string"
+      },
+      "projectId": {
+        "description": "Required. The project ID to update the design system for, example: '4044680601076201931', without the `projects/` prefix.",
+        "type": "string"
+      },
       "designSystem": {
         "description": "Required. Asset wrapper with name + updated fields. Full replacement, not merge.",
         "type": "object",
         "properties": {
-          "name": { "description": "Required. Asset name from create or list (e.g., assets/ds_abc123).", "type": "string" },
-          "displayName": { "type": "string" },
-          "theme": { "description": "Updated DesignTheme object.", "type": "object" },
-          "designTokens": { "type": "string" },
-          "styleGuidelines": { "type": "string" }
+          "displayName": {
+            "type": "string"
+          },
+          "theme": {
+            "description": "Updated DesignTheme object.",
+            "type": "object"
+          }
         },
-        "required": ["name"]
+        "required": [
+          "displayName",
+          "theme"
+        ]
       }
     },
-    "required": ["designSystem"],
+    "required": [
+      "name",
+      "projectId",
+      "designSystem"
+    ],
     "description": "Request message for UpdateDesignSystem."
   },
   "outputSchema": {
     "type": "object",
     "properties": {
-      "name": { "type": "string" },
-      "displayName": { "type": "string" },
-      "designSystem": { "type": "object" }
+      "name": {
+        "type": "string"
+      },
+      "displayName": {
+        "type": "string"
+      },
+      "designSystem": {
+        "type": "object"
+      }
     },
     "description": "Updated Asset response."
   }

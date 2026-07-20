@@ -28,14 +28,6 @@
           "theme": {
             "$ref": "#/$defs/DesignTheme",
             "description": "Required. Visual theme configuration."
-          },
-          "designTokens": {
-            "description": "Optional. CSS custom properties or token definitions.",
-            "type": "string"
-          },
-          "styleGuidelines": {
-            "description": "Optional. Natural-language design rules.",
-            "type": "string"
           }
         },
         "required": [
@@ -69,20 +61,6 @@
           },
           "customColor": {
             "description": "Primary color (hex).",
-            "type": "string"
-          },
-          "backgroundLight": {
-            "description": "Light mode background (hex).",
-            "type": "string"
-          },
-          "backgroundDark": {
-            "description": "Dark mode background (hex).",
-            "type": "string"
-          },
-          "preset": {
-            "type": "string"
-          },
-          "description": {
             "type": "string"
           },
           "colorVariant": {
@@ -319,15 +297,6 @@
             ],
             "type": "string"
           },
-          "namedColors": {
-            "type": "object",
-            "description": "Semantic color map (40+ tokens like primary, on_primary, surface, etc.)"
-          },
-          "spacingScale": {
-            "format": "int32",
-            "type": "integer",
-            "description": "0=minimal, 1=compact, 2=normal, 3=spacious"
-          },
           "designMd": {
             "type": "string",
             "description": "Auto-generated markdown design system document"
@@ -360,6 +329,13 @@
             "description": "Optional. Map of typography level name (e.g. \"h1\", \"body\") to Typography token overrides."
           }
         },
+        "required": [
+          "colorMode",
+          "headlineFont",
+          "bodyFont",
+          "roundness",
+          "customColor"
+        ],
         "type": "object"
       },
       "Typography": {

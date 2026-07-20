@@ -48,7 +48,7 @@ Returns an array of Asset objects:
 {
   "assets": [
     {
-      "name": "assets/ds_abc123",
+      "name": "assets/15996705518239280238",
       "displayName": "SaaS Dashboard Theme",
       "designSystem": {
         "theme": {
@@ -58,9 +58,7 @@ Returns an array of Asset objects:
           "customColor": "#6366F1",
           "backgroundLight": "#FFFFFF",
           "backgroundDark": "#18181B"
-        },
-        "designTokens": "...",
-        "styleGuidelines": "..."
+        }
       }
     }
   ]
@@ -73,11 +71,13 @@ Present as a readable table:
 
 | # | Name | Font | Color | Mode | Asset ID |
 |---|------|------|-------|------|----------|
-| 1 | SaaS Dashboard Theme | DM Sans | #6366F1 | Light | `ds_abc123` |
+| 1 | SaaS Dashboard Theme | DM Sans | #6366F1 | Light | `15996705518239280238` |
 
 Then offer:
 - "Apply one of these to a screen?" → `stitch-mcp-apply-design-system`
 - "Update an existing design system?" → `stitch-mcp-update-design-system`
 - "Create a new design system?" → `stitch-mcp-create-design-system`
 
-Extract the `name` field from each asset — this is the `assetId` needed for `apply_design_system`.
+Extract the `name` field from each asset (`assets/15996...`). It's used two different ways depending on the next call:
+- `apply_design_system`'s `assetId` — strip the `assets/` prefix, pass the bare numeric id
+- `update_design_system`'s `designSystem.name` — pass `name` as returned, with the prefix

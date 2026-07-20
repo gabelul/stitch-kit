@@ -1,6 +1,6 @@
 {
   "name": "apply_design_system",
-  "description": "Applies a Stitch Design System to one or more existing screens, updating their visual theme.\n\n**Input Requirements (CRITICAL):**\n1. **`projectId` (string - MANDATORY):** Numeric ID only.\n2. **`selectedScreenIds` (array - MANDATORY):** Numeric screen IDs.\n3. **`assetId` (string - MANDATORY):** Design system asset identifier.\n",
+  "description": "Applies a Stitch Design System to one or more existing screens, updating their visual theme.\n\n**Input Requirements (CRITICAL):**\n1. **`projectId` (string - MANDATORY):** Numeric ID only, no `projects/` prefix.\n2. **`selectedScreenInstances` (array of objects - MANDATORY):** Screen INSTANCES, each `{id, sourceScreen}`. NOT an array of bare screen ids. `id` is the screen instance id (from get_project's screenInstances), NOT the source screen id; `sourceScreen` is the full `projects/{p}/screens/{s}` path.\n3. **`assetId` (string - MANDATORY):** Bare numeric asset id, WITHOUT the `assets/` prefix.\n",
   "arguments": {
     "type": "object",
     "properties": {
@@ -8,17 +8,23 @@
         "description": "Required. Numeric project ID only — do NOT include 'projects/' prefix.",
         "type": "string"
       },
-      "selectedScreenIds": {
-        "description": "Required. Array of numeric screen IDs to apply the design system to.",
-        "type": "array",
-        "items": { "type": "string" }
-      },
       "assetId": {
-        "description": "Required. The design system asset identifier from list or create operations.",
+        "description": "Required. The asset id of the design system to apply, can be fetched from `list_design_systems`. Example: '15996705518239280238', without the `assets/` prefix.",
         "type": "string"
+      },
+      "selectedScreenInstances": {
+        "description": "Required. The screen instances to edit, which is available in the Project info, fetched by `get_project`. NOT bare screen ids.",
+        "type": "array",
+        "items": {
+          "$ref": "#/$defs/SelectedScreenInstance"
+        }
       }
     },
-    "required": ["projectId", "selectedScreenIds", "assetId"],
+    "required": [
+      "projectId",
+      "selectedScreenInstances",
+      "assetId"
+    ],
     "description": "Request message for ApplyDesignSystem."
   },
   "outputSchema": {
@@ -28,9 +34,33 @@
         "description": "Array of output components with updated screen data.",
         "type": "array"
       },
-      "projectId": { "type": "string" },
-      "sessionId": { "type": "string" }
+      "projectId": {
+        "type": "string"
+      },
+      "sessionId": {
+        "type": "string"
+      }
     },
     "description": "Response message for ApplyDesignSystem."
+  },
+  "$defs": {
+    "SelectedScreenInstance": {
+      "type": "object",
+      "description": "A screen instance to be edited by the agent, selected by the user.",
+      "properties": {
+        "id": {
+          "description": "Required. The id of the screen instance, NOT the source screen id. Available in screenInstances from `get_project`.",
+          "type": "string"
+        },
+        "sourceScreen": {
+          "description": "Required. The resource name of the source screen. Format: projects/{project}/screens/{screen}",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "sourceScreen"
+      ]
+    }
   }
 }
