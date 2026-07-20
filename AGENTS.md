@@ -4,7 +4,7 @@ Guidance for Claude Code, Cursor, Copilot, Codex CLI, and other AI agents workin
 
 ## What this repo is
 
-A collection of Claude Code **skills** — 35 packaged instructions and scripts that extend AI agents with Stitch-specific capabilities: text-to-UI generation, design iteration (edit, variants, design systems), design token extraction, and multi-framework conversion. Think of it as a Stitch co-pilot that wraps all 14 MCP tools and knows the footguns so you don't have to learn them the hard way.
+A collection of Claude Code **skills** — 35 packaged instructions and scripts that extend AI agents with Stitch-specific capabilities: text-to-UI generation, design iteration (edit, variants, design systems), design token extraction, and multi-framework conversion. Think of it as a Stitch co-pilot that wraps 13 of the 15 Stitch MCP tools and knows the footguns so you don't have to learn them the hard way.
 
 ## Skill structure
 
@@ -88,7 +88,7 @@ For Stitch-based UI generation, load **`stitch-orchestrator`** or invoke the **`
 | Layer | Count | Purpose |
 |-------|-------|---------|
 | **Brain** (`stitch-ui-*`, `stitch-ideate`) | 5 | Design intelligence — ideation agent, specs, prompts, variants, UED guide |
-| **Hands** (`stitch-mcp-*`) | 14 | MCP wrappers — one per Stitch API tool, handles ID format rules |
+| **Hands** (`stitch-mcp-*`) | 13 | MCP wrappers — one per Stitch API tool, handles ID format rules |
 | **Conversion** | 7+ | Stitch HTML → framework components (Next.js, Svelte, React, HTML, RN, SwiftUI, shadcn) |
 | **Quality** | 3 | Design tokens, accessibility audit, animations |
 
@@ -98,7 +98,7 @@ Skills marked `allowed-tools: ["stitch*:*"]` require the **Stitch MCP Server** c
 
 Setup guide: https://stitch.withgoogle.com/docs/mcp/setup
 
-All 14 tools wrapped: `create_project`, `get_project`, `delete_project`, `list_projects`, `generate_screen_from_text`, `upload_screens_from_images`, `edit_screens`, `generate_variants`, `list_screens`, `get_screen`, `create_design_system`, `update_design_system`, `list_design_systems`, `apply_design_system`
+13 of the 15 Stitch MCP tools wrapped: `create_project`, `get_project`, `delete_project`, `list_projects`, `generate_screen_from_text`, `edit_screens`, `generate_variants`, `list_screens`, `get_screen`, `create_design_system`, `update_design_system`, `list_design_systems`, `apply_design_system`
 
 Without MCP: the orchestrator falls back to prompt-only mode (generates ready-to-copy Stitch prompts instead of running the full workflow — still useful, just slower).
 
@@ -112,7 +112,6 @@ Without MCP: the orchestrator falls back to prompt-only mode (generates ready-to
 | `stitch-ui-prompt-architect` | Design spec → structured Stitch prompt |
 | `stitch-mcp-edit-screens` | Edit existing screens with text prompts (iteration) |
 | `stitch-mcp-generate-variants` | Generate design alternatives with creativity controls |
-| `stitch-mcp-upload-screens-from-images` | Import screenshots for redesign workflows |
 | `stitch-mcp-create-design-system` | Create reusable Stitch Design Systems |
 | `stitch-mcp-apply-design-system` | Apply design systems to screens |
 | `stitch-mcp-get-screen` | Retrieve screen HTML + screenshot by ID |
@@ -132,7 +131,7 @@ Without MCP: the orchestrator falls back to prompt-only mode (generates ready-to
 
 See [`docs/`](docs/) for:
 - `skills-index.md` — complete skills table with descriptions and layers
-- `mcp-schemas/` — JSON Schema for all 14 Stitch MCP tools
+- `mcp-schemas/` — JSON Schema for the 13 Stitch MCP tools this repo wraps
 - `color-prompt-guide.md` — 8 ready-to-use color palette prompts for Stitch
 - `tailwind-reference.md` — Tailwind utility class reference for conversions
 - `mcp-naming-convention.md` — MCP tool name → skill name mapping

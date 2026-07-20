@@ -1,0 +1,29 @@
+{
+  "name": "upload_design_md",
+  "description": "Uploads DESIGN.md to a Stitch project. Use this tool when the user wants to create a design system from a DESIGN.md file.\n\n**Instructions for Tool Call:**\n*  Call `create_design_system_from_design_md` tool immediately after this tool to create the design system from the uploaded DESIGN.md, and display the design system in the UI.\n",
+  "arguments": {
+    "type": "object",
+    "properties": {
+      "projectId": {
+        "description": "Required. The project ID to upload the DESIGN.md to, example: '4044680601076201931', without the `projects/` prefix.",
+        "type": "string"
+      },
+      "designMdBase64": {
+        "description": "Required. The base64-encoded DESIGN.md content. The decoded content must be valid UTF-8; uploads with invalid UTF-8 bytes will be rejected. Run `base64 -w 0 <file>` on Linux, or `base64 -i <file>` on macOS, to get an unwrapped base64 string.",
+        "type": "string"
+      }
+    },
+    "required": ["projectId", "designMdBase64"],
+    "description": "Request message for UploadDesignMd."
+  },
+  "outputSchema": {
+    "type": "object",
+    "properties": {},
+    "description": "Creates a screen instance holding the uploaded DESIGN.md. Read the instance id and its sourceScreen from get_project's screenInstances, then pass both to create_design_system_from_design_md."
+  },
+  "notes": [
+    "Half of a two-call pair. On its own this leaves an orphan screen instance and no design system.",
+    "projectId is numeric only here, but get_project (used to read back the screen instance) needs the projects/ prefix.",
+    "Google's own tool description says `base64 -w 0`, which is GNU-only and fails on macOS with 'invalid option -- w'."
+  ]
+}

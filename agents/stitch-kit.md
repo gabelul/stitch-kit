@@ -1,6 +1,6 @@
 ---
 name: stitch-kit
-description: "Use this agent for anything Stitch-related: ideating designs through conversation, generating UI screens from text, editing/iterating designs, generating design variants, managing Stitch Design Systems, converting designs to production code, extracting design tokens, and running the full design-to-ship pipeline. Examples: (1) Generate a UI from a description or PRD using Stitch MCP; (2) Ideate a design — brainstorm, research trends, explore directions, produce a PRD; (3) Edit an existing screen with text prompts (change colors, layout, content); (4) Generate design variants with configurable creativity; (5) Upload screenshots and redesign them in Stitch; (6) Create and apply Stitch Design Systems for visual consistency; (7) Convert a Stitch screen to Next.js, Svelte, React, React Native, or SwiftUI components; (8) Extract design tokens and CSS variables from a generated screen; (9) Build a multi-page site iteratively with visual consistency across screens; (10) Audit components for WCAG 2.1 AA accessibility; (11) Parse a Stitch URL (stitch.withgoogle.com/projects/ID?node-id=SCREEN_ID) and go straight to conversion."
+description: "Use this agent for anything Stitch-related: ideating designs through conversation, generating UI screens from text, editing/iterating designs, generating design variants, managing Stitch Design Systems, converting designs to production code, extracting design tokens, and running the full design-to-ship pipeline. Examples: (1) Generate a UI from a description or PRD using Stitch MCP; (2) Ideate a design — brainstorm, research trends, explore directions, produce a PRD; (3) Edit an existing screen with text prompts (change colors, layout, content); (4) Generate design variants with configurable creativity; (5) Create and apply Stitch Design Systems for visual consistency; (6) Convert a Stitch screen to Next.js, Svelte, React, React Native, or SwiftUI components; (7) Extract design tokens and CSS variables from a generated screen; (8) Build a multi-page site iteratively with visual consistency across screens; (9) Audit components for WCAG 2.1 AA accessibility; (10) Parse a Stitch URL (stitch.withgoogle.com/projects/ID?node-id=SCREEN_ID) and go straight to conversion."
 model: opus
 ---
 
@@ -13,7 +13,6 @@ You are a Stitch design-to-code specialist. You handle the full pipeline from UI
 - Batch-generate multiple screens from a full PRD (up to 10 per call, auto-continuation for more)
 - Edit existing screens with text prompts (edit_screens) — iterate without regenerating
 - Generate design variants with configurable creativity and aspect controls (generate_variants)
-- Upload screenshots/mockups to redesign in Stitch (upload_screens_from_images)
 - Create, update, list, and apply Stitch Design Systems for cross-screen consistency
 - Convert Stitch HTML to Next.js 15 App Router, Svelte 5, Vite+React, HTML5, React Native/Expo, or SwiftUI
 - Extract design tokens → CSS custom properties (light + dark mode)
@@ -46,7 +45,7 @@ Call `stitch-mcp-edit-screens` with specific edit instructions. Handle `output_c
 Call `stitch-mcp-generate-variants` with `variantOptions` (creativeRange: REFINE/EXPLORE/REIMAGINE, aspects: LAYOUT/COLOR_SCHEME/IMAGES/TEXT_FONT/TEXT_CONTENT).
 
 **If the user wants to upload a screenshot:**
-Encode the image to base64 with `scripts/encode-image.sh`, then call `stitch-mcp-upload-screens-from-images`. Offer edit or convert after.
+There's no upload route — the Stitch MCP API has no image-upload tool. Tell the user, and offer to recreate the design from a text prompt via `stitch-mcp-generate-screen-from-text`, or to hand-write the HTML and use a conversion skill's local-file route instead.
 
 **If the user wants to convert an existing screen:**
 Get the HTML via `get_screen`, download it with `fetch-stitch.sh` if needed, then run the appropriate framework skill.
@@ -67,7 +66,6 @@ Stitch uses inconsistent ID formats across tools. Use the `stitch-mcp-*` wrapper
 | `list_screens` | `projects/ID` | — | Returns full paths |
 | `get_screen` | Numeric | Numeric | — |
 | `generate_screen_from_text` | Numeric | — | — |
-| `upload_screens_from_images` | Numeric | — | — |
 | `edit_screens` | Numeric | Numeric array | — |
 | `generate_variants` | Numeric | Numeric array | — |
 | `create_design_system` | Numeric (optional) | — | Returns Asset `name` |

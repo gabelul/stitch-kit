@@ -1,6 +1,6 @@
 {
   "name": "create_design_system",
-  "description": "Creates a new Stitch Design System — a reusable theme configuration (colors, fonts, roundness, saturation) that can be applied to screens.\n",
+  "description": "Creates a new Stitch Design System — a reusable theme configuration (colors, fonts, roundness) that can be applied to screens.\n",
   "arguments": {
     "type": "object",
     "properties": {
@@ -13,7 +13,9 @@
         "type": "string"
       }
     },
-    "required": ["designSystem"],
+    "required": [
+      "designSystem"
+    ],
     "description": "Request message for CreateDesignSystem.",
     "$defs": {
       "DesignSystemInput": {
@@ -36,74 +38,284 @@
             "type": "string"
           }
         },
-        "required": ["displayName", "theme"],
+        "required": [
+          "displayName",
+          "theme"
+        ],
         "type": "object"
       },
       "DesignTheme": {
         "description": "Visual theme configuration.",
         "properties": {
-          "colorMode": { "enum": ["COLOR_MODE_UNSPECIFIED", "LIGHT", "DARK"], "type": "string" },
-          "font": {
+          "colorMode": {
             "enum": [
-              "FONT_UNSPECIFIED", "BE_VIETNAM_PRO", "EPILOGUE", "INTER", "LEXEND", "MANROPE",
-              "NEWSREADER", "NOTO_SERIF", "PLUS_JAKARTA_SANS", "PUBLIC_SANS", "SPACE_GROTESK",
-              "SPLINE_SANS", "WORK_SANS", "DOMINE", "LIBRE_CASLON_TEXT", "EB_GARAMOND",
-              "LITERATA", "SOURCE_SERIF_FOUR", "MONTSERRAT", "METROPOLIS", "SOURCE_SANS_THREE",
-              "NUNITO_SANS", "ARIMO", "HANKEN_GROTESK", "RUBIK", "GEIST", "DM_SANS",
-              "IBM_PLEX_SANS", "SORA"
+              "COLOR_MODE_UNSPECIFIED",
+              "LIGHT",
+              "DARK"
             ],
             "type": "string"
           },
-          "roundness": { "enum": ["ROUNDNESS_UNSPECIFIED", "ROUND_FOUR", "ROUND_EIGHT", "ROUND_TWELVE", "ROUND_FULL"], "type": "string" },
-          "saturation": { "type": "integer", "minimum": 1, "maximum": 4 },
-          "customColor": { "description": "Primary color (hex).", "type": "string" },
-          "backgroundLight": { "description": "Light mode background (hex).", "type": "string" },
-          "backgroundDark": { "description": "Dark mode background (hex).", "type": "string" },
-          "preset": { "type": "string" },
-          "description": { "type": "string" },
+          "roundness": {
+            "description": "Optional. ROUND_TWO is deprecated/unused.",
+            "enum": [
+              "ROUNDNESS_UNSPECIFIED",
+              "ROUND_TWO",
+              "ROUND_FOUR",
+              "ROUND_EIGHT",
+              "ROUND_TWELVE",
+              "ROUND_FULL"
+            ],
+            "type": "string"
+          },
+          "customColor": {
+            "description": "Primary color (hex).",
+            "type": "string"
+          },
+          "backgroundLight": {
+            "description": "Light mode background (hex).",
+            "type": "string"
+          },
+          "backgroundDark": {
+            "description": "Dark mode background (hex).",
+            "type": "string"
+          },
+          "preset": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
           "colorVariant": {
             "enum": [
-              "COLOR_VARIANT_UNSPECIFIED", "MONOCHROME", "NEUTRAL", "TONAL_SPOT",
-              "VIBRANT", "EXPRESSIVE", "FIDELITY", "CONTENT", "RAINBOW", "FRUIT_SALAD"
+              "COLOR_VARIANT_UNSPECIFIED",
+              "MONOCHROME",
+              "NEUTRAL",
+              "TONAL_SPOT",
+              "VIBRANT",
+              "EXPRESSIVE",
+              "FIDELITY",
+              "CONTENT",
+              "RAINBOW",
+              "FRUIT_SALAD"
             ],
             "type": "string"
           },
           "headlineFont": {
             "enum": [
               "FONT_UNSPECIFIED",
-              "BE_VIETNAM_PRO", "EPILOGUE", "INTER", "LEXEND", "MANROPE",
-              "NEWSREADER", "NOTO_SERIF", "PLUS_JAKARTA_SANS", "PUBLIC_SANS",
-              "SPACE_GROTESK", "SPLINE_SANS", "WORK_SANS", "DOMINE",
-              "LIBRE_CASLON_TEXT", "EB_GARAMOND", "LITERATA", "SOURCE_SERIF_FOUR",
-              "MONTSERRAT", "METROPOLIS", "SOURCE_SANS_THREE", "NUNITO_SANS",
-              "ARIMO", "HANKEN_GROTESK", "RUBIK", "GEIST", "DM_SANS",
-              "IBM_PLEX_SANS", "SORA"
+              "BE_VIETNAM_PRO",
+              "EPILOGUE",
+              "INTER",
+              "LEXEND",
+              "MANROPE",
+              "NEWSREADER",
+              "NOTO_SERIF",
+              "PLUS_JAKARTA_SANS",
+              "PUBLIC_SANS",
+              "SPACE_GROTESK",
+              "SPLINE_SANS",
+              "WORK_SANS",
+              "DOMINE",
+              "LIBRE_CASLON_TEXT",
+              "EB_GARAMOND",
+              "LITERATA",
+              "SOURCE_SERIF_4",
+              "SOURCE_SERIF_FOUR",
+              "MONTSERRAT",
+              "METROPHOBIC",
+              "METROPOLIS",
+              "SOURCE_SANS_3",
+              "SOURCE_SANS_THREE",
+              "NUNITO_SANS",
+              "ARIMO",
+              "HANKEN_GROTESK",
+              "RUBIK",
+              "GEIST",
+              "DM_SANS",
+              "IBM_PLEX_SANS",
+              "SORA",
+              "ANYBODY",
+              "ANTON",
+              "ARCHIVO_NARROW",
+              "ATKINSON_HYPERLEGIBLE_NEXT",
+              "BARLOW_CONDENSED",
+              "BEBAS_NEUE",
+              "BODONI_MODA",
+              "BRICOLAGE_GROTESQUE",
+              "CHIVO",
+              "CLIMATE_CRISIS",
+              "COMFORTAA",
+              "COURIER_PRIME",
+              "FIRA_SANS",
+              "GOOGLE_SANS",
+              "GOOGLE_SANS_CODE",
+              "GOOGLE_SANS_FLEX",
+              "GOOGLE_SANS_MONO",
+              "GOOGLE_SANS_TEXT",
+              "IBM_PLEX_SERIF",
+              "JETBRAINS_MONO",
+              "KARLA",
+              "LIBRE_FRANKLIN",
+              "MERRIWEATHER",
+              "NOTO_SANS",
+              "OPEN_SANS",
+              "OSWALD",
+              "OUTFIT",
+              "PLAYFAIR_DISPLAY",
+              "POIRET_ONE",
+              "QUESTRIAL",
+              "QUICKSAND",
+              "RALEWAY",
+              "ROBOTO_FLEX",
+              "SPACE_MONO",
+              "SYNE",
+              "VOLLKORN"
             ],
             "type": "string"
           },
           "bodyFont": {
             "enum": [
               "FONT_UNSPECIFIED",
-              "BE_VIETNAM_PRO", "EPILOGUE", "INTER", "LEXEND", "MANROPE",
-              "NEWSREADER", "NOTO_SERIF", "PLUS_JAKARTA_SANS", "PUBLIC_SANS",
-              "SPACE_GROTESK", "SPLINE_SANS", "WORK_SANS", "DOMINE",
-              "LIBRE_CASLON_TEXT", "EB_GARAMOND", "LITERATA", "SOURCE_SERIF_FOUR",
-              "MONTSERRAT", "METROPOLIS", "SOURCE_SANS_THREE", "NUNITO_SANS",
-              "ARIMO", "HANKEN_GROTESK", "RUBIK", "GEIST", "DM_SANS",
-              "IBM_PLEX_SANS", "SORA"
+              "BE_VIETNAM_PRO",
+              "EPILOGUE",
+              "INTER",
+              "LEXEND",
+              "MANROPE",
+              "NEWSREADER",
+              "NOTO_SERIF",
+              "PLUS_JAKARTA_SANS",
+              "PUBLIC_SANS",
+              "SPACE_GROTESK",
+              "SPLINE_SANS",
+              "WORK_SANS",
+              "DOMINE",
+              "LIBRE_CASLON_TEXT",
+              "EB_GARAMOND",
+              "LITERATA",
+              "SOURCE_SERIF_4",
+              "SOURCE_SERIF_FOUR",
+              "MONTSERRAT",
+              "METROPHOBIC",
+              "METROPOLIS",
+              "SOURCE_SANS_3",
+              "SOURCE_SANS_THREE",
+              "NUNITO_SANS",
+              "ARIMO",
+              "HANKEN_GROTESK",
+              "RUBIK",
+              "GEIST",
+              "DM_SANS",
+              "IBM_PLEX_SANS",
+              "SORA",
+              "ANYBODY",
+              "ANTON",
+              "ARCHIVO_NARROW",
+              "ATKINSON_HYPERLEGIBLE_NEXT",
+              "BARLOW_CONDENSED",
+              "BEBAS_NEUE",
+              "BODONI_MODA",
+              "BRICOLAGE_GROTESQUE",
+              "CHIVO",
+              "CLIMATE_CRISIS",
+              "COMFORTAA",
+              "COURIER_PRIME",
+              "FIRA_SANS",
+              "GOOGLE_SANS",
+              "GOOGLE_SANS_CODE",
+              "GOOGLE_SANS_FLEX",
+              "GOOGLE_SANS_MONO",
+              "GOOGLE_SANS_TEXT",
+              "IBM_PLEX_SERIF",
+              "JETBRAINS_MONO",
+              "KARLA",
+              "LIBRE_FRANKLIN",
+              "MERRIWEATHER",
+              "NOTO_SANS",
+              "OPEN_SANS",
+              "OSWALD",
+              "OUTFIT",
+              "PLAYFAIR_DISPLAY",
+              "POIRET_ONE",
+              "QUESTRIAL",
+              "QUICKSAND",
+              "RALEWAY",
+              "ROBOTO_FLEX",
+              "SPACE_MONO",
+              "SYNE",
+              "VOLLKORN"
             ],
             "type": "string"
           },
           "labelFont": {
             "enum": [
               "FONT_UNSPECIFIED",
-              "BE_VIETNAM_PRO", "EPILOGUE", "INTER", "LEXEND", "MANROPE",
-              "NEWSREADER", "NOTO_SERIF", "PLUS_JAKARTA_SANS", "PUBLIC_SANS",
-              "SPACE_GROTESK", "SPLINE_SANS", "WORK_SANS", "DOMINE",
-              "LIBRE_CASLON_TEXT", "EB_GARAMOND", "LITERATA", "SOURCE_SERIF_FOUR",
-              "MONTSERRAT", "METROPOLIS", "SOURCE_SANS_THREE", "NUNITO_SANS",
-              "ARIMO", "HANKEN_GROTESK", "RUBIK", "GEIST", "DM_SANS",
-              "IBM_PLEX_SANS", "SORA"
+              "BE_VIETNAM_PRO",
+              "EPILOGUE",
+              "INTER",
+              "LEXEND",
+              "MANROPE",
+              "NEWSREADER",
+              "NOTO_SERIF",
+              "PLUS_JAKARTA_SANS",
+              "PUBLIC_SANS",
+              "SPACE_GROTESK",
+              "SPLINE_SANS",
+              "WORK_SANS",
+              "DOMINE",
+              "LIBRE_CASLON_TEXT",
+              "EB_GARAMOND",
+              "LITERATA",
+              "SOURCE_SERIF_4",
+              "SOURCE_SERIF_FOUR",
+              "MONTSERRAT",
+              "METROPHOBIC",
+              "METROPOLIS",
+              "SOURCE_SANS_3",
+              "SOURCE_SANS_THREE",
+              "NUNITO_SANS",
+              "ARIMO",
+              "HANKEN_GROTESK",
+              "RUBIK",
+              "GEIST",
+              "DM_SANS",
+              "IBM_PLEX_SANS",
+              "SORA",
+              "ANYBODY",
+              "ANTON",
+              "ARCHIVO_NARROW",
+              "ATKINSON_HYPERLEGIBLE_NEXT",
+              "BARLOW_CONDENSED",
+              "BEBAS_NEUE",
+              "BODONI_MODA",
+              "BRICOLAGE_GROTESQUE",
+              "CHIVO",
+              "CLIMATE_CRISIS",
+              "COMFORTAA",
+              "COURIER_PRIME",
+              "FIRA_SANS",
+              "GOOGLE_SANS",
+              "GOOGLE_SANS_CODE",
+              "GOOGLE_SANS_FLEX",
+              "GOOGLE_SANS_MONO",
+              "GOOGLE_SANS_TEXT",
+              "IBM_PLEX_SERIF",
+              "JETBRAINS_MONO",
+              "KARLA",
+              "LIBRE_FRANKLIN",
+              "MERRIWEATHER",
+              "NOTO_SANS",
+              "OPEN_SANS",
+              "OSWALD",
+              "OUTFIT",
+              "PLAYFAIR_DISPLAY",
+              "POIRET_ONE",
+              "QUESTRIAL",
+              "QUICKSAND",
+              "RALEWAY",
+              "ROBOTO_FLEX",
+              "SPACE_MONO",
+              "SYNE",
+              "VOLLKORN"
             ],
             "type": "string"
           },
@@ -120,10 +332,59 @@
             "type": "string",
             "description": "Auto-generated markdown design system document"
           },
-          "overridePrimaryColor": { "type": "string", "description": "Hex override for primary color" },
-          "overrideSecondaryColor": { "type": "string" },
-          "overrideTertiaryColor": { "type": "string" },
-          "overrideNeutralColor": { "type": "string" }
+          "overridePrimaryColor": {
+            "type": "string",
+            "description": "Hex override for primary color"
+          },
+          "overrideSecondaryColor": {
+            "type": "string"
+          },
+          "overrideTertiaryColor": {
+            "type": "string"
+          },
+          "overrideNeutralColor": {
+            "type": "string"
+          },
+          "spacing": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            },
+            "description": "Optional. Map of spacing token name to CSS value (e.g. {\"sm\": \"8px\"})."
+          },
+          "typography": {
+            "type": "object",
+            "additionalProperties": {
+              "$ref": "#/$defs/Typography"
+            },
+            "description": "Optional. Map of typography level name (e.g. \"h1\", \"body\") to Typography token overrides."
+          }
+        },
+        "type": "object"
+      },
+      "Typography": {
+        "description": "A single typography level's CSS overrides.",
+        "properties": {
+          "fontFamily": {
+            "type": "string",
+            "description": "Optional. CSS font-family value."
+          },
+          "fontSize": {
+            "type": "string",
+            "description": "Optional. CSS font-size value (e.g. \"1rem\")."
+          },
+          "fontWeight": {
+            "type": "string",
+            "description": "Optional. CSS font-weight value (e.g. \"600\")."
+          },
+          "letterSpacing": {
+            "type": "string",
+            "description": "Optional. CSS letter-spacing value."
+          },
+          "lineHeight": {
+            "type": "string",
+            "description": "Optional. CSS line-height value."
+          }
         },
         "type": "object"
       }
@@ -132,9 +393,17 @@
   "outputSchema": {
     "type": "object",
     "properties": {
-      "name": { "description": "Asset identifier. Format: assets/{asset_id}", "type": "string" },
-      "displayName": { "type": "string" },
-      "designSystem": { "description": "The created design system object.", "type": "object" }
+      "name": {
+        "description": "Asset identifier. Format: assets/{asset_id}",
+        "type": "string"
+      },
+      "displayName": {
+        "type": "string"
+      },
+      "designSystem": {
+        "description": "The created design system object.",
+        "type": "object"
+      }
     },
     "description": "Asset response for CreateDesignSystem."
   }

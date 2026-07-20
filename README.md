@@ -62,7 +62,7 @@ Then, inside Claude Code, add the skills:
 /plugin install stitch-kit@stitch-kit
 ```
 
-Two steps, not one — the npx installer handles the agent and MCP wiring, the plugin adds the 35 skills. The agent works without them, but the skills are what make the output good.
+Two steps, not one — the npx installer handles the agent and MCP wiring, the plugin adds the 36 skills. The agent works without them, but the skills are what make the output good.
 
 ```bash
 npx @booplex/stitch-kit update   # update to latest
@@ -171,12 +171,12 @@ Pick your target:
 ## Architecture
 
 <p align="center">
-  <img src=".github/assets/architecture.svg" alt="stitch-kit architecture — 5 layers, 35 skills" width="100%"/>
+  <img src=".github/assets/architecture.svg" alt="stitch-kit architecture — 5 layers, 36 skills" width="100%"/>
 </p>
 
-Five layers, 35 skills. Each layer exists because agents fail at something specific with Stitch, and the failures are different enough that one skill can't cover them.
+Five layers, 36 skills. Each layer exists because agents fail at something specific with Stitch, and the failures are different enough that one skill can't cover them.
 
-**The ID format thing deserves its own callout.** `generate_screen_from_text` wants `"3780309359108792857"`. `list_screens` wants `"projects/3780309359108792857"`. Pass the wrong one and you get a cryptic error. This is the #1 reason agents fail with raw Stitch MCP, and it's why there are 14 wrapper skills instead of letting agents call the API directly.
+**The ID format thing deserves its own callout.** `generate_screen_from_text` wants `"3780309359108792857"`. `list_screens` wants `"projects/3780309359108792857"`. Pass the wrong one and you get a cryptic error. This is the #1 reason agents fail with raw Stitch MCP, and it's why there's a dedicated wrapper skill per API tool instead of letting agents call the API directly.
 
 Details → [docs/architecture.md](docs/architecture.md)
 
@@ -196,41 +196,52 @@ The examples folder is the secret weapon. Agents produce dramatically better out
 
 ## vs. the official Google Stitch Skills
 
-Google published [6 skills](https://github.com/google-labs-code/stitch-skills). They cover the basics — enhance a prompt, convert to React, make a video walkthrough. Useful starting point.
+Google's [official repo](https://github.com/google-labs-code/stitch-skills) ships 15 skills across three plugins — `stitch-design`, `stitch-build`, `stitch-utilities`. It's a real toolkit, not a stub, and it does one whole thing stitch-kit doesn't (see the gaps below).
 
-stitch-kit has 35. It covers the full pipeline: conversational ideation with web research, multi-screen batch generation, design system management, iteration loops, and conversion to 7 frameworks. Every official skill has a local equivalent that does more:
+Raw skill counts aren't a fair comparison: Google consolidated generate/edit/variants into one skill and the four design-system operations into another, where stitch-kit keeps them as separate wrappers. Different granularity, not more capability. Here's where both cover the same ground:
 
 | Official | stitch-kit | What's different |
 |----------|-----------|-----------------|
 | `design-md` | `stitch-design-md` | Adds Section 6 — design system notes that feed back into Stitch prompts for consistent multi-screen output |
 | `enhance-prompt` | `stitch-ui-prompt-architect` | Two modes: (A) vague → enhanced, same as official; (B) Design Spec → structured `[Context][Layout][Components]` prompt. Mode B produces significantly better results. |
 | `stitch-loop` | `stitch-loop` | Visual verification step, explicit MCP naming, DESIGN.md integration |
-| `react-components` | `stitch-react-components` | MCP-native retrieval, optional DESIGN.md alignment |
+| `stitch::react-components` | `stitch-react-components` | Also accepts a local HTML file or URL, not just a Stitch screen |
+| `stitch::react-native` | `stitch-react-native-components` | Also accepts a local HTML file or URL; theirs adds a re-sync path for existing native components |
+| `stitch::generate-design` | `stitch-mcp-generate-screen-from-text` + `-edit-screens` + `-generate-variants` | Split into one skill per MCP tool, each enforcing the right ID format |
+| `stitch::manage-design-system` | `stitch-mcp-create/update/list/apply-design-system` | Same split-by-operation approach |
 | `remotion` | `stitch-remotion` | Common patterns (slideshow, feature highlight, user flow), voiceover, dynamic text |
 | `shadcn-ui` | `stitch-shadcn-ui` | Init styles support, custom registries, validation checklist |
 
-**What's entirely new (doesn't exist in the official repo):**
-- `stitch-ideate` — conversational design agent that researches trends, proposes directions, produces PRDs, and batch-generates all screens
-- `stitch-orchestrator` — end-to-end coordinator with smart ideation routing
-- `stitch-mcp-*` wrappers — all 14 Stitch API tools wrapped with ID format safety (this alone saves hours of debugging)
-- `stitch-mcp-edit-screens` — iterate on existing designs without regenerating from scratch
-- `stitch-mcp-generate-variants` — native variant generation with creativity controls
-- `stitch-mcp-upload-screens-from-images` — import screenshots for redesign workflows
-- `stitch-mcp-create/update/list/apply-design-system` — full Stitch Design System lifecycle
-- `stitch-ui-design-spec-generator` — structured spec before prompt (better output than pure prompt enhancement)
-- Mobile targets: `stitch-react-native-components` + `stitch-swiftui-components`
-- `stitch-design-system` — token extraction → CSS custom properties with dark mode
-- `stitch-a11y` — WCAG 2.1 AA audit + auto-fixes
-- `stitch-animate` — purposeful motion with `prefers-reduced-motion` handled
-- `stitch-skill-creator` — meta-skill for extending the plugin
+**What stitch-kit adds:**
+
+- `stitch-ideate` — conversational design agent that researches trends, proposes directions, produces PRDs, and batch-generates all screens. No equivalent.
+- `stitch-orchestrator` — end-to-end coordinator with smart ideation routing. No equivalent.
+- `stitch-ui-design-spec-generator` — structured spec before prompt, which beats pure prompt enhancement. No equivalent.
+- `stitch-swiftui-components` — SwiftUI isn't a target in the official repo at all.
+- `stitch-design-system` — token extraction → CSS custom properties with dark mode. Their `manage-design-system` handles Stitch-side design systems; this one emits CSS for your codebase.
+- `stitch-a11y` — a dedicated WCAG 2.1 AA audit-and-fix pass. They cover accessibility as guidance inside individual conversion skills, but there's no audit skill.
+- `stitch-animate` — implements motion in components. Their `taste-design` specifies motion philosophy in DESIGN.md; this writes the actual animation code with `prefers-reduced-motion` handled.
+- `stitch-skill-creator` — meta-skill for extending the plugin. No equivalent.
+- Every conversion skill takes a local HTML file or URL, so that half works with no Stitch account.
+
+**What Google has that stitch-kit doesn't** — worth knowing before you pick:
+
+- `stitch::upload-to-stitch` — uploads screenshots or mockups into a Stitch project. stitch-kit had a wrapper for this (`upload_screens_from_images`), but Google removed that tool from the live MCP API — there's no image-upload route left on the API side, so the wrapper skill is gone too. Recreate the design from a text prompt instead, or use one of the conversion skills' local-file routes if you already have markup.
+- `stitch::code-to-design` — pulls an *existing* web app into Stitch by chaining the two skills below. stitch-kit only goes design → code; this goes code → design.
+- `stitch::extract-static-html` — extracts self-contained static HTML, assets inlined, from a running app
+- `stitch::extract-design-md` — generates DESIGN.md from frontend **source code**. stitch-kit's version reads a Stitch project instead, so same output, different input.
+- `taste-design` — a stricter anti-generic DESIGN.md variant (calibrated color, asymmetric layout, deliberate motion)
+- `react-vite-dashboard` — Vite dashboard generator, Web3/DeFi flavored
+
+If your workflow starts from an app you've already built and you want it *in* Stitch, use the official repo — that's the direction stitch-kit doesn't cover.
 
 ---
 
 ## Full skill reference
 
-All 35 skills with descriptions, layers, and the ID format table → [docs/skills-index.md](docs/skills-index.md)
+All 36 skills with descriptions, layers, and the ID format table → [docs/skills-index.md](docs/skills-index.md)
 
-MCP API schemas (JSON Schema for all 14 Stitch tools) → [docs/mcp-schemas/](docs/mcp-schemas/)
+MCP API schemas (JSON Schema for the 15 Stitch tools, all wrapped) → [docs/mcp-schemas/](docs/mcp-schemas/)
 
 ---
 

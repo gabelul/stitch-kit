@@ -1,6 +1,6 @@
 # Stitch MCP API Schemas
 
-Formal JSON Schema definitions for all 14 Stitch MCP tools.
+Formal JSON Schema definitions for the 13 Stitch MCP tools this repo wraps.
 
 Each file documents the full `arguments` (input) and `outputSchema` (output) for one tool.
 
@@ -22,7 +22,6 @@ Each file documents the full `arguments` (input) and `outputSchema` (output) for
 | File | Tool | Purpose |
 |------|------|---------|
 | `generate_screen_from_text.json` | `generate_screen_from_text` | Generate a screen from a prompt. Input: **numeric project ID only**. |
-| `upload_screens_from_images.json` | `upload_screens_from_images` | Upload images as new screens. Input: **numeric project ID**, base64 images. |
 | `edit_screens.json` | `edit_screens` | Edit existing screens with text prompts. Input: **numeric IDs only**. |
 | `generate_variants.json` | `generate_variants` | Generate design variants. Input: **numeric IDs**, variant options. |
 | `list_screens.json` | `list_screens` | List screens in a project. Input: `projects/{id}` format. |
@@ -41,19 +40,52 @@ Each file documents the full `arguments` (input) and `outputSchema` (output) for
 
 ## Key insights from the schemas
 
-### DesignTheme — 28 available fonts
+### DesignTheme is two different shapes — read this before "fixing" a schema
 
-All tools that return design data include a `DesignTheme` object. The `font` field accepts these enum values:
+The DesignTheme you **send** and the DesignTheme you **get back** are not the same object, and conflating them is the easiest way to break these files.
+
+| | Input DesignTheme | Output DesignTheme |
+|---|---|---|
+| Used by | `create_design_system`, `update_design_system` | `get_project`, `list_projects`, `create_project` responses |
+| Lives under | `arguments` | `outputSchema` |
+| `saturation` | **absent** | **present** (number, e.g. `3`) |
+| `font` (legacy singular) | **absent** | **present** (enum string) |
+| `namedColors`, `spacingScale` | absent | present |
+| `bodyFontFamily` / `headlineFontFamily` / `labelFontFamily` | absent | present — human-readable names like `"Inter"`, alongside the enum form |
+
+So `saturation` and `font` being missing from the live `create_design_system` tool definition does **not** mean they're dead. They're read-only response fields. Removing them from the output schemas makes the docs claim less than the API actually returns, which is its own kind of wrong.
+
+Verified 2026-07-20 against 85 real projects from `list_projects`: `font` appeared in 74, `saturation` in 57, `namedColors` in 15, the `*FontFamily` trio in 7.
+
+**Rule of thumb:** when refreshing these schemas from a live tool definition, that definition only describes the *input*. Confirm output fields against an actual API response, not the tool schema.
+
+### DesignTheme — 68 available fonts
+
+All tools that return design data include a `DesignTheme` object. The `bodyFont`, `headlineFont`, and `labelFont` fields (and the deprecated single `font` field) accept these enum values:
 
 **Sans-serif (modern):**
 `INTER`, `GEIST`, `DM_SANS`, `MANROPE`, `PLUS_JAKARTA_SANS`, `WORK_SANS`,
-`PUBLIC_SANS`, `SOURCE_SANS_THREE`, `NUNITO_SANS`, `SPACE_GROTESK`,
+`PUBLIC_SANS`, `SOURCE_SANS_3`, `NUNITO_SANS`, `SPACE_GROTESK`,
 `BE_VIETNAM_PRO`, `LEXEND`, `EPILOGUE`, `HANKEN_GROTESK`, `SPLINE_SANS`,
-`RUBIK`, `ARIMO`, `SORA`, `METROPOLIS`, `MONTSERRAT`, `IBM_PLEX_SANS`
+`RUBIK`, `ARIMO`, `SORA`, `MONTSERRAT`, `IBM_PLEX_SANS`,
+`GOOGLE_SANS`, `GOOGLE_SANS_FLEX`, `GOOGLE_SANS_TEXT`, `NOTO_SANS`, `OPEN_SANS`,
+`KARLA`, `LIBRE_FRANKLIN`, `FIRA_SANS`, `CHIVO`, `QUESTRIAL`, `OUTFIT`,
+`BRICOLAGE_GROTESQUE`, `COMFORTAA`, `QUICKSAND`, `RALEWAY`, `ROBOTO_FLEX`, `SYNE`,
+`OSWALD`, `ANYBODY`, `ATKINSON_HYPERLEGIBLE_NEXT`
 
-**Serif:**
+**Serif (editorial):**
 `NOTO_SERIF`, `NEWSREADER`, `DOMINE`, `LIBRE_CASLON_TEXT`, `EB_GARAMOND`,
-`LITERATA`, `SOURCE_SERIF_FOUR`
+`LITERATA`, `SOURCE_SERIF_4`, `IBM_PLEX_SERIF`, `MERRIWEATHER`, `PLAYFAIR_DISPLAY`,
+`BODONI_MODA`, `VOLLKORN`
+
+**Mono / code:**
+`JETBRAINS_MONO`, `GOOGLE_SANS_CODE`, `GOOGLE_SANS_MONO`, `SPACE_MONO`, `COURIER_PRIME`
+
+**Condensed / display / impact:**
+`BEBAS_NEUE`, `ANTON`, `ARCHIVO_NARROW`, `BARLOW_CONDENSED`, `CLIMATE_CRISIS`, `POIRET_ONE`, `METROPHOBIC`
+
+**Deprecated aliases (still valid, prefer the replacement):**
+`SOURCE_SERIF_FOUR` → use `SOURCE_SERIF_4` · `SOURCE_SANS_THREE` → use `SOURCE_SANS_3` · `METROPOLIS` → no direct successor
 
 ### DesignTheme — roundness values
 
@@ -65,9 +97,9 @@ All tools that return design data include a `DesignTheme` object. The `font` fie
 | `ROUND_FULL` | `border-radius: 9999px` | Pill buttons |
 | `ROUND_TWO` | — | **Deprecated / unused** |
 
-### DesignTheme — saturation
+### DesignTheme — other fields
 
-Integer 1–4. Higher = more vivid colors. Default (unset) is neutral.
+`labelFont` (captions/UI chrome typeface), `overridePrimaryColor` / `overrideSecondaryColor` / `overrideTertiaryColor` / `overrideNeutralColor` (exact hex overrides), `spacing` (map of spacing token name → CSS value), and `typography` (map of level name, e.g. `h1`/`body`, → a Typography token with `fontFamily`, `fontSize`, `fontWeight`, `letterSpacing`, `lineHeight`) round out the object. There is no `saturation` field on the live API.
 
 ### outputComponents pattern
 
@@ -117,7 +149,6 @@ Useful for: targeted HTML extraction, component-level conversion, design audits.
 | `list_projects` | — | — | — |
 | `delete_project` | `projects/NUMERIC` | — | — |
 | `generate_screen_from_text` | **NUMERIC only** | — | — |
-| `upload_screens_from_images` | **NUMERIC only** | — | — |
 | `edit_screens` | **NUMERIC only** | **NUMERIC array** | — |
 | `generate_variants` | **NUMERIC only** | **NUMERIC array** | — |
 | `list_screens` | `projects/NUMERIC` | — | — |

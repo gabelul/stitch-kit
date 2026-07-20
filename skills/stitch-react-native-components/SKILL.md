@@ -67,7 +67,7 @@ bash scripts/fetch-stitch.sh "https://example.com/page" "temp/source.html"
 
 Despite the name, that script is a generic hardened downloader — follows redirects, retries transient failures, handles gzip, and fails loudly on an empty result. It does not care whether the URL points at Stitch. Confirm the page is a mobile layout before converting.
 
-**From a screenshot:** there's no direct route. Run `stitch-mcp-upload-screens-from-images` to turn the image into a Stitch screen first, then take the Stitch path above.
+**From a screenshot:** there's no upload route — the Stitch MCP API has no image-upload tool. Either recreate the design from a text prompt via `stitch-mcp-generate-screen-from-text`, or hand-write the HTML and use the local-file route above.
 
 > Only the Stitch route needs an API key. Converting a local file or a URL works with no Google account at all.
 

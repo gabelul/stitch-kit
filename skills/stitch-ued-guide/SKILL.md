@@ -74,12 +74,14 @@ Quick reference for all DesignTheme fields returned by `get_project`:
 | `colorMode` | LIGHT / DARK | Base theme mode |
 | `customColor` | hex string | Seed color for palette generation |
 | `colorVariant` | enum (9 values) | How palette is derived from seed |
-| `headlineFont` | font enum (28 values) | Display/headline typeface |
+| `headlineFont` | font enum (68 values) | Display/headline typeface |
 | `bodyFont` | font enum | Body text typeface |
 | `labelFont` | font enum | Labels, captions, metadata typeface |
 | `font` | font enum | **Deprecated** — use headlineFont/bodyFont/labelFont |
-| `roundness` | ROUND_FOUR/EIGHT/TWELVE/FULL | Corner radius preset |
+| `roundness` | ROUND_FOUR/EIGHT/TWELVE/FULL (`ROUND_TWO` exists but is deprecated/unused) | Corner radius preset |
 | `spacingScale` | integer 0-3 | Layout density |
+| `spacing` | object | Optional. Map of spacing token name → CSS value (e.g. `{"sm": "8px"}`) |
+| `typography` | object | Optional. Map of typography level name (e.g. `h1`, `body`) → Typography token (`fontFamily`, `fontSize`, `fontWeight`, `letterSpacing`, `lineHeight`) |
 | `namedColors` | object (40+ tokens) | Full semantic color map (Material 3) |
 | `designMd` | string | Auto-generated design system markdown |
 | `description` | string | Brief aesthetic description |

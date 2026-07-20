@@ -39,7 +39,6 @@ You must have the design system's asset `name` before calling this. If you don't
         "bodyFont": "GEIST",
         "labelFont": "GEIST",
         "roundness": "ROUND_TWELVE",
-        "saturation": 2,
         "customColor": "#818CF8",
         "backgroundLight": "#F9FAFB",
         "backgroundDark": "#09090B"

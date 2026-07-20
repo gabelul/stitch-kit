@@ -1,0 +1,57 @@
+{
+  "name": "create_design_system_from_design_md",
+  "description": "Creates a design system for a project, with user uploaded DESIGN.md file, and displays the design system in the UI.\n\n**Instructions for Tool Call:**\n*  Should call `upload_design_md` tool first to upload DESIGN.md to a Stitch project.\n",
+  "arguments": {
+    "type": "object",
+    "properties": {
+      "projectId": {
+        "description": "Required. The project ID to update design system for, example: '4044680601076201931', without the `projects/` prefix.",
+        "type": "string"
+      },
+      "selectedScreenInstance": {
+        "$ref": "#/$defs/SelectedScreenInstance",
+        "description": "Required. The screen instance to create the design system from, which is created by UploadDesignMd RPC."
+      },
+      "deviceType": {
+        "description": "Optional. The device type of the screen.",
+        "type": "string",
+        "enum": [
+          "DEVICE_TYPE_UNSPECIFIED",
+          "MOBILE",
+          "DESKTOP",
+          "TABLET",
+          "AGNOSTIC"
+        ]
+      }
+    },
+    "required": ["projectId", "selectedScreenInstance"],
+    "description": "Request message for CreateDesignSystemFromDesignMd."
+  },
+  "$defs": {
+    "SelectedScreenInstance": {
+      "type": "object",
+      "description": "A screen instance to be edited by the agent, selected by the user.",
+      "properties": {
+        "id": {
+          "description": "Required. The id of the screen instance, NOT the source screen id. This is available in the screen instances in the Project info, fetched by `get_project`.",
+          "type": "string"
+        },
+        "sourceScreen": {
+          "description": "Required. The source screen of the screen instance. The resource name of the source screen. Format: projects/{project}/screens/{screen}",
+          "type": "string"
+        }
+      },
+      "required": ["id", "sourceScreen"]
+    }
+  },
+  "outputSchema": {
+    "type": "object",
+    "properties": {},
+    "description": "Returns the created design system, whose resource name is in assets/{asset_id} form."
+  },
+  "notes": [
+    "Second half of a two-call pair — upload_design_md must run first or there is no screen instance to reference.",
+    "Three ID formats in one call: projectId is bare numeric, selectedScreenInstance.id is the screen INSTANCE id (not the source screen id), and sourceScreen is the full projects/{p}/screens/{s} path.",
+    "The resulting asset id is passed bare to apply_design_system, but with the assets/ prefix to generate_screen_from_text."
+  ]
+}

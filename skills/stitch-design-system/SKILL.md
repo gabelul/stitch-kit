@@ -72,8 +72,10 @@ Before parsing HTML, get the authoritative design data from the Stitch API. This
 | `headlineFont` | `--font-sans` / heading | Map enum → font-family stack (see table below) |
 | `bodyFont` | `--font-body` | Map enum → font-family stack |
 | `labelFont` | `--font-label` | Map enum → font-family stack |
-| `roundness` | `--radius-md` baseline | ROUND_FOUR=4px, ROUND_EIGHT=8px, ROUND_TWELVE=12px, ROUND_FULL=9999px |
+| `roundness` | `--radius-md` baseline | ROUND_FOUR=4px, ROUND_EIGHT=8px, ROUND_TWELVE=12px, ROUND_FULL=9999px (ROUND_TWO also exists but is deprecated/unused) |
 | `spacingScale` | spacing multiplier | 0=tight (base 2px), 1=compact (base 4px), 2=normal (base 4px), 3=spacious (base 8px) |
+| `spacing` | `--space-*` overrides | Optional map of spacing token name → CSS value (e.g. `{"sm": "8px"}`) — use in place of `spacingScale` when present |
+| `typography` | `--text-*` / `--font-*` overrides | Optional map of level name (`h1`, `body`, etc.) → Typography token (`fontFamily`, `fontSize`, `fontWeight`, `letterSpacing`, `lineHeight`) |
 | `colorVariant` | informs palette approach | e.g., FIDELITY means stick to brand colors, VIBRANT means boost saturation |
 
 **Font enum → CSS font-family mapping:**
@@ -94,20 +96,30 @@ Before parsing HTML, get the authoritative design data from the Stitch API. This
 | `NUNITO_SANS` | `'Nunito Sans', system-ui, sans-serif` |
 | `LEXEND` | `'Lexend', system-ui, sans-serif` |
 | `PUBLIC_SANS` | `'Public Sans', system-ui, sans-serif` |
-| `SOURCE_SANS_THREE` | `'Source Sans 3', system-ui, sans-serif` |
+| `SOURCE_SANS_3` | `'Source Sans 3', system-ui, sans-serif` |
+| `SOURCE_SANS_THREE` | `'Source Sans 3', system-ui, sans-serif` — deprecated alias, prefer `SOURCE_SANS_3` |
 | `MONTSERRAT` | `'Montserrat', system-ui, sans-serif` |
 | `HANKEN_GROTESK` | `'Hanken Grotesk', system-ui, sans-serif` |
 | `ARIMO` | `'Arimo', system-ui, sans-serif` |
 | `BE_VIETNAM_PRO` | `'Be Vietnam Pro', system-ui, sans-serif` |
 | `SPLINE_SANS` | `'Spline Sans', system-ui, sans-serif` |
-| `METROPOLIS` | `'Metropolis', system-ui, sans-serif` |
+| `METROPOLIS` | `'Metropolis', system-ui, sans-serif` — deprecated, no direct successor |
+| `JETBRAINS_MONO` | `'JetBrains Mono', ui-monospace, monospace` |
+| `GOOGLE_SANS_CODE` | `'Google Sans Code', ui-monospace, monospace` |
+| `SPACE_MONO` | `'Space Mono', ui-monospace, monospace` |
+| `BEBAS_NEUE` | `'Bebas Neue', system-ui, sans-serif` — condensed display |
+| `ANTON` | `'Anton', system-ui, sans-serif` — condensed display |
+| `ARCHIVO_NARROW` | `'Archivo Narrow', system-ui, sans-serif` — condensed |
 | `EB_GARAMOND` | `'EB Garamond', Georgia, serif` |
 | `LITERATA` | `'Literata', Georgia, serif` |
-| `SOURCE_SERIF_FOUR` | `'Source Serif 4', Georgia, serif` |
+| `SOURCE_SERIF_4` | `'Source Serif 4', Georgia, serif` |
+| `SOURCE_SERIF_FOUR` | `'Source Serif 4', Georgia, serif` — deprecated alias, prefer `SOURCE_SERIF_4` |
 | `LIBRE_CASLON_TEXT` | `'Libre Caslon Text', Georgia, serif` |
 | `NEWSREADER` | `'Newsreader', Georgia, serif` |
 | `DOMINE` | `'Domine', Georgia, serif` |
 | `NOTO_SERIF` | `'Noto Serif', Georgia, serif` |
+| `PLAYFAIR_DISPLAY` | `'Playfair Display', Georgia, serif` — editorial display |
+| `BODONI_MODA` | `'Bodoni Moda', Georgia, serif` — editorial display |
 
 5. **Use these as the baseline.** Then use HTML analysis (Step 2) only for values the API doesn't provide: motion/transition durations, exact spacing pixel values, shadow definitions, additional colors beyond the namedColors set.
 

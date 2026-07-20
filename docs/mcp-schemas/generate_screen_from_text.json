@@ -203,16 +203,20 @@
           "customColor": { "description": "Custom primary color (hex).", "type": "string" },
           "description": { "description": "Brief aesthetic description.", "type": "string" },
           "font": {
-            "description": "28 fonts available. Use enum values in prompts for precise control.",
+            "description": "68 fonts available. SOURCE_SERIF_FOUR, SOURCE_SANS_THREE, and METROPOLIS are deprecated aliases — prefer SOURCE_SERIF_4, SOURCE_SANS_3, and a modern sans alternative respectively.",
             "enum": [
-              "FONT_UNSPECIFIED",
-              "BE_VIETNAM_PRO", "EPILOGUE", "INTER", "LEXEND", "MANROPE",
-              "NEWSREADER", "NOTO_SERIF", "PLUS_JAKARTA_SANS", "PUBLIC_SANS",
-              "SPACE_GROTESK", "SPLINE_SANS", "WORK_SANS", "DOMINE",
-              "LIBRE_CASLON_TEXT", "EB_GARAMOND", "LITERATA", "SOURCE_SERIF_FOUR",
-              "MONTSERRAT", "METROPOLIS", "SOURCE_SANS_THREE", "NUNITO_SANS",
-              "ARIMO", "HANKEN_GROTESK", "RUBIK", "GEIST", "DM_SANS",
-              "IBM_PLEX_SANS", "SORA"
+              "FONT_UNSPECIFIED", "BE_VIETNAM_PRO", "EPILOGUE", "INTER", "LEXEND", "MANROPE", "NEWSREADER",
+              "NOTO_SERIF", "PLUS_JAKARTA_SANS", "PUBLIC_SANS", "SPACE_GROTESK", "SPLINE_SANS", "WORK_SANS",
+              "DOMINE", "LIBRE_CASLON_TEXT", "EB_GARAMOND", "LITERATA", "SOURCE_SERIF_4", "SOURCE_SERIF_FOUR",
+              "MONTSERRAT", "METROPHOBIC", "METROPOLIS", "SOURCE_SANS_3", "SOURCE_SANS_THREE", "NUNITO_SANS",
+              "ARIMO", "HANKEN_GROTESK", "RUBIK", "GEIST", "DM_SANS", "IBM_PLEX_SANS",
+              "SORA", "ANYBODY", "ANTON", "ARCHIVO_NARROW", "ATKINSON_HYPERLEGIBLE_NEXT", "BARLOW_CONDENSED",
+              "BEBAS_NEUE", "BODONI_MODA", "BRICOLAGE_GROTESQUE", "CHIVO", "CLIMATE_CRISIS", "COMFORTAA",
+              "COURIER_PRIME", "FIRA_SANS", "GOOGLE_SANS", "GOOGLE_SANS_CODE", "GOOGLE_SANS_FLEX", "GOOGLE_SANS_MONO",
+              "GOOGLE_SANS_TEXT", "IBM_PLEX_SERIF", "JETBRAINS_MONO", "KARLA", "LIBRE_FRANKLIN", "MERRIWEATHER",
+              "NOTO_SANS", "OPEN_SANS", "OSWALD", "OUTFIT", "PLAYFAIR_DISPLAY", "POIRET_ONE",
+              "QUESTRIAL", "QUICKSAND", "RALEWAY", "ROBOTO_FLEX", "SPACE_MONO", "SYNE",
+              "VOLLKORN"
             ],
             "type": "string"
           },
@@ -221,11 +225,6 @@
             "description": "ROUND_TWO is deprecated/unused. Safe values: ROUND_FOUR, ROUND_EIGHT, ROUND_TWELVE, ROUND_FULL.",
             "enum": ["ROUNDNESS_UNSPECIFIED", "ROUND_TWO", "ROUND_FOUR", "ROUND_EIGHT", "ROUND_TWELVE", "ROUND_FULL"],
             "type": "string"
-          },
-          "saturation": {
-            "description": "Color saturation 1–4. Higher = more vivid.",
-            "format": "int32",
-            "type": "integer"
           },
           "colorVariant": {
             "enum": [
@@ -236,40 +235,52 @@
           },
           "headlineFont": {
             "enum": [
-              "FONT_UNSPECIFIED",
-              "BE_VIETNAM_PRO", "EPILOGUE", "INTER", "LEXEND", "MANROPE",
-              "NEWSREADER", "NOTO_SERIF", "PLUS_JAKARTA_SANS", "PUBLIC_SANS",
-              "SPACE_GROTESK", "SPLINE_SANS", "WORK_SANS", "DOMINE",
-              "LIBRE_CASLON_TEXT", "EB_GARAMOND", "LITERATA", "SOURCE_SERIF_FOUR",
-              "MONTSERRAT", "METROPOLIS", "SOURCE_SANS_THREE", "NUNITO_SANS",
-              "ARIMO", "HANKEN_GROTESK", "RUBIK", "GEIST", "DM_SANS",
-              "IBM_PLEX_SANS", "SORA"
+              "FONT_UNSPECIFIED", "BE_VIETNAM_PRO", "EPILOGUE", "INTER", "LEXEND", "MANROPE", "NEWSREADER",
+              "NOTO_SERIF", "PLUS_JAKARTA_SANS", "PUBLIC_SANS", "SPACE_GROTESK", "SPLINE_SANS", "WORK_SANS",
+              "DOMINE", "LIBRE_CASLON_TEXT", "EB_GARAMOND", "LITERATA", "SOURCE_SERIF_4", "SOURCE_SERIF_FOUR",
+              "MONTSERRAT", "METROPHOBIC", "METROPOLIS", "SOURCE_SANS_3", "SOURCE_SANS_THREE", "NUNITO_SANS",
+              "ARIMO", "HANKEN_GROTESK", "RUBIK", "GEIST", "DM_SANS", "IBM_PLEX_SANS",
+              "SORA", "ANYBODY", "ANTON", "ARCHIVO_NARROW", "ATKINSON_HYPERLEGIBLE_NEXT", "BARLOW_CONDENSED",
+              "BEBAS_NEUE", "BODONI_MODA", "BRICOLAGE_GROTESQUE", "CHIVO", "CLIMATE_CRISIS", "COMFORTAA",
+              "COURIER_PRIME", "FIRA_SANS", "GOOGLE_SANS", "GOOGLE_SANS_CODE", "GOOGLE_SANS_FLEX", "GOOGLE_SANS_MONO",
+              "GOOGLE_SANS_TEXT", "IBM_PLEX_SERIF", "JETBRAINS_MONO", "KARLA", "LIBRE_FRANKLIN", "MERRIWEATHER",
+              "NOTO_SANS", "OPEN_SANS", "OSWALD", "OUTFIT", "PLAYFAIR_DISPLAY", "POIRET_ONE",
+              "QUESTRIAL", "QUICKSAND", "RALEWAY", "ROBOTO_FLEX", "SPACE_MONO", "SYNE",
+              "VOLLKORN"
             ],
             "type": "string"
           },
           "bodyFont": {
             "enum": [
-              "FONT_UNSPECIFIED",
-              "BE_VIETNAM_PRO", "EPILOGUE", "INTER", "LEXEND", "MANROPE",
-              "NEWSREADER", "NOTO_SERIF", "PLUS_JAKARTA_SANS", "PUBLIC_SANS",
-              "SPACE_GROTESK", "SPLINE_SANS", "WORK_SANS", "DOMINE",
-              "LIBRE_CASLON_TEXT", "EB_GARAMOND", "LITERATA", "SOURCE_SERIF_FOUR",
-              "MONTSERRAT", "METROPOLIS", "SOURCE_SANS_THREE", "NUNITO_SANS",
-              "ARIMO", "HANKEN_GROTESK", "RUBIK", "GEIST", "DM_SANS",
-              "IBM_PLEX_SANS", "SORA"
+              "FONT_UNSPECIFIED", "BE_VIETNAM_PRO", "EPILOGUE", "INTER", "LEXEND", "MANROPE", "NEWSREADER",
+              "NOTO_SERIF", "PLUS_JAKARTA_SANS", "PUBLIC_SANS", "SPACE_GROTESK", "SPLINE_SANS", "WORK_SANS",
+              "DOMINE", "LIBRE_CASLON_TEXT", "EB_GARAMOND", "LITERATA", "SOURCE_SERIF_4", "SOURCE_SERIF_FOUR",
+              "MONTSERRAT", "METROPHOBIC", "METROPOLIS", "SOURCE_SANS_3", "SOURCE_SANS_THREE", "NUNITO_SANS",
+              "ARIMO", "HANKEN_GROTESK", "RUBIK", "GEIST", "DM_SANS", "IBM_PLEX_SANS",
+              "SORA", "ANYBODY", "ANTON", "ARCHIVO_NARROW", "ATKINSON_HYPERLEGIBLE_NEXT", "BARLOW_CONDENSED",
+              "BEBAS_NEUE", "BODONI_MODA", "BRICOLAGE_GROTESQUE", "CHIVO", "CLIMATE_CRISIS", "COMFORTAA",
+              "COURIER_PRIME", "FIRA_SANS", "GOOGLE_SANS", "GOOGLE_SANS_CODE", "GOOGLE_SANS_FLEX", "GOOGLE_SANS_MONO",
+              "GOOGLE_SANS_TEXT", "IBM_PLEX_SERIF", "JETBRAINS_MONO", "KARLA", "LIBRE_FRANKLIN", "MERRIWEATHER",
+              "NOTO_SANS", "OPEN_SANS", "OSWALD", "OUTFIT", "PLAYFAIR_DISPLAY", "POIRET_ONE",
+              "QUESTRIAL", "QUICKSAND", "RALEWAY", "ROBOTO_FLEX", "SPACE_MONO", "SYNE",
+              "VOLLKORN"
             ],
             "type": "string"
           },
           "labelFont": {
             "enum": [
-              "FONT_UNSPECIFIED",
-              "BE_VIETNAM_PRO", "EPILOGUE", "INTER", "LEXEND", "MANROPE",
-              "NEWSREADER", "NOTO_SERIF", "PLUS_JAKARTA_SANS", "PUBLIC_SANS",
-              "SPACE_GROTESK", "SPLINE_SANS", "WORK_SANS", "DOMINE",
-              "LIBRE_CASLON_TEXT", "EB_GARAMOND", "LITERATA", "SOURCE_SERIF_FOUR",
-              "MONTSERRAT", "METROPOLIS", "SOURCE_SANS_THREE", "NUNITO_SANS",
-              "ARIMO", "HANKEN_GROTESK", "RUBIK", "GEIST", "DM_SANS",
-              "IBM_PLEX_SANS", "SORA"
+              "FONT_UNSPECIFIED", "BE_VIETNAM_PRO", "EPILOGUE", "INTER", "LEXEND", "MANROPE", "NEWSREADER",
+              "NOTO_SERIF", "PLUS_JAKARTA_SANS", "PUBLIC_SANS", "SPACE_GROTESK", "SPLINE_SANS", "WORK_SANS",
+              "DOMINE", "LIBRE_CASLON_TEXT", "EB_GARAMOND", "LITERATA", "SOURCE_SERIF_4", "SOURCE_SERIF_FOUR",
+              "MONTSERRAT", "METROPHOBIC", "METROPOLIS", "SOURCE_SANS_3", "SOURCE_SANS_THREE", "NUNITO_SANS",
+              "ARIMO", "HANKEN_GROTESK", "RUBIK", "GEIST", "DM_SANS", "IBM_PLEX_SANS",
+              "SORA", "ANYBODY", "ANTON", "ARCHIVO_NARROW", "ATKINSON_HYPERLEGIBLE_NEXT", "BARLOW_CONDENSED",
+              "BEBAS_NEUE", "BODONI_MODA", "BRICOLAGE_GROTESQUE", "CHIVO", "CLIMATE_CRISIS", "COMFORTAA",
+              "COURIER_PRIME", "FIRA_SANS", "GOOGLE_SANS", "GOOGLE_SANS_CODE", "GOOGLE_SANS_FLEX", "GOOGLE_SANS_MONO",
+              "GOOGLE_SANS_TEXT", "IBM_PLEX_SERIF", "JETBRAINS_MONO", "KARLA", "LIBRE_FRANKLIN", "MERRIWEATHER",
+              "NOTO_SANS", "OPEN_SANS", "OSWALD", "OUTFIT", "PLAYFAIR_DISPLAY", "POIRET_ONE",
+              "QUESTRIAL", "QUICKSAND", "RALEWAY", "ROBOTO_FLEX", "SPACE_MONO", "SYNE",
+              "VOLLKORN"
             ],
             "type": "string"
           },
@@ -289,7 +300,28 @@
           "overridePrimaryColor": { "type": "string", "description": "Hex override for primary color" },
           "overrideSecondaryColor": { "type": "string" },
           "overrideTertiaryColor": { "type": "string" },
-          "overrideNeutralColor": { "type": "string" }
+          "overrideNeutralColor": { "type": "string" },
+          "spacing": {
+            "type": "object",
+            "additionalProperties": { "type": "string" },
+            "description": "Optional. Map of spacing token name to CSS value (e.g. {\"sm\": \"8px\"})."
+          },
+          "typography": {
+            "type": "object",
+            "additionalProperties": { "$ref": "#/$defs/Typography" },
+            "description": "Optional. Map of typography level name (e.g. \"h1\", \"body\") to Typography token overrides."
+          }
+        },
+        "type": "object"
+      },
+      "Typography": {
+        "description": "A single typography level's CSS overrides.",
+        "properties": {
+          "fontFamily": { "type": "string", "description": "Optional. CSS font-family value." },
+          "fontSize": { "type": "string", "description": "Optional. CSS font-size value (e.g. \"1rem\")." },
+          "fontWeight": { "type": "string", "description": "Optional. CSS font-weight value (e.g. \"600\")." },
+          "letterSpacing": { "type": "string", "description": "Optional. CSS letter-spacing value." },
+          "lineHeight": { "type": "string", "description": "Optional. CSS line-height value." }
         },
         "type": "object"
       },
