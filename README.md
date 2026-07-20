@@ -43,7 +43,7 @@ All four of these came out of stitch-kit. Different briefs, genuinely different 
 
 ---
 
-> **Generating designs needs Google Stitch.** Sign in at [stitch.withgoogle.com](https://stitch.withgoogle.com) with any Google account, then grab an API key from [settings](https://stitch.withgoogle.com/settings). No waitlist, no invite, free as of mid-2026 — but there are monthly generation limits and Google has signalled paid tiers, so treat the allowance as generous-but-finite.
+> **Generating designs needs Google Stitch.** Sign in at [stitch.withgoogle.com](https://stitch.withgoogle.com) with any Google account, then grab an API key from [settings](https://stitch.withgoogle.com/settings). As of July 2026: no waitlist, no invite, free to use — but there are monthly generation limits and Google has signalled paid tiers, so treat the allowance as generous-but-finite. Check Stitch's own site before relying on any of that; it's their pricing to change, not mine.
 >
 > **Converting to code doesn't.** The framework conversion skills take a local HTML file or a URL just as happily as a Stitch screen. If you already have markup and only want production components out of it, you need no Google account at all.
 
@@ -198,7 +198,7 @@ The examples folder is the secret weapon. Agents produce dramatically better out
 
 ## vs. the official Google Stitch Skills
 
-Google's [official repo](https://github.com/google-labs-code/stitch-skills) ships 15 skills across three plugins — `stitch-design`, `stitch-build`, `stitch-utilities`. It's a real toolkit, not a stub, and it does one whole thing stitch-kit doesn't (see the gaps below).
+Google's [official repo](https://github.com/google-labs-code/stitch-skills) ships 15 skills across three plugins — `stitch-design`, `stitch-build`, `stitch-utilities`. (Checked July 2026; they move fast, so verify before taking this comparison as current.) It's a real toolkit, not a stub, and it does one whole thing stitch-kit doesn't (see the gaps below).
 
 Raw skill counts aren't a fair comparison: Google consolidated generate/edit/variants into one skill and the four design-system operations into another, where stitch-kit keeps them as separate wrappers. Different granularity, not more capability. Here's where both cover the same ground:
 

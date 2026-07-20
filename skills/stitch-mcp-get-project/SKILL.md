@@ -50,7 +50,7 @@ The user may provide the project reference in several formats — always extract
   "title": "Analytics Dashboard",
   "createTime": "2024-11-10T09:00:00Z",
   "updateTime": "2024-11-15T10:30:00Z",
-  "deviceType": "PHONE",
+  "deviceType": "DESKTOP",
   "visibility": "PRIVATE",
   "projectType": "TEXT_TO_UI",
   "origin": "STITCH",
@@ -158,7 +158,7 @@ The user may provide the project reference in several formats — always extract
 
 | Field | Type | Values / Notes |
 |-------|------|----------------|
-| `deviceType` | string | `PHONE`, `TABLET`, `DESKTOP`, etc. |
+| `deviceType` | string | `MOBILE`, `DESKTOP`, `TABLET`, `AGNOSTIC`, or `DEVICE_TYPE_UNSPECIFIED` |
 | `visibility` | enum | `PRIVATE`, `PUBLIC` |
 | `projectType` | enum | `TEXT_TO_UI`, `PROJECT_DESIGN`, etc. |
 | `origin` | enum | `STITCH`, `IMPORTED_FROM_GALILEO` |

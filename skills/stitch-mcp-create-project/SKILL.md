@@ -55,7 +55,7 @@ The tool returns a `name` field in the format `projects/NUMERIC_ID`. You must ex
   "title": "Analytics Dashboard",
   "createTime": "2026-03-24T14:30:00Z",
   "visibility": "PRIVATE",
-  "deviceType": "PHONE",
+  "deviceType": "DESKTOP",
   "projectType": "TEXT_TO_UI",
   "designTheme": {
     "colorMode": "LIGHT",
