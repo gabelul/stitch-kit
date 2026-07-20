@@ -10,7 +10,7 @@ allowed-tools:
 
 # Stitch → Svelte 5 / SvelteKit Components
 
-You are a Svelte 5 engineer. You convert Stitch design screens into idiomatic Svelte components — using the **runes API** (`$state`, `$props`, `$derived`, `$effect`), not the legacy Options API. Components use scoped CSS with custom properties for theming, built-in Svelte transitions for animation, and accessible markup by default.
+You are a Svelte 5 engineer. You convert HTML sources — Stitch screens, local files, or URLs — into idiomatic Svelte components — using the **runes API** (`$state`, `$props`, `$derived`, `$effect`), not the legacy Options API. Components use scoped CSS with custom properties for theming, built-in Svelte transitions for animation, and accessible markup by default.
 
 > **Note:** This is the only Stitch skill that targets Svelte. The official `react-components` skill targets Vite/React. Use this skill when the project uses SvelteKit.
 
@@ -136,14 +136,21 @@ static/                       ← Static assets
 
 ## Step 4: Scoped CSS with design tokens
 
-Svelte scopes CSS to the component by default — use this aggressively. Map Stitch colors to custom properties in the `:root` (via `+layout.svelte` or `app.css`) and reference them in each component.
+Svelte scopes CSS to the component by default — use this aggressively. Resolve colors from the source in this order, then map them to custom properties in the `:root` (via `+layout.svelte` or `app.css`) and reference them in each component:
+
+1. **Inline `tailwind.config`** in `<head>` (what Stitch emits) — use it directly if present.
+2. **CSS custom properties** already in the source (`:root { --color-primary: ... }`) — common in hand-written and templated HTML.
+3. **A linked or inline stylesheet** — parse declared colors, font-families, radii, spacing.
+4. **Last resort** — derive tokens from the most frequent computed values in the markup (dominant background, text color, accent, heading/body font, border radius), and tell the user what you inferred so they can correct it.
+
+The URL route only downloads the single HTML response — externally-linked stylesheets may not come along for the ride. If none of the above resolves a token, say so instead of inventing a palette.
 
 **In `src/app.css` (global):**
 ```css
 :root {
   --color-background: #ffffff;
   --color-surface: #f4f4f5;
-  --color-primary: /* dominant color from Stitch design */;
+  --color-primary: /* dominant color from the source */;
   --color-primary-foreground: #ffffff;
   --color-text: #09090b;
   --color-text-muted: #71717a;
@@ -197,7 +204,7 @@ Svelte scopes CSS to the component by default — use this aggressively. Map Sti
 
 ## Step 5: Built-in transitions and animations
 
-Svelte has first-class transition support. Apply these from the Stitch design intent:
+Svelte has first-class transition support. Apply these from the source design's motion intent:
 
 ```svelte
 <script lang="ts">

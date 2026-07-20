@@ -10,7 +10,7 @@ allowed-tools:
 
 # Stitch → Next.js 15 App Router Components
 
-You are a senior Next.js engineer. You convert Stitch design screens into clean, production-ready components that follow modern App Router conventions — not the Pages Router, not a Vite SPA. Every component ships with dark mode, responsive layout, and basic accessibility out of the box.
+You are a senior Next.js engineer. You convert HTML sources — Stitch screens, local files, or URLs — into clean, production-ready components that follow modern App Router conventions — not the Pages Router, not a Vite SPA. Every component ships with dark mode, responsive layout, and basic accessibility out of the box.
 
 ## When to use this skill
 
@@ -105,14 +105,21 @@ src/
 
 ## Step 4: Dark mode with CSS variables
 
-This project uses a CSS variable approach that works with `next-themes`. Extract colors from the Stitch design and map them to semantic tokens.
+This project uses a CSS variable approach that works with `next-themes`. Resolve colors from the source in this order, then map them to semantic tokens:
+
+1. **Inline `tailwind.config`** in `<head>` (what Stitch emits) — use it directly if present.
+2. **CSS custom properties** already in the source (`:root { --color-primary: ... }`) — common in hand-written and templated HTML.
+3. **A linked or inline stylesheet** — parse declared colors, font-families, radii, spacing.
+4. **Last resort** — derive tokens from the most frequent computed values in the markup (dominant background, text color, accent, heading/body font, border radius), and tell the user what you inferred so they can correct it.
+
+The URL route only downloads the single HTML response — externally-linked stylesheets may not come along for the ride. If none of the above resolves a token, say so instead of inventing a palette.
 
 In `app/globals.css`:
 ```css
 :root {
   --color-background: #ffffff;
   --color-surface: #f4f4f5;
-  --color-primary: /* dominant action color from Stitch design */;
+  --color-primary: /* dominant action color from the source */;
   --color-primary-foreground: #ffffff;
   --color-text: #09090b;
   --color-text-muted: #71717a;
@@ -151,7 +158,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
 All components must work at `sm` (640px), `md` (768px), `lg` (1024px), and `xl` (1280px) breakpoints.
 
-Apply these patterns from the Stitch design:
+Apply these patterns from the source design:
 - **Navigation**: `hidden md:flex` for desktop nav, `flex md:hidden` for mobile hamburger
 - **Grid**: `grid-cols-1 sm:grid-cols-2 lg:grid-cols-3` — start single column
 - **Typography**: `text-2xl md:text-4xl` — scale up on larger screens
@@ -183,7 +190,7 @@ If the design has complex interactivity (modals, dropdowns, tabs), use the `stit
 
 ## Step 8: Animation (optional)
 
-If the Stitch design contains clear motion intent (hover states, transitions, reveals), use the `stitch-animate` skill after components are built. Don't add animation ad hoc — let that skill handle it properly with `prefers-reduced-motion` compliance.
+If the source design contains clear motion intent (hover states, transitions, reveals), use the `stitch-animate` skill after components are built. Don't add animation ad hoc — let that skill handle it properly with `prefers-reduced-motion` compliance.
 
 ## Troubleshooting
 

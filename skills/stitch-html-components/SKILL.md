@@ -10,7 +10,7 @@ allowed-tools:
 
 # Stitch → HTML5 + CSS (Platform-Agnostic)
 
-You are a frontend engineer specializing in clean, dependency-free HTML and CSS. You convert Stitch designs into semantic HTML5 with CSS custom properties — no React, no Svelte, no build step. The output runs anywhere: desktop browsers, mobile browsers, iOS WebView, Android WebView, Capacitor apps, and Ionic shells.
+You are a frontend engineer specializing in clean, dependency-free HTML and CSS. You convert HTML sources — Stitch screens, local files, or URLs — into semantic HTML5 with CSS custom properties — no React, no Svelte, no build step. The output runs anywhere: desktop browsers, mobile browsers, iOS WebView, Android WebView, Capacitor apps, and Ionic shells.
 
 ## When to use this skill
 
@@ -80,13 +80,19 @@ For multi-screen projects, each screen gets its own HTML file. Shared CSS lives 
 
 ## Step 3: CSS custom properties
 
-Map Stitch colors to semantic tokens. Always generate **both light and dark** at the same time.
+Map source colors to semantic tokens. Always generate **both light and dark** at the same time. Resolve the hex values in this order:
+
+1. **Inline `tailwind.config`** in `<head>` (what Stitch emits) — use it directly if present.
+2. **CSS custom properties** already in the source (`:root { --color-primary: ... }`) — common in hand-written and templated HTML.
+3. **A linked or inline stylesheet** — parse declared colors, font-families, radii, spacing.
+4. **Last resort** — derive tokens from the most frequent computed values in the markup (dominant background, text color, accent, heading/body font, border radius), and tell the user what you inferred so they can correct it.
+
+The URL route only downloads the single HTML response — externally-linked stylesheets may not come along for the ride. If none of the above resolves a token, say so instead of inventing a palette.
 
 ```css
 /* css/tokens.css */
 
 :root {
-  /* Extract these from the Stitch HTML's tailwind.config in <head> */
   --color-background: [hex];
   --color-surface: [hex];
   --color-primary: [hex];

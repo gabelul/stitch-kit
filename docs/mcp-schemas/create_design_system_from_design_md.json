@@ -24,25 +24,31 @@
         ]
       }
     },
-    "required": ["projectId", "selectedScreenInstance"],
-    "description": "Request message for CreateDesignSystemFromDesignMd."
-  },
-  "$defs": {
-    "SelectedScreenInstance": {
-      "type": "object",
-      "description": "A screen instance to be edited by the agent, selected by the user.",
-      "properties": {
-        "id": {
-          "description": "Required. The id of the screen instance, NOT the source screen id. This is available in the screen instances in the Project info, fetched by `get_project`.",
-          "type": "string"
+    "$defs": {
+      "SelectedScreenInstance": {
+        "type": "object",
+        "description": "A screen instance to be edited by the agent, selected by the user.",
+        "properties": {
+          "id": {
+            "description": "Required. The id of the screen instance, NOT the source screen id. This is available in the screen instances in the Project info, fetched by `get_project`.",
+            "type": "string"
+          },
+          "sourceScreen": {
+            "description": "Required. The source screen of the screen instance. The resource name of the source screen. Format: projects/{project}/screens/{screen}",
+            "type": "string"
+          }
         },
-        "sourceScreen": {
-          "description": "Required. The source screen of the screen instance. The resource name of the source screen. Format: projects/{project}/screens/{screen}",
-          "type": "string"
-        }
-      },
-      "required": ["id", "sourceScreen"]
-    }
+        "required": [
+          "id",
+          "sourceScreen"
+        ]
+      }
+    },
+    "required": [
+      "projectId",
+      "selectedScreenInstance"
+    ],
+    "description": "Request message for CreateDesignSystemFromDesignMd."
   },
   "outputSchema": {
     "type": "object",

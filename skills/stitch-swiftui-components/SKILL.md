@@ -10,14 +10,14 @@ allowed-tools:
 
 # Stitch → SwiftUI (Native iOS)
 
-You are a Swift/SwiftUI engineer. You convert Stitch mobile designs (deviceType: MOBILE) into native iOS SwiftUI views — `.swift` files that build and run in Xcode. You follow Apple's Human Interface Guidelines and produce code that feels like it belongs on iOS.
+You are a Swift/SwiftUI engineer. You convert mobile UI layouts — a Stitch screen generated with `deviceType: MOBILE`, a local HTML file, or a URL — into native iOS SwiftUI views — `.swift` files that build and run in Xcode. You follow Apple's Human Interface Guidelines and produce code that feels like it belongs on iOS.
 
 ## When to use this skill
 
 Use this skill when:
-- The user wants **native iOS** output from a Stitch design
+- The user wants **native iOS** output from an existing design
 - The user mentions "SwiftUI", "Xcode", "iOS", "native iOS app"
-- The design was generated with `deviceType: MOBILE`
+- The source is a **mobile layout** — narrow, vertical, touch-sized targets (a Stitch screen with `deviceType: MOBILE`, or a local file/URL that reads as mobile)
 
 **Note:** This skill targets iOS 16+ with SwiftUI. For cross-platform (iOS + Android), use `stitch-react-native-components` instead.
 
@@ -39,9 +39,12 @@ Also:
 
 Everything downstream reads one file: `temp/source.html`. Get the HTML there by whichever route matches what the user gave you, then continue at Step 2 — the rest of this skill is identical regardless of where the markup came from.
 
-**From a Stitch screen:**
+This skill only works on a **mobile layout** — narrow, vertical, touch-sized targets. Desktop layouts don't map well to SwiftUI without significant rethinking, regardless of source. How you confirm mobile-ness depends on where the HTML came from:
 
-Only call this skill for **MOBILE** Stitch designs. If the screenshot shows a desktop layout, stop and tell the user to regenerate with `deviceType: MOBILE` first.
+- **Stitch screen** — check it was generated with `deviceType: MOBILE`. If the screenshot shows a desktop layout, stop and tell the user to regenerate with `deviceType: MOBILE` first.
+- **Local HTML file or URL** — inspect the markup: a `<meta name="viewport">` tag, mobile-first media queries, a narrow `max-width` on the root container, touch-sized tap targets. If it's clearly a desktop layout (wide multi-column grid, hover-only interactions, no viewport meta), stop and tell the user the source isn't a mobile layout — don't tell them to "regenerate with deviceType: MOBILE," that instruction is meaningless outside Stitch.
+
+**From a Stitch screen:**
 
 1. **Namespace discovery** — `list_tools` to find the Stitch MCP prefix
 2. **Fetch metadata** — `[prefix]:get_screen` for the design JSON
@@ -49,7 +52,7 @@ Only call this skill for **MOBILE** Stitch designs. If the screenshot shows a de
    ```bash
    bash scripts/fetch-stitch.sh "[htmlCode.downloadUrl]" "temp/source.html"
    ```
-4. **Visual audit** — check `screenshot.downloadUrl` before converting. Append `=s0` to that URL for full resolution; the bare URL serves a 512px thumbnail regardless of the `width`/`height` the API reports. Confirm it's a mobile layout.
+4. **Visual audit** — check `screenshot.downloadUrl` before converting. Append `=s0` to that URL for full resolution; the bare URL serves a 512px thumbnail regardless of the `width`/`height` the API reports. Confirm it's a mobile layout, per the check above.
 
 **From a local HTML file:**
 
@@ -57,7 +60,7 @@ Only call this skill for **MOBILE** Stitch designs. If the screenshot shows a de
 mkdir -p temp && cp "path/to/design.html" temp/source.html
 ```
 
-Open it and confirm it's a mobile layout before converting.
+Open it and confirm it's a mobile layout, per the check above.
 
 **From a URL:**
 
@@ -65,7 +68,7 @@ Open it and confirm it's a mobile layout before converting.
 bash scripts/fetch-stitch.sh "https://example.com/page" "temp/source.html"
 ```
 
-Despite the name, that script is a generic hardened downloader — follows redirects, retries transient failures, handles gzip, and fails loudly on an empty result. It does not care whether the URL points at Stitch. Confirm the page is a mobile layout before converting.
+Despite the name, that script is a generic hardened downloader — follows redirects, retries transient failures, handles gzip, and fails loudly on an empty result. It does not care whether the URL points at Stitch. Confirm the page is a mobile layout, per the check above.
 
 **From a screenshot:** there's no upload route — the Stitch MCP API has no image-upload tool. Either recreate the design from a text prompt via `stitch-mcp-generate-screen-from-text`, or hand-write the HTML and use the local-file route above.
 
@@ -81,7 +84,7 @@ MyApp/
 │   ├── ThemeTokens.swift    ← Design token constants
 │   └── Color+App.swift      ← Color extension with semantic names
 ├── Views/
-│   ├── [ScreenName]View.swift   ← One file per Stitch screen
+│   ├── [ScreenName]View.swift   ← One file per screen
 │   └── Components/
 │       └── [Name]View.swift     ← Reusable component views
 ├── Models/
@@ -92,7 +95,7 @@ MyApp/
 
 ## Step 3: The HTML/CSS → SwiftUI layout mapping
 
-This is the core translation. Apply these rules to every element in the Stitch HTML:
+This is the core translation. Apply these rules to every element in the source HTML:
 
 ### Layout containers
 
@@ -161,6 +164,15 @@ SwiftUI uses points (1pt ≈ 1dp on non-retina, 2px on Retina @2x):
 
 ## Step 4: Design tokens in SwiftUI
 
+Resolve the hex values below from whatever token source the HTML actually has, in this order:
+
+1. **Inline `tailwind.config`** in `<head>` (what Stitch emits) — use it directly if present.
+2. **CSS custom properties** (`:root { --color-primary: ... }`) — common in hand-written and templated HTML.
+3. **A linked or inline stylesheet** — parse declared colors, font-families, radii, spacing.
+4. **Last resort** — derive tokens from the most frequent computed values in the markup (dominant background, text color, accent, heading/body font, border radius), and tell the user what you inferred so they can correct it.
+
+The URL route only downloads the single HTML response — externally-linked stylesheets may not come along for the ride. If none of the above resolves a token, say so instead of inventing a palette.
+
 ### Color extension (semantic tokens)
 
 ```swift
@@ -169,7 +181,7 @@ SwiftUI uses points (1pt ≈ 1dp on non-retina, 2px on Retina @2x):
 import SwiftUI
 
 extension Color {
-  // Extract these hex values from the Stitch HTML's tailwind.config
+  // Extract these hex values using the token fallback chain above
 
   // Backgrounds
   static let appBackground = Color("AppBackground")    // Asset catalog
@@ -431,11 +443,11 @@ var animation: Animation {
 
 ## Execution steps
 
-1. **Verify** the Stitch design uses `deviceType: MOBILE`
+1. **Verify** the source is a mobile layout (see Step 1)
 2. **Create Xcode project** — File → New → App, SwiftUI interface, Swift language
 3. **Data layer** — create `Models/MockData.swift` from static content in the design
 4. **Theme** — create `Theme/ThemeTokens.swift` with extracted hex values, and `Color+App.swift`
-5. **Components** — convert the Stitch HTML sections to SwiftUI views, file by file
+5. **Components** — convert the HTML sections to SwiftUI views, file by file
 6. **Navigation** — wire up `TabView` (tab bar) or `NavigationStack` (stack)
 7. **Build and run** — in Xcode, Cmd+R. Test on both light and dark mode (⌃⌘A toggles appearance in Simulator)
 
