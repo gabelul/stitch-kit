@@ -63,9 +63,9 @@ The tool returns a `name` field in the format `projects/NUMERIC_ID`. You must ex
     "colorVariant": "TONAL_SPOT",
     "roundness": "ROUND_TWELVE",
     "spacingScale": 1,
-    "headlineFont": "ROBOTO",
-    "bodyFont": "ROBOTO",
-    "labelFont": "ROBOTO",
+    "headlineFont": "INTER",
+    "bodyFont": "INTER",
+    "labelFont": "INTER",
     "namedColors": {},
     "designMd": ""
   }

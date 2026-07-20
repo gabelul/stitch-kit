@@ -29,22 +29,18 @@ You must have the design system's asset `name` before calling this. If you don't
 {
   "name": "update_design_system",
   "arguments": {
+    "name": "assets/15996705518239280238",
+    "projectId": "3780309359108792857",
     "designSystem": {
-      "name": "assets/ds_abc123",
       "displayName": "SaaS Dashboard Theme v2",
       "theme": {
         "colorMode": "DARK",
-        "font": "GEIST",
         "headlineFont": "GEIST",
         "bodyFont": "GEIST",
         "labelFont": "GEIST",
         "roundness": "ROUND_TWELVE",
-        "customColor": "#818CF8",
-        "backgroundLight": "#F9FAFB",
-        "backgroundDark": "#09090B"
-      },
-      "designTokens": "--color-primary: #818CF8;\n--color-bg: #09090B;",
-      "styleGuidelines": "Dark mode first. Geist font. Subtle indigo accent."
+        "customColor": "#818CF8"
+      }
     }
   }
 }
@@ -52,17 +48,24 @@ You must have the design system's asset `name` before calling this. If you don't
 
 ## Parameter reference
 
-### `designSystem` — required, Asset wrapper
+Three **sibling** top-level arguments — `name` is not nested inside `designSystem`:
 
-The object must include the `name` field (asset identifier) plus any fields you want to update:
+| Argument | Type | Required | Description |
+|----------|------|----------|-------------|
+| `name` | string | **Yes** | Asset identifier **with** the `assets/` prefix, e.g. `assets/15996705518239280238`. Top-level, not inside `designSystem`. |
+| `projectId` | string | **Yes** | Bare numeric project id, no `projects/` prefix |
+| `designSystem` | object | **Yes** | `{displayName, theme}` — see below |
+
+### `designSystem` — `{displayName, theme}` only
 
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
-| `name` | string | **Yes** | Asset name from create or list (e.g., `assets/ds_abc123`) |
-| `displayName` | string | No | Updated human-readable name |
-| `theme` | DesignTheme | No | Updated visual configuration (see `stitch-mcp-create-design-system` for full reference) |
-| `designTokens` | string | No | Updated CSS custom properties |
-| `styleGuidelines` | string | No | Updated design rules |
+| `displayName` | string | **Yes** | Human-readable name |
+| `theme` | DesignTheme | **Yes** | Visual configuration (see `stitch-mcp-create-design-system` for the full field reference) |
+
+> `update_design_system` takes the asset id **prefixed** (`assets/159967...`), while `apply_design_system` takes the same id **bare**. Two tools, same identifier, different formats.
+
+`designTokens` and `styleGuidelines` are **not** accepted — the live API has no such fields on `DesignSystem`. Don't send them.
 
 **Note:** This is a full replacement, not a merge. Include all theme fields you want to keep, not just the ones you're changing.
 
@@ -72,7 +75,7 @@ Returns the updated Asset object:
 
 ```json
 {
-  "name": "assets/ds_abc123",
+  "name": "assets/15996705518239280238",
   "displayName": "SaaS Dashboard Theme v2",
   "designSystem": { ... }
 }

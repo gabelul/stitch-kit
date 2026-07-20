@@ -86,10 +86,17 @@ src/
 
 ## Step 3: Extract design tokens
 
-From the Stitch HTML `<head>`, find the `tailwind.config` or CSS variable definitions.
+Resolve tokens from whatever the HTML actually gives you, in this order:
+
+1. **Inline `tailwind.config`** in `<head>` (what Stitch emits) — use it directly if present.
+2. **CSS custom properties** (`:root { --color-primary: ... }`) — common in hand-written and templated HTML.
+3. **A linked or inline stylesheet** — parse declared colors, font-families, radii, spacing.
+4. **Last resort** — derive tokens from the most frequent computed values in the markup (dominant background, text color, accent, heading/body font, border radius), and tell the user what you inferred so they can correct it.
+
+The URL route only downloads the single HTML response — externally-linked stylesheets may not come along for the ride. If none of the above resolves a token, say so instead of inventing a palette.
 
 ```ts
-// src/theme/tokens.ts — extract hex values from Stitch HTML
+// src/theme/tokens.ts
 export const lightTokens = {
   background: '#FFFFFF',
   surface:    '#F4F4F5',
@@ -154,10 +161,10 @@ export function useTheme(): ThemeTokens {
 
 ### Tailwind class mapping
 
-Use the Stitch HTML classes directly in JSX where they don't reference Stitch-specific tokens. Map Stitch tokens to CSS variables:
+Use the source HTML's Tailwind classes directly in JSX where they don't reference custom tokens. Map custom tokens to CSS variables:
 
 ```tsx
-// Stitch HTML: bg-primary → CSS variable → Tailwind arbitrary value
+// Source HTML: bg-primary → CSS variable → Tailwind arbitrary value
 // OR: use inline style with token value
 
 // Option A — Tailwind arbitrary value (if custom tokens in tailwind.config)
@@ -239,14 +246,14 @@ export function StitchComponent({
 
 ## Step 6: Integration with shadcn/ui
 
-After converting the Stitch design to base React components, you can layer in shadcn/ui:
+After converting the design to base React components, you can layer in shadcn/ui:
 
 ```bash
 npx shadcn@latest init    # Set up shadcn in your Vite project
 npx shadcn@latest add button card input dialog
 ```
 
-Then use `stitch-shadcn-ui` skill to replace raw HTML elements with shadcn components while preserving the Stitch design tokens.
+Then use `stitch-shadcn-ui` skill to replace raw HTML elements with shadcn components while preserving the design tokens.
 
 ## Troubleshooting
 
@@ -261,7 +268,7 @@ Then use `stitch-shadcn-ui` skill to replace raw HTML elements with shadcn compo
 
 - `resources/component-template.tsx` — Boilerplate component
 - `resources/architecture-checklist.md` — Pre-ship checklist
-- `references/tailwind-to-react.md` — Token + class mapping guide (Stitch HTML → React/Tailwind)
+- `references/tailwind-to-react.md` — Token + class mapping guide (source HTML → React/Tailwind)
 - `scripts/fetch-stitch.sh` — Reliable GCS HTML downloader
 - `stitch-shadcn-ui` — Add shadcn/ui components after base conversion
 - `docs/tailwind-reference.md` — Tailwind utility class lookup

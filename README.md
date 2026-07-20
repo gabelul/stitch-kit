@@ -152,7 +152,9 @@ Without stitch-kit, your agent sends Stitch a half-baked prompt, gets confused b
 
 ## Ship to any framework
 
-**Works on any HTML, not just Stitch output.** Each conversion skill takes a Stitch screen, a local HTML file, or a URL — point it at a template you bought, a page you already built, or something a different tool generated, and you get the same production components with dark mode, design tokens, TypeScript, and ARIA. Only the Stitch route needs an API key.
+**Works on any HTML, not just Stitch output.** Each conversion skill takes a Stitch screen, a local HTML file, or a URL — point it at a template you bought, a page you already built, or something a different tool generated. Only the Stitch route needs an API key.
+
+Every target gets dark mode and design tokens. The rest depends on where you're shipping: TypeScript and ARIA on the web targets, Swift and native accessibility APIs on SwiftUI, plain semantic HTML with no build step on the HTML target.
 
 Pick your target:
 

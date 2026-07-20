@@ -1,6 +1,6 @@
 # Stitch MCP API Schemas
 
-Formal JSON Schema definitions for the 13 Stitch MCP tools this repo wraps.
+Formal JSON Schema definitions for the 15 Stitch MCP tools this repo wraps.
 
 Each file documents the full `arguments` (input) and `outputSchema` (output) for one tool.
 
@@ -34,7 +34,9 @@ Each file documents the full `arguments` (input) and `outputSchema` (output) for
 | `create_design_system.json` | `create_design_system` | Create a reusable design system. Optional numeric `projectId`. |
 | `update_design_system.json` | `update_design_system` | Update an existing design system. Requires asset `name`. |
 | `list_design_systems.json` | `list_design_systems` | List available design systems. Optional numeric `projectId`. |
-| `apply_design_system.json` | `apply_design_system` | Apply a design system to screens. **Numeric IDs** + `assetId`. |
+| `apply_design_system.json` | `apply_design_system` | Apply a design system to screens. Screen **instances** (`{id, sourceScreen}`) + bare `assetId`. |
+| `upload_design_md.json` | `upload_design_md` | Upload a DESIGN.md into a project. Numeric `projectId`, base64 body. |
+| `create_design_system_from_design_md.json` | `create_design_system_from_design_md` | Turn an uploaded DESIGN.md into a design system. Numeric `projectId` + screen instance. |
 
 ---
 
@@ -154,8 +156,10 @@ Useful for: targeted HTML extraction, component-level conversion, design audits.
 | `list_screens` | `projects/NUMERIC` | — | — |
 | `get_screen` | **NUMERIC only** | **NUMERIC only** | — |
 | `create_design_system` | **NUMERIC** (optional) | — | Returns Asset `name` |
-| `update_design_system` | — | — | Asset `name` required |
+| `update_design_system` | — | — | Asset `name` (prefixed) required |
 | `list_design_systems` | **NUMERIC** (optional) | — | Returns Asset names |
-| `apply_design_system` | **NUMERIC only** | **NUMERIC array** | `assetId` required |
+| `apply_design_system` | **NUMERIC only** | Screen **instances** (`{id, sourceScreen}`) | `assetId` bare numeric, no prefix |
+| `upload_design_md` | **NUMERIC only** | — | Body is base64 |
+| `create_design_system_from_design_md` | **NUMERIC only** | Screen **instance** (`{id, sourceScreen}`) | — |
 
 See `../mcp-naming-convention.md` for the full breakdown.

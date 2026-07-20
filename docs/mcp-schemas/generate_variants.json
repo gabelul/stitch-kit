@@ -11,7 +11,9 @@
       "selectedScreenIds": {
         "description": "Required. Array of numeric screen IDs to generate variants from.",
         "type": "array",
-        "items": { "type": "string" }
+        "items": {
+          "type": "string"
+        }
       },
       "prompt": {
         "description": "Optional. Guidance text for the variant direction.",
@@ -23,16 +25,32 @@
       },
       "deviceType": {
         "description": "Optional. Device type context.",
-        "enum": ["DEVICE_TYPE_UNSPECIFIED", "MOBILE", "DESKTOP", "TABLET", "AGNOSTIC"],
+        "enum": [
+          "DEVICE_TYPE_UNSPECIFIED",
+          "MOBILE",
+          "DESKTOP",
+          "TABLET",
+          "AGNOSTIC"
+        ],
         "type": "string"
       },
       "modelId": {
         "description": "Optional. GEMINI_3_1_PRO = latest Thinking model. GEMINI_3_PRO = deprecated (use 3_1_PRO). GEMINI_3_FLASH for speed.",
-        "enum": ["MODEL_ID_UNSPECIFIED", "GEMINI_3_PRO", "GEMINI_3_FLASH", "GEMINI_3_1_PRO"],
+        "enum": [
+          "MODEL_ID_UNSPECIFIED",
+          "GEMINI_3_PRO",
+          "GEMINI_3_FLASH",
+          "GEMINI_3_1_PRO"
+        ],
         "type": "string"
       }
     },
-    "required": ["projectId", "selectedScreenIds"],
+    "required": [
+      "projectId",
+      "selectedScreenIds",
+      "prompt",
+      "variantOptions"
+    ],
     "description": "Request message for GenerateVariants.",
     "$defs": {
       "VariantOptions": {
@@ -46,14 +64,26 @@
           },
           "creativeRange": {
             "description": "How much to deviate from the original design.",
-            "enum": ["CREATIVE_RANGE_UNSPECIFIED", "REFINE", "EXPLORE", "REIMAGINE"],
+            "enum": [
+              "CREATIVE_RANGE_UNSPECIFIED",
+              "REFINE",
+              "EXPLORE",
+              "REIMAGINE"
+            ],
             "type": "string"
           },
           "aspects": {
             "description": "Which design aspects to vary.",
             "type": "array",
             "items": {
-              "enum": ["ASPECT_UNSPECIFIED", "LAYOUT", "COLOR_SCHEME", "IMAGES", "TEXT_FONT", "TEXT_CONTENT"],
+              "enum": [
+                "ASPECT_UNSPECIFIED",
+                "LAYOUT",
+                "COLOR_SCHEME",
+                "IMAGES",
+                "TEXT_FONT",
+                "TEXT_CONTENT"
+              ],
               "type": "string"
             }
           }
@@ -69,8 +99,12 @@
         "description": "Array of output components with generated variant screens.",
         "type": "array"
       },
-      "projectId": { "type": "string" },
-      "sessionId": { "type": "string" }
+      "projectId": {
+        "type": "string"
+      },
+      "sessionId": {
+        "type": "string"
+      }
     },
     "description": "Response message for GenerateVariants."
   }

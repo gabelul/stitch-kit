@@ -61,7 +61,7 @@ Take the newest entry in `screenInstances` and read off both `id` and `sourceScr
 
 ## Step 3: Confirm and capture the asset id
 
-On success you get back a design system with an asset id in `assets/NUMERIC_ID` form. Store the numeric part — that's what applying and generating need.
+On success you get back a design system with an asset id in `assets/NUMERIC_ID` form. Store both forms: `apply_design_system` wants the bare numeric part, `generate_screen_from_text`'s `designSystem` param wants the full `assets/NUMERIC_ID` string.
 
 Announce it:
 > "Design system created from your DESIGN.md (asset `15996705518239280238`). Want me to apply it to existing screens, or use it for the next generation?"

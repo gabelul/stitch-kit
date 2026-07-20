@@ -55,12 +55,27 @@ function logErr(msg) { console.error(`  ✗ ${msg}`); }
 
 /**
  * Prompt the user for input via stdin.
+ *
+ * Resolves to an empty string whenever there's nobody to answer — no TTY, or
+ * stdin hits EOF. Callers treat empty as "skipped", which is what we want in
+ * CI, Docker, and `npx ... < /dev/null`: carry on with the rest of the install
+ * rather than hanging.
+ *
  * @param {string} question - The question to display
- * @returns {Promise<string>} The user's input (trimmed)
+ * @returns {Promise<string>} The user's input (trimmed), or '' if unanswerable
  */
 function prompt(question) {
+  // Non-interactive stdin: readline would wait forever for input that can't
+  // arrive. Skip straight to the default instead.
+  if (!process.stdin.isTTY) return Promise.resolve('');
+
   const rl = createInterface({ input: process.stdin, output: process.stdout });
   return new Promise((resolve) => {
+    // `close` fires on EOF (ctrl-D, or a pipe closing). Without this the
+    // question callback never runs, the promise never settles, and node exits
+    // mid-install with "Detected unsettled top-level await" — an install that
+    // silently did nothing.
+    rl.on('close', () => resolve(''));
     rl.question(question, (answer) => {
       rl.close();
       resolve(answer.trim());

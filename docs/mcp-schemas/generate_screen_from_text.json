@@ -32,6 +32,10 @@
       "prompt": {
         "description": "Required. The text prompt describing the screen to generate.",
         "type": "string"
+      },
+      "designSystem": {
+        "description": "Optional. The design system id to use for generating the new screen, should always be configured for design consistency. Takes the `assets/` prefix. Example: 'assets/15996705518239280238'.",
+        "type": "string"
       }
     },
     "required": ["projectId", "prompt"],

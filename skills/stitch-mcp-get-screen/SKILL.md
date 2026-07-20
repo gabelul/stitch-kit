@@ -36,25 +36,33 @@ The user may provide the screen reference in different formats:
 
 ## Step 2: Call the MCP tool
 
-**Important: Both IDs must be numeric — no `projects/` or `screens/` prefix.**
+`get_screen` is mid-migration: `name` is the current identifier and takes the **full resource path**, while `projectId` and `screenId` are marked deprecated but are still required. Send all three.
 
 ```json
 {
   "name": "get_screen",
   "arguments": {
+    "name": "projects/3780309359108792857/screens/88805abc123def456",
     "projectId": "3780309359108792857",
     "screenId": "88805abc123def456"
   }
 }
 ```
 
+The prefix rule differs per field, which is the whole reason this wrapper exists:
+
 ```
+✅ name:      "projects/3780309359108792857/screens/88805abc123def456"
+❌ name:      "88805abc123def456"
+
 ✅ projectId: "3780309359108792857"
 ❌ projectId: "projects/3780309359108792857"
 
-✅ screenId: "88805abc123def456"
-❌ screenId: "screens/88805abc123def456"
+✅ screenId:  "88805abc123def456"
+❌ screenId:  "screens/88805abc123def456"
 ```
+
+> `name` is the full path; the other two are bare. Omitting `name` fails — it's required despite the deprecated pair still being mandatory too.
 
 ## Output schema
 
