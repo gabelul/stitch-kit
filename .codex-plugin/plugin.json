@@ -1,7 +1,7 @@
 {
   "name": "stitch-kit",
   "version": "1.11.0",
-  "description": "Design superpowers for Codex — skills that ideate, generate, and ship UIs with Google Stitch MCP, with compaction-resilient session state.",
+  "description": "Your agent designs terrible UI. stitch-kit wires it into Google Stitch MCP and teaches it the whole pipeline — ideation, screen generation, design systems, production components. Survives compaction with session state on disk.",
   "author": {
     "name": "gabelul"
   },

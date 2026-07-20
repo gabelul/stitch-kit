@@ -93,3 +93,22 @@ A "we stepped on this landmine so you don't have to" reference for stitch-kit. N
 **Files:** `hooks/hooks.json`, `.codex-plugin/plugin.json`, `skills/stitch-ideate/SKILL.md`, `skills/stitch-orchestrator/SKILL.md`
 
 **Lesson:** On Codex, a hook existing isn't a hook running. Design the feature to degrade to a skill-level self-check when hooks aren't trusted.
+
+## Screenshot `downloadUrl` silently serves a 512px thumbnail
+
+**Symptom:** `list_screens` / `get_screen` report a screen as `2560x2048`, but downloading its `screenshot.downloadUrl` gives you a 512px image. No error, no warning — just a thumbnail wearing the metadata of a full-resolution asset. Easy to ship a blurry gallery without noticing.
+
+**Root cause:** Stitch serves screenshots from `lh3.googleusercontent.com`, which applies a default size cap when the URL carries no size parameter. The `width`/`height` fields in the API response describe the *source* screen, not what the URL returns.
+
+**Fix:** Append a size parameter to the `downloadUrl`. `=s0` returns the original; `=w1600` / `=s2560` / `=w2560-h2048` all work for a bounded fetch.
+
+```bash
+curl -sL -o screen.png "${DOWNLOAD_URL}=s0"      # original resolution
+curl -sL -o screen.png "${DOWNLOAD_URL}=w1200"   # bounded width
+```
+
+Project-level `thumbnailScreenshot.downloadUrl` behaves the same way, but it's a genuine thumbnail — for full-resolution output, go through the screen, not the project.
+
+**Files:** any skill that retrieves screenshots — `skills/stitch-mcp-get-screen/`, `skills/stitch-mcp-list-screens/`
+
+**Lesson:** Dimensions in an API response describe the resource, not the transfer. When a CDN sits in front of an asset, check what actually came down the wire — `file` on the result takes two seconds and catches this immediately.
