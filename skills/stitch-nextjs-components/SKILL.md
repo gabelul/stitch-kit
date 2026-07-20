@@ -1,6 +1,6 @@
 ---
 name: stitch-nextjs-components
-description: Converts Stitch designs into production-ready Next.js 15 App Router components — Server vs Client split, dark mode via CSS variables, TypeScript strict, ARIA, and responsive mobile-first layout.
+description: Converts a Stitch screen, a local HTML file, or a URL into production-ready Next.js 15 App Router components — Server vs Client split, dark mode via CSS variables, TypeScript strict, ARIA, and responsive mobile-first layout. Only the Stitch route needs an API key.
 allowed-tools:
   - "stitch*:*"
   - "Bash"
@@ -21,19 +21,46 @@ Use this skill (not `react-components`) when:
 
 ## Prerequisites
 
-- Access to the Stitch MCP server
-- A Stitch project with at least one generated screen
+An HTML source. Any one of these works:
+
+- A **Stitch screen** — needs Stitch MCP access and a generated screen
+- A **local HTML file** — no Stitch account required
+- A **URL** — no Stitch account required
+
+Also:
 - Target project has `next-themes` installed for dark mode (or user approves adding it)
 
-## Step 1: Retrieve the Stitch design
+## Step 1: Resolve the source
 
-1. **Namespace discovery** — Run `list_tools` to find the Stitch MCP prefix (e.g., `stitch:`). Use this prefix for all subsequent calls.
-2. **Fetch screen metadata** — Call `[prefix]:get_screen` with the `projectId` and `screenId`.
-3. **Download HTML** — GCS URLs need a reliable downloader:
+Everything downstream reads one file: `temp/source.html`. Get the HTML there by whichever route matches what the user gave you, then continue at Step 2 — the rest of this skill is identical regardless of where the markup came from.
+
+**From a Stitch screen:**
+
+1. **Namespace discovery** — `list_tools` to find the Stitch MCP prefix
+2. **Fetch metadata** — `[prefix]:get_screen` for the design JSON
+3. **Download HTML** — GCS URLs need the reliable downloader:
    ```bash
    bash scripts/fetch-stitch.sh "[htmlCode.downloadUrl]" "temp/source.html"
    ```
-4. **Visual audit** — Check `screenshot.downloadUrl` to understand layout intent before writing code.
+4. **Visual audit** — check `screenshot.downloadUrl` before rewriting. Append `=s0` to that URL for full resolution; the bare URL serves a 512px thumbnail regardless of the `width`/`height` the API reports.
+
+**From a local HTML file:**
+
+```bash
+mkdir -p temp && cp "path/to/design.html" temp/source.html
+```
+
+**From a URL:**
+
+```bash
+bash scripts/fetch-stitch.sh "https://example.com/page" "temp/source.html"
+```
+
+Despite the name, that script is a generic hardened downloader — follows redirects, retries transient failures, handles gzip, and fails loudly on an empty result. It does not care whether the URL points at Stitch.
+
+**From a screenshot:** there's no direct route. Run `stitch-mcp-upload-screens-from-images` to turn the image into a Stitch screen first, then take the Stitch path above.
+
+> Only the Stitch route needs an API key. Converting a local file or a URL works with no Google account at all.
 
 ## Step 2: Decide Server Component vs Client Component
 

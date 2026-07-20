@@ -43,9 +43,9 @@ All four of these came out of stitch-kit. Different briefs, genuinely different 
 
 ---
 
-> **Needs Google Stitch access.** Everything here runs through Stitch, so sort that out first — sign in at [stitch.withgoogle.com](https://stitch.withgoogle.com) with any Google account, then grab an API key from [settings](https://stitch.withgoogle.com/settings).
+> **Generating designs needs Google Stitch.** Sign in at [stitch.withgoogle.com](https://stitch.withgoogle.com) with any Google account, then grab an API key from [settings](https://stitch.withgoogle.com/settings). No waitlist, no invite, free as of mid-2026 — but there are monthly generation limits and Google has signalled paid tiers, so treat the allowance as generous-but-finite.
 >
-> No waitlist, no invite, free to use as of mid-2026. There are monthly generation limits, and Google has signalled paid tiers are coming — so treat the free allowance as generous-but-finite rather than unlimited.
+> **Converting to code doesn't.** The framework conversion skills take a local HTML file or a URL just as happily as a Stitch screen. If you already have markup and only want production components out of it, you need no Google account at all.
 
 ## Install
 
@@ -152,7 +152,9 @@ Without stitch-kit, your agent sends Stitch a half-baked prompt, gets confused b
 
 ## Ship to any framework
 
-Once your design is ready, pick your target:
+**Works on any HTML, not just Stitch output.** Each conversion skill takes a Stitch screen, a local HTML file, or a URL — point it at a template you bought, a page you already built, or something a different tool generated, and you get the same production components with dark mode, design tokens, TypeScript, and ARIA. Only the Stitch route needs an API key.
+
+Pick your target:
 
 | Target | Skill | What you get |
 |--------|-------|-------------|
