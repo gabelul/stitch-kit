@@ -1,6 +1,6 @@
 {
   "name": "stitch-kit",
-  "description": "Design superpowers for Claude Code — 35 skills that teach your agent to ideate, research, generate, iterate, and ship beautiful UIs using Google Stitch MCP.",
+  "description": "Your agent designs terrible UI. stitch-kit wires it into Google Stitch MCP and teaches it the whole pipeline — ideation, screen generation, design systems, and production components across 7 frameworks.",
   "version": "1.11.0",
   "author": {
     "name": "gabelul"

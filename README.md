@@ -2,49 +2,72 @@
   <img src=".github/assets/banner.svg" alt="stitch-kit — design superpowers for AI coding agents" width="100%"/>
 </p>
 
-# stitch-kit — Design superpowers for AI coding agents | Google Stitch MCP plugin
+# stitch-kit
 
-I built this because I got tired of watching Claude Code generate UIs that look like a government form from 2004. Gray boxes, blue buttons, zero taste. Meanwhile, Google's [Stitch](https://stitch.withgoogle.com) generates genuinely beautiful, pixel-perfect screens from text — but it's just a raw MCP tool sitting there, and no coding agent knows how to use it properly.
+**Your coding agent writes decent code and designs terrible UI. stitch-kit fixes the second half — it wires agents into [Google Stitch](https://stitch.withgoogle.com) (text prompts → genuinely beautiful screens) and teaches them to drive it properly.**
+
+I built this because I got tired of watching Claude Code generate UIs that look like a government form from 2004. Gray boxes, blue buttons, zero taste. Meanwhile Stitch generates pixel-perfect screens from text — but it's a raw MCP tool sitting there, and no coding agent knows how to use it well.
 
 So I taught them.
 
-stitch-kit is 35 skills that give AI coding agents actual design intelligence. Not "here's a prompt, good luck" — real ideation, visual research, prompt engineering that produces quality output, multi-screen batch generation, design systems, iteration loops, and conversion to production framework components. The whole pipeline from "I have a vague idea" to shippable code.
+All four of these came out of stitch-kit. Different briefs, genuinely different results — not one template with the hue rotated.
 
-Your agent goes from design-blind to design-competent. You describe what you want (or just brainstorm out loud), and the agent researches trends, proposes 3 design directions with real color palettes and typography, generates a full PRD, creates up to 10 screens in Stitch in one shot, iterates until it looks right, and converts to Next.js, Svelte, React, React Native, SwiftUI, or HTML.
+<table>
+<tr>
+<td width="50%"><img src=".github/assets/showcase-ghostwork.png" alt="Ghostwork ops dashboard — monospace source health matrix, transport lane utilisation, live job queue"/></td>
+<td width="50%"><img src=".github/assets/showcase-hostguard.png" alt="HostGuard compliance dashboard — serif headings on warm cream, property alerts, activity timeline"/></td>
+</tr>
+<tr>
+<td><sub><b>Ops console</b> · monospace, dense tables, industrial light</sub></td>
+<td><sub><b>Compliance SaaS</b> · serif on warm cream, generous whitespace</sub></td>
+</tr>
+<tr>
+<td><img src=".github/assets/showcase-destiny.png" alt="Destiny Lantern chart screen — midnight blue and gold, display serif with CJK typography"/></td>
+<td><img src=".github/assets/showcase-vault.jpg" alt="Document scanner mobile screen — dark capture UI with orange framing over a live camera view"/></td>
+</tr>
+<tr>
+<td><sub><b>Astrology app</b> · midnight and gold, serif + CJK type</sub></td>
+<td><sub><b>Mobile capture</b> · dark UI over live camera, orange framing</sub></td>
+</tr>
+</table>
 
-Works in Claude Code, Codex CLI, and any agent that speaks MCP.
+<!-- These are real generated screens, pulled from Stitch projects via the
+     MCP API. Never swap them for illustrations, mockups or diagrams — for
+     a tool that sells aesthetic quality, fabricated proof is the fastest
+     way to lose the argument.
+
+     When replacing one, check it full-size first: Stitch renders text
+     inside nested device mockups as noise, which is invisible at gallery
+     scale and obvious when someone clicks through. Prefer screens whose
+     copy is real at 100%. -->
 
 ---
 
-## Install
+> **Needs Google Stitch access.** Everything here runs through Stitch, so sort that out first — sign in at [stitch.withgoogle.com](https://stitch.withgoogle.com) with any Google account, then grab an API key from [settings](https://stitch.withgoogle.com/settings).
+>
+> No waitlist, no invite, free to use as of mid-2026. There are monthly generation limits, and Google has signalled paid tiers are coming — so treat the free allowance as generous-but-finite rather than unlimited.
 
-### Quick install (recommended)
+## Install
 
 ```bash
 npx @booplex/stitch-kit
 ```
 
-One command. It auto-detects your setup (Claude Code, Codex CLI, or both), installs the agent + skills, configures Stitch MCP, and tells you if anything's missing.
+Detects every supported client you have installed — Claude Code, Codex CLI, OpenCode, Crush, Cursor, VS Code, Gemini CLI — and wires up whatever each one supports. See [Works with](#works-with) for what that means per client.
 
-```bash
-npx @booplex/stitch-kit update   # update to latest
-npx @booplex/stitch-kit status   # check what's installed
-```
-
-After installing, sign in at [stitch.withgoogle.com](https://stitch.withgoogle.com) to complete Google auth.
-
-### Claude Code plugin (optional, adds skills)
-
-The NPX installer sets up the agent and MCP. For the full skill set (ideation, prompt engineering, design systems, iteration, conversion), also install the plugin inside Claude Code:
+Then, inside Claude Code, add the skills:
 
 ```bash
 /plugin marketplace add https://github.com/gabelul/stitch-kit.git
 /plugin install stitch-kit@stitch-kit
 ```
 
-The agent works standalone with MCP tools, but skills add structured workflows that make the output noticeably better.
+Two steps, not one — the npx installer handles the agent and MCP wiring, the plugin adds the 35 skills. The agent works without them, but the skills are what make the output good.
 
-### Manual setup (if you prefer)
+```bash
+npx @booplex/stitch-kit update   # update to latest
+npx @booplex/stitch-kit status   # check what's installed
+```
 
 <details>
 <summary>Claude Code — manual steps</summary>
@@ -87,6 +110,28 @@ Use `$stitch-kit` to activate the agent or `$stitch-orchestrator` for the full p
 
 ---
 
+## Works with
+
+The installer detects what you've got and wires up whatever that client supports. Not every agent takes skills, so here's the honest breakdown rather than a logo wall:
+
+| Client | Stitch MCP | Agent | Skills |
+|--------|:----------:|:-----:|:------:|
+| Claude Code | ✅ | ✅ | ✅ via plugin |
+| Codex CLI | ✅ | ✅ | ✅ |
+| OpenCode | ✅ | ✅ | ✅ |
+| Crush | ✅ | — | ✅ |
+| Cursor | ✅ | — | — |
+| VS Code | ✅ | — | — |
+| Gemini CLI | via extension | — | — |
+
+**Skills** are the structured workflows — ideation, prompt engineering, ID-safe MCP wrappers, framework conversion. **Agent** is the Stitch-aware persona that knows the full toolset. **MCP only** means you get Stitch wired into the client and can drive it by hand, but none of the design intelligence — which is most of the point, so the top three are where this actually shines.
+
+Gemini CLI handles MCP through its own extension system rather than a config file, so the installer points you at `gemini extensions list` instead of writing config for you.
+
+Check what you've got with `npx @booplex/stitch-kit status`.
+
+---
+
 ## What actually happens when you use it
 
 <p align="center">
@@ -103,7 +148,21 @@ Without stitch-kit, your agent sends Stitch a half-baked prompt, gets confused b
 
 4. **Ship real code** — Convert to production components with dark mode, TypeScript, design tokens, and ARIA. Not "here's some JSX, figure it out" — proper Server/Client component split, theme integration, accessibility baked in.
 
-There's also an agent definition (`agents/stitch-kit.md`) for both Claude Code and Codex — a Stitch-aware agent that knows the full skill set and doesn't hallucinate MCP tool names (which happens more than you'd think).
+---
+
+## Ship to any framework
+
+Once your design is ready, pick your target:
+
+| Target | Skill | What you get |
+|--------|-------|-------------|
+| Next.js 15 App Router | `stitch-nextjs-components` | Server/Client split, `next-themes`, TypeScript strict |
+| Svelte 5 / SvelteKit | `stitch-svelte-components` | Runes API, scoped CSS, built-in transitions |
+| Vite + React | `stitch-react-components` | `useTheme()` hook, Tailwind, no App Router overhead |
+| HTML5 + CSS | `stitch-html-components` | No build step — PWA, WebView, Capacitor ready |
+| shadcn/ui | `stitch-shadcn-ui` | Radix primitives, token alignment with Stitch palette |
+| React Native / Expo | `stitch-react-native-components` | iOS + Android, `useColorScheme`, safe areas |
+| SwiftUI | `stitch-swiftui-components` | iOS 16+, `@Environment(\.colorScheme)`, 44pt targets |
 
 ---
 
@@ -113,15 +172,13 @@ There's also an agent definition (`agents/stitch-kit.md`) for both Claude Code a
   <img src=".github/assets/architecture.svg" alt="stitch-kit architecture — 5 layers, 35 skills" width="100%"/>
 </p>
 
-Five layers. I didn't build 35 skills for fun — each layer exists because agents consistently fail at something specific with Stitch.
+Five layers, 35 skills. Each layer exists because agents fail at something specific with Stitch, and the failures are different enough that one skill can't cover them.
 
-**The ID format thing deserves its own callout.** `generate_screen_from_text` wants `"3780309359108792857"`. `list_screens` wants `"projects/3780309359108792857"`. Pass the wrong one and you get a cryptic error. This is the #1 reason agents fail with raw Stitch MCP, and it's the reason I built 14 wrapper skills instead of letting agents call the API directly.
+**The ID format thing deserves its own callout.** `generate_screen_from_text` wants `"3780309359108792857"`. `list_screens` wants `"projects/3780309359108792857"`. Pass the wrong one and you get a cryptic error. This is the #1 reason agents fail with raw Stitch MCP, and it's why there are 14 wrapper skills instead of letting agents call the API directly.
 
 Details → [docs/architecture.md](docs/architecture.md)
 
----
-
-## Skill anatomy
+### Skill anatomy
 
 ```
 skills/[skill-name]/
@@ -164,22 +221,6 @@ stitch-kit has 35. It covers the full pipeline: conversational ideation with web
 - `stitch-a11y` — WCAG 2.1 AA audit + auto-fixes
 - `stitch-animate` — purposeful motion with `prefers-reduced-motion` handled
 - `stitch-skill-creator` — meta-skill for extending the plugin
-
----
-
-## Ship to any framework
-
-Once your design is ready, pick your target:
-
-| Target | Skill | What you get |
-|--------|-------|-------------|
-| Next.js 15 App Router | `stitch-nextjs-components` | Server/Client split, `next-themes`, TypeScript strict |
-| Svelte 5 / SvelteKit | `stitch-svelte-components` | Runes API, scoped CSS, built-in transitions |
-| Vite + React | `stitch-react-components` | `useTheme()` hook, Tailwind, no App Router overhead |
-| HTML5 + CSS | `stitch-html-components` | No build step — PWA, WebView, Capacitor ready |
-| shadcn/ui | `stitch-shadcn-ui` | Radix primitives, token alignment with Stitch palette |
-| React Native / Expo | `stitch-react-native-components` | iOS + Android, `useColorScheme`, safe areas |
-| SwiftUI | `stitch-swiftui-components` | iOS 16+, `@Environment(\.colorScheme)`, 44pt targets |
 
 ---
 

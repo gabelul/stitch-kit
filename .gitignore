@@ -13,3 +13,6 @@ node_modules/
 # snapshots). Runtime state, never source — and the snapshots can contain
 # conversation content, so it stays out of git.
 .stitch/
+
+# Local agent orchestration state (oh-my-claudecode) — never ship this
+.omc/
