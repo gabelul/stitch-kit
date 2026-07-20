@@ -1,6 +1,6 @@
 ---
 name: stitch-react-native-components
-description: Converts Stitch mobile designs into React Native / Expo components — TypeScript, StyleSheet, Expo Router, dark mode via useColorScheme, and proper touch targets. Cross-platform iOS and Android.
+description: Converts a Stitch mobile screen, a local HTML file, or a URL into React Native / Expo components — TypeScript, StyleSheet, Expo Router, dark mode via useColorScheme, and proper touch targets. Cross-platform iOS and Android. Only the Stitch route needs an API key.
 allowed-tools:
   - "stitch*:*"
   - "Bash"
@@ -23,18 +23,53 @@ Use this skill when:
 
 ## Prerequisites
 
-- Stitch design generated with `deviceType: MOBILE` (desktop designs don't translate well to RN)
+A mobile-layout source, read as structural and visual reference only — nothing here ships, RN components get written from scratch. Any one of these works:
+
+- A **Stitch screen** — needs Stitch MCP access and a screen generated with `deviceType: MOBILE`
+- A **local HTML file** of a mobile layout — no Stitch account required
+- A **URL** rendering a mobile layout — no Stitch account required
+
+Desktop layouts don't translate well to RN, regardless of which route you took — verify the source is narrow and vertical before converting.
+
+Also:
 - Target project uses **Expo** (SDK 50+) — not bare React Native
 - `expo-router` for file-based navigation
 
-## Step 1: Retrieve the design
+## Step 1: Resolve the source
+
+Everything downstream reads one file: `temp/source.html`. Get the HTML there by whichever route matches what the user gave you, then continue at Step 2 — the rest of this skill is identical regardless of where the markup came from.
+
+**From a Stitch screen:**
 
 Only call this skill for **MOBILE** Stitch designs. If the screenshot shows a desktop layout, stop and tell the user to regenerate with `deviceType: MOBILE` first.
 
-1. `list_tools` → find Stitch prefix
-2. `[prefix]:get_screen` → fetch design JSON
-3. Download HTML: `bash scripts/fetch-stitch.sh "[htmlCode.downloadUrl]" "temp/source.html"`
-4. Check `screenshot.downloadUrl` — verify it's a mobile layout (narrow, vertical)
+1. **Namespace discovery** — `list_tools` to find the Stitch MCP prefix
+2. **Fetch metadata** — `[prefix]:get_screen` for the design JSON
+3. **Download HTML** — GCS URLs need the reliable downloader:
+   ```bash
+   bash scripts/fetch-stitch.sh "[htmlCode.downloadUrl]" "temp/source.html"
+   ```
+4. **Visual audit** — check `screenshot.downloadUrl` before converting. Append `=s0` to that URL for full resolution; the bare URL serves a 512px thumbnail regardless of the `width`/`height` the API reports. Confirm it's a mobile layout (narrow, vertical).
+
+**From a local HTML file:**
+
+```bash
+mkdir -p temp && cp "path/to/design.html" temp/source.html
+```
+
+Open it and confirm it's a mobile layout before converting.
+
+**From a URL:**
+
+```bash
+bash scripts/fetch-stitch.sh "https://example.com/page" "temp/source.html"
+```
+
+Despite the name, that script is a generic hardened downloader — follows redirects, retries transient failures, handles gzip, and fails loudly on an empty result. It does not care whether the URL points at Stitch. Confirm the page is a mobile layout before converting.
+
+**From a screenshot:** there's no direct route. Run `stitch-mcp-upload-screens-from-images` to turn the image into a Stitch screen first, then take the Stitch path above.
+
+> Only the Stitch route needs an API key. Converting a local file or a URL works with no Google account at all.
 
 ## Step 2: Project structure
 

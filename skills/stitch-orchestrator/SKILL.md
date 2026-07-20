@@ -119,6 +119,7 @@ Determine what the user wants:
 | **Upload screenshot** — import existing UI | Call `stitch-mcp-upload-screens-from-images`, then offer edit or convert (Step 5b). |
 | **Refine existing** — iterate on a screen | Skip Step 2 (reuse project ID). Preserve layout structure in new prompt. |
 | **Export existing** — just get the code | Skip Steps 2-5. Go to Step 6 (get screen) → Step 8 (convert). |
+| **Convert non-Stitch HTML** — user already has markup | Skip Steps 2-7 entirely. Go straight to Step 8. The conversion skills accept a local HTML file or a URL as well as a Stitch screen, and that route needs no Stitch account. Do not push the user through generation to manufacture a screen they didn't ask for. |
 | **Variants** — explore design directions | Call `stitch-mcp-generate-variants` natively (1 API call). Present results, then Step 5b. |
 | **Delete project** — clean up | Call `stitch-mcp-delete-project` with confirmation gate. Stop after deletion. |
 
